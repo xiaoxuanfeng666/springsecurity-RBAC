@@ -1,0 +1,90 @@
+package com.example.rbac.controller;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.rbac.common.Result;
+import com.example.rbac.dto.UserForm;
+import com.example.rbac.entity.SysUser;
+import com.example.rbac.service.SysUserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+@RestController
+@RequestMapping("/user")
+@RequiredArgsConstructor
+public class SysUserController {
+
+    private final SysUserService userService;
+
+    @GetMapping("/page")
+    @PreAuthorize("@ss.hasPerm('system:user:list')")
+    public Result<Page<SysUser>> page(@RequestParam(defaultValue = "1") long pageNum,
+                                      @RequestParam(defaultValue = "10") long pageSize,
+                                      @RequestParam(required = false) String username,
+                                      @RequestParam(required = false) Integer status) {
+        return Result.success(userService.page(pageNum, pageSize, username, status));
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("@ss.hasPerm('system:user:query')")
+    public Result<SysUser> detail(@PathVariable Long id) {
+        return Result.success(userService.getById(id));
+    }
+
+    /**
+     * 查询用户已分配的角色 ID
+     */
+    @GetMapping("/{id}/roles")
+    @PreAuthorize("@ss.hasPerm('system:user:query')")
+    public Result<List<Long>> roles(@PathVariable Long id) {
+        return Result.success(userService.getRoleIds(id));
+    }
+
+    @PostMapping
+    @PreAuthorize("@ss.hasPerm('system:user:add')")
+    public Result<Void> create(@Valid @RequestBody UserForm form) {
+        userService.create(form);
+        return Result.success("新增成功", null);
+    }
+
+    @PutMapping
+    @PreAuthorize("@ss.hasPerm('system:user:edit')")
+    public Result<Void> update(@Valid @RequestBody UserForm form) {
+        userService.update(form);
+        return Result.success("修改成功", null);
+    }
+
+    /**
+     * 启用/禁用用户。禁用即「离职」，服务端会立即失效其登录凭证。
+     */
+    @PutMapping("/{id}/status")
+    @PreAuthorize("@ss.hasPerm('system:user:edit')")
+    public Result<Void> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
+        userService.updateStatus(id, status);
+        return Result.success(status == 0 ? "已禁用并失效其登录状态" : "已启用", null);
+    }
+
+    @PutMapping("/{id}/roles")
+    @PreAuthorize("@ss.hasPerm('system:user:role')")
+    public Result<Void> updateRoles(@PathVariable Long id, @RequestBody List<Long> roleIds) {
+        userService.updateRoles(id, roleIds);
+        return Result.success("分配成功", null);
+    }
+
+    @PutMapping("/{id}/resetPassword")
+    @PreAuthorize("@ss.hasPerm('system:user:resetPwd')")
+    public Result<Void> resetPassword(@PathVariable Long id, @RequestParam String password) {
+        userService.resetPassword(id, password);
+        return Result.success("密码已重置", null);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("@ss.hasPerm('system:user:remove')")
+    public Result<Void> delete(@PathVariable Long id) {
+        userService.delete(id);
+        return Result.success("删除成功", null);
+    }
+}

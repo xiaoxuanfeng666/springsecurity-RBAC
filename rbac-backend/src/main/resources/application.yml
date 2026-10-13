@@ -1,0 +1,56 @@
+server:
+  port: 7070
+
+spring:
+  application:
+    name: rbac-backend
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/rbac?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    password:
+    timeout: 5000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.example.rbac.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 自定义 JWT 配置
+jwt:
+  # 生产环境请替换为随机密钥，长度至少 32 字节（HS256 要求）
+  secret: rbac-jwt-secret-key-please-change-in-production-0123456789
+  # Access Token 有效期（毫秒）：15 分钟
+  access-token-expire: 900000
+  # Refresh Token 有效期（毫秒）：7 天
+  refresh-token-expire: 604800000
+  header: Authorization
+  token-prefix: "Bearer "
+
+logging:
+  level:
+    com.example.rbac: debug
+    org.springframework.security: info
