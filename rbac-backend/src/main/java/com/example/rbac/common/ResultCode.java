@@ -32,7 +32,10 @@ public enum ResultCode {
     POST_CODE_EXISTS(1015, "岗位编码已存在"),
     POST_IN_USE(1016, "岗位已被用户使用，无法删除"),
     POST_NOT_EXIST(1017, "岗位不存在"),
-    RESIGNED(1018, "该用户已离职");
+    RESIGNED(1018, "该用户已离职"),
+    KICK_SELF(1019, "不能强制下线当前登录的账号"),
+    OLD_PASSWORD_ERROR(1020, "原密码不正确"),
+    NEW_PASSWORD_SAME(1021, "新密码不能与原密码相同");
 
     private final Integer code;
     private final String message;

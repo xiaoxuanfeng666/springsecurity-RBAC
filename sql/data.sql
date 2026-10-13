@@ -58,7 +58,8 @@ VALUES (100, 1, '用户管理', 'user', 'system/user/index', 'system:user:list',
        (101, 1, '角色管理', 'role', 'system/role/index', 'system:role:list', 2, 'UserFilled', 2, 1, 1, NOW(), NOW()),
        (102, 1, '菜单管理', 'menu', 'system/menu/index', 'system:menu:list', 2, 'Menu', 3, 1, 1, NOW(), NOW()),
        (103, 1, '部门管理', 'dept', 'system/dept/index', 'system:dept:list', 2, 'OfficeBuilding', 4, 1, 1, NOW(), NOW()),
-       (105, 1, '岗位管理', 'post', 'system/post/index', 'system:post:list', 2, 'Postcard', 5, 1, 1, NOW(), NOW());
+       (105, 1, '岗位管理', 'post', 'system/post/index', 'system:post:list', 2, 'Postcard', 5, 1, 1, NOW(), NOW()),
+       (106, 1, '操作日志', 'audit', 'system/audit/index', 'system:audit:list', 2, 'Document', 6, 1, 1, NOW(), NOW());
 
 -- 按钮权限：用户管理
 INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)

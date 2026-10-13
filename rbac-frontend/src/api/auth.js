@@ -15,3 +15,7 @@ export function getInfo() {
 export function kickOut(userId) {
   return request.delete(`/auth/kick/${userId}`)
 }
+
+export function changePassword(data) {
+  return request.put('/auth/password', data)
+}

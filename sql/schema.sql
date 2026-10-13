@@ -126,3 +126,22 @@ CREATE TABLE `sys_role_menu` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_role_menu` (`role_id`, `menu_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='角色菜单关联表';
+
+-- ---------- 登录/下线审计日志 ----------
+DROP TABLE IF EXISTS `sys_login_audit`;
+CREATE TABLE `sys_login_audit` (
+    `id`            BIGINT       NOT NULL AUTO_INCREMENT COMMENT '主键',
+    `user_id`       BIGINT       DEFAULT NULL COMMENT '目标用户ID',
+    `username`      VARCHAR(64)  DEFAULT NULL COMMENT '目标用户名',
+    `action`        VARCHAR(32)  NOT NULL COMMENT '动作：LOGIN/LOGOUT/KICK/DISABLED/RESIGNED/RESET_PWD',
+    `operator_id`   BIGINT       DEFAULT NULL COMMENT '操作人ID（本人操作时与目标一致）',
+    `operator_name` VARCHAR(64)  DEFAULT NULL COMMENT '操作人用户名',
+    `reason`        VARCHAR(255) DEFAULT NULL COMMENT '说明',
+    `ip`            VARCHAR(64)  DEFAULT NULL COMMENT '来源IP',
+    `create_time`   DATETIME     DEFAULT NULL COMMENT '发生时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_action` (`action`),
+    KEY `idx_create_time` (`create_time`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='登录/下线审计日志';
+

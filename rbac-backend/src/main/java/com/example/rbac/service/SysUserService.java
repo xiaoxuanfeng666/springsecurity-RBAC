@@ -2,6 +2,7 @@ package com.example.rbac.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.rbac.common.AuditAction;
 import com.example.rbac.common.BusinessException;
 import com.example.rbac.common.ResultCode;
 import com.example.rbac.dto.UserForm;
@@ -39,6 +40,7 @@ public class SysUserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenStore tokenStore;
     private final PermissionSnapshotStore snapshotStore;
+    private final SysLoginAuditService auditService;
 
     public Page<SysUser> page(long pageNum, long pageSize, String username, Integer status) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<SysUser>()
@@ -145,8 +147,7 @@ public class SysUserService {
 
         // 若本次修改把用户停用或标记离职，立即失效其登录凭证
         if (form.getStatus() != null && isOffline(form.getStatus())) {
-            tokenStore.removeSession(exist.getId());
-            log.info("用户被{}，已立即失效登录凭证: {}", statusText(form.getStatus()), exist.getUsername());
+            offlineUser(exist, form.getStatus());
         }
     }
 
@@ -162,8 +163,7 @@ public class SysUserService {
         userMapper.updateById(user);
 
         if (status != null && isOffline(status)) {
-            tokenStore.removeSession(id);
-            log.info("用户被{}，已立即失效登录凭证: {}", statusText(status), exist.getUsername());
+            offlineUser(exist, status);
         }
     }
 
@@ -172,8 +172,16 @@ public class SysUserService {
         return status == 0 || status == STATUS_RESIGNED;
     }
 
-    private String statusText(int status) {
-        return status == STATUS_RESIGNED ? "标记离职" : "停用";
+    /**
+     * 停用/离职导致的下线：删除会话（下一次请求即 401）并写入审计
+     */
+    private void offlineUser(SysUser user, int status) {
+        boolean resigned = status == STATUS_RESIGNED;
+        tokenStore.removeSession(user.getId());
+        auditService.record(resigned ? AuditAction.RESIGNED : AuditAction.DISABLED,
+                user.getId(), user.getUsername(),
+                resigned ? "标记离职，强制下线" : "停用，强制下线");
+        log.info("用户被{}，已立即失效登录凭证: {}", resigned ? "标记离职" : "停用", user.getUsername());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -198,14 +206,20 @@ public class SysUserService {
         snapshotStore.invalidateUser(userId);
     }
 
+    /**
+     * 管理员重置他人密码：立即失效其登录凭证，该用户需用新密码重新登录。
+     * <p>
+     * 与「自助修改密码」（{@code PUT /auth/password}）相对 —— 本人改密保留当前会话。
+     */
     public void resetPassword(Long userId, String password) {
-        getById(userId);
-        SysUser user = new SysUser();
-        user.setId(userId);
-        user.setPassword(passwordEncoder.encode(password));
-        userMapper.updateById(user);
+        SysUser user = getById(userId);
+        SysUser update = new SysUser();
+        update.setId(userId);
+        update.setPassword(passwordEncoder.encode(password));
+        userMapper.updateById(update);
         // 重置密码后强制重新登录
         tokenStore.removeSession(userId);
+        auditService.record(AuditAction.RESET_PWD, userId, user.getUsername(), "重置密码，强制下线");
     }
 
     private void saveUserRoles(Long userId, List<Long> roleIds) {

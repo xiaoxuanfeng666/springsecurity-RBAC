@@ -10,6 +10,7 @@
 | **离职立刻失效凭证** | 用户状态三值：**1 在职 / 0 停用 / 2 离职**。会话保存在 Redis（`login:session:{userId}` + `login:refresh:{sessionId}`）。标记停用或离职时删除会话键，配合认证过滤器的会话校验，存量 Access Token 在下一次请求即被拒绝，旧 Refresh Token 也无法再续期，无需等待自然过期。 |
 | **权限登录快照** | 权限与角色在**登录时**查库一次并写入 Redis（`login:perm:{sessionId}`），之后每个请求直接读快照，省掉「用户-角色-菜单」的多表联查。 |
 | **动态修改角色权限** | 管理员在角色授权页调整「角色-菜单」映射后，服务端立即**失效该角色下所有用户的权限快照**，用户下一次请求重建快照并拿到新权限，无需重新登录。 |
+| **下线审计日志** | 登录、登出、强制下线、停用下线、离职下线、重置密码下线、自助改密全部落库到 `sys_login_audit`（操作人 / 目标用户 / 动作 / 说明 / 来源IP / 时间），管理端「操作日志」页可按用户名、动作、时间段检索。 |
 
 ## 技术栈
 
@@ -26,7 +27,7 @@ springsecurity-RBAC/
 │       ├── common/        # 统一返回、异常、状态码
 │       ├── config/        # Security / Redis / MyBatis-Plus 配置
 │       ├── security/      # JWT、会话存储、权限校验、过滤器
-│       ├── entity/        # 5 张表的实体
+│       ├── entity/        # 9 张表的实体
 │       ├── mapper/        # MyBatis-Plus Mapper
 │       ├── service/       # 业务逻辑
 │       ├── controller/    # 接口
@@ -40,11 +41,12 @@ springsecurity-RBAC/
 │       ├── layout/        # 后台布局与递归菜单
 │       └── views/         # 登录、仪表盘、用户/角色/菜单管理
 └── sql/
-    ├── schema.sql                             # 建表脚本（8 张表）
+    ├── schema.sql                             # 建表脚本（9 张表）
     ├── data.sql                               # 初始化数据
     ├── upgrade-2026-10-13-dept.sql            # 旧库升级①：部门模块
     ├── upgrade-2026-10-13-company.sql         # 旧库升级②：分公司模块（已被③合并回组织树）
-    └── upgrade-2026-10-13-org-post.sql        # 旧库升级③：分公司并入部门树 + 岗位模块
+    ├── upgrade-2026-10-13-org-post.sql        # 旧库升级③：分公司并入部门树 + 岗位模块
+    └── upgrade-2026-10-13-audit.sql           # 旧库升级④：登录/下线审计日志
 ```
 
 ## 快速开始
@@ -64,6 +66,7 @@ mysql -uroot -p --default-character-set=utf8mb4 < sql/data.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-dept.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-company.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-org-post.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-audit.sql
 ```
 
 > 三个脚本是迭代过程留下的：先是独立部门表，再加独立分公司模块，最后把分公司并入部门树、换成岗位模块。中途的 `company` 脚本只挂载了一次独立分公司模块，随后被最后一个脚本合并回组织树并删除。**全新安装只需执行 `schema.sql` + `data.sql`。**
@@ -108,12 +111,13 @@ npm run dev
 | 认证 | POST | `/auth/refresh` | 用 Refresh Token 换取新的 Access Token（Access 过期时前端自动调用） |
 | 认证 | POST | `/auth/logout` | 登出，删除会话 |
 | 认证 | GET | `/auth/info` | 当前用户信息 + 权限 + 菜单树 |
-| 认证 | DELETE | `/auth/kick/{userId}` | 强制用户下线 |
+| 认证 | DELETE | `/auth/kick/{userId}` | 强制用户下线（`system:user:edit`；禁止踢自己 1019，目标不存在 1003） |
+| 认证 | PUT | `/auth/password` | 自助修改密码（校验原密码，**保留当前会话**，不会把自己踢下线） |
 | 用户 | GET | `/user/page` | 分页查询（`system:user:list`） |
 | 用户 | POST/PUT/DELETE | `/user`、`/user/{id}` | 增改删 |
 | 用户 | PUT | `/user/{id}/status` | 设置状态：1 在职 / 0 停用 / 2 离职（停用与离职都立即失效登录凭证） |
 | 用户 | PUT | `/user/{id}/roles` | 分配角色 |
-| 用户 | PUT | `/user/{id}/resetPassword` | 重置密码（同时强制下线） |
+| 用户 | PUT | `/user/{id}/resetPassword` | 管理员重置他人密码（**强制该用户下线**，需用新密码重新登录） |
 | 角色 | GET | `/role/page`、`/role/all` | 分页 / 全部启用角色 |
 | 角色 | PUT | `/role/{id}/menus` | **动态修改角色权限** |
 | 部门 | GET | `/dept/tree` | 组织架构树：公司 / 分公司 / 部门（type 1/2/3），管理页与用户表单共用 |
@@ -122,10 +126,11 @@ npm run dev
 | 岗位 | POST/PUT/DELETE | `/post`、`/post/{id}` | 增改删（删除前校验是否已被用户使用） |
 | 菜单 | GET | `/menu/tree` | 菜单树 |
 | 菜单 | POST/PUT/DELETE | `/menu`、`/menu/{id}` | 增改删 |
+| 审计 | GET | `/audit/page` | 登录/下线审计日志分页查询（`system:audit:list`） |
 
 接口鉴权使用 `@PreAuthorize("@ss.hasPerm('system:user:list')")`，权限来自用户所属角色的菜单权限标识。
 
-## 三个核心需求的验证步骤
+## 核心功能验证步骤
 
 ### 1. 无感知续期
 
@@ -156,9 +161,19 @@ Access Token 有效期短（默认 15 分钟），过期后前端拦截 401，�
 3. 让 zhangsan 刷新页面：侧边栏与按钮立即出现新增入口；调用相应接口不再返回 403。
 4. 反向操作（取消勾选）同样立即生效，无需 zhangsan 重新登录。
 
+### 4. 下线审计日志
+
+1. 用 zhangsan 登录、登出各一次；再用 admin 对 zhangsan 依次执行「强制下线（`DELETE /auth/kick/2`）」「停用」「离职」「重置密码」。
+2. 用 admin 打开「系统管理 → 操作日志」，能看到上述 6 类动作各一条：目标用户 = zhangsan，`KICK/DISABLED/RESIGNED/RESET_PWD` 的操作人是 admin，`LOGIN/LOGOUT` 的操作人是 zhangsan 本人，并记录来源 IP 与说明。
+3. 按动作筛选 `KICK`、按用户名或时间段筛选，结果随之收窄。
+4. 用 zhangsan 访问 `/audit/page` 返回 403 —— 审计日志只对有 `system:audit:list` 的角色开放。
+
 ## 说明与注意事项
 
 - **两个有效期**：`jwt.access-token-expire`（默认 15 分钟）是 Access Token 的轮换周期，过期后由前端调 `/auth/refresh` 续期；`jwt.refresh-token-expire`（默认 7 天）既是 Refresh Token 的有效期，也是 Redis 会话的有效期 —— 即登录态的真正上限。JWT 的 `exp` 只决定「该续期了」，真正的准入判断是 Redis 会话，所以删除会话（离职/停用/踢下线）能立即生效，而不必等 Token 过期。
 - **权限快照与失效**：权限与角色在登录时固化为会话快照（`login:perm:{sessionId}`，TTL 与 Refresh Token 一致），请求期间不再联表查询。为保证「改了立刻生效」，以下操作会**精准失效**受影响用户的快照，使其下一次请求重建：角色授权变更（失效该角色下全部用户）、用户角色变更、以及会话删除（登出/停用/离职/踢下线/重置密码，随会话一并清理）。快照只缓存权限与角色，用户资料与菜单树仍实时查库，因此改昵称、改部门、改菜单名称都能立即反映。
+  **唯一的例外**：用 SQL 直接改 `sys_menu` / `sys_role_menu`（如执行增量脚本）绕过了失效逻辑，已登录用户读到的仍是旧快照，需重新登录，或按 [upgrade-2026-10-13-audit.sql](sql/upgrade-2026-10-13-audit.sql) 顶部的说明清一次 `login:perm:*`。
+- **两条改密路径**：管理员在「用户管理」里重置他人密码（`PUT /user/{id}/resetPassword`）会**强制该用户下线**，适用于账号被盗或密码遗忘；用户自己在右上角「修改密码」（`PUT /auth/password`）需校验原密码，改完**当前会话继续有效**，不会被自己踢下线。两条路径都会写审计（`RESET_PWD` / `CHANGE_PWD`）。
+- **审计日志**：`sys_login_audit` 只追加不修改、不提供删除接口。审计写入与业务操作在同一事务内（登录路径除外），**审计失败会让该次操作一并失败** —— 宁可失败也不留下审计空档。`ip` 优先取 `X-Forwarded-For` 首段（经反向代理时），否则取 `remoteAddr`；该值客户端可控，已截断到字段长度以内。
 - **超级管理员**：`admin` 角色的权限同样存在 `sys_role_menu` 中，可动态调整。请谨慎取消其角色管理相关权限，以免无法再次授权。内置 `admin` 角色与 `admin` 用户不允许删除。
 - **单会话模型**：一个用户同时只有一个有效会话，后登录会顶掉先前的会话。

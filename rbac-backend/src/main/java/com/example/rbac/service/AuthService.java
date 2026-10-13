@@ -1,6 +1,7 @@
 package com.example.rbac.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.rbac.common.AuditAction;
 import com.example.rbac.common.BusinessException;
 import com.example.rbac.common.ResultCode;
 import com.example.rbac.dto.LoginInfoResponse;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +40,8 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenStore tokenStore;
     private final PermissionSnapshotStore snapshotStore;
+    private final SysLoginAuditService auditService;
+    private final PasswordEncoder passwordEncoder;
     private final SysUserMapper userMapper;
     private final SysMenuMapper menuMapper;
 
@@ -70,6 +74,7 @@ public class AuthService {
                 jwtTokenProvider.getRefreshTokenExpireMillis());
 
         log.info("用户登录成功: {} (userId={})", username, userId);
+        auditService.record(AuditAction.LOGIN, userId, username, "登录成功");
         return new TokenResponse(accessToken, refreshToken, jwtTokenProvider.getAccessTokenExpireSeconds());
     }
 
@@ -122,6 +127,8 @@ public class AuthService {
             return;
         }
         tokenStore.removeSession(loginUser.getUser().getId());
+        auditService.record(AuditAction.LOGOUT,
+                loginUser.getUser().getId(), loginUser.getUsername(), "主动登出");
         log.info("用户登出: {}", loginUser.getUsername());
     }
 
@@ -148,11 +155,49 @@ public class AuthService {
     }
 
     /**
-     * 强制下线（管理员操作）
+     * 自助修改密码：校验原密码后更新，**保留当前会话**（不踢下线）。
+     * <p>
+     * 与管理员「重置密码」相对：重置是管理员代劳，会强制该用户下线；
+     * 自助改密是本人操作，当前会话继续有效。
+     */
+    public void changeOwnPassword(LoginUser loginUser, String oldPassword, String newPassword) {
+        Long userId = loginUser.getUser().getId();
+        String currentEncoded = loginUser.getUser().getPassword();
+        if (!passwordEncoder.matches(oldPassword, currentEncoded)) {
+            throw new BusinessException(ResultCode.OLD_PASSWORD_ERROR);
+        }
+        if (passwordEncoder.matches(newPassword, currentEncoded)) {
+            throw new BusinessException(ResultCode.NEW_PASSWORD_SAME);
+        }
+
+        SysUser update = new SysUser();
+        update.setId(userId);
+        update.setPassword(passwordEncoder.encode(newPassword));
+        userMapper.updateById(update);
+
+        // 刻意不调用 tokenStore.removeSession，当前会话保持不变
+        auditService.record(AuditAction.CHANGE_PWD, userId, loginUser.getUsername(), "自助修改密码");
+        log.info("用户自助修改密码: {}", loginUser.getUsername());
+    }
+
+    /**
+     * 强制下线（需 system:user:edit）
+     * <p>
+     * 两个校验都放在删会话之前，因此被拒绝的请求不会写审计 ——
+     * 避免把并未发生的下线记成一条成功记录。
      */
     public void kickOut(Long userId) {
+        LoginUser operator = SecurityUtils.getLoginUser();
+        if (operator != null && operator.getUser().getId().equals(userId)) {
+            throw new BusinessException(ResultCode.KICK_SELF);
+        }
+        SysUser target = userMapper.selectById(userId);
+        if (target == null) {
+            throw new BusinessException(ResultCode.USER_NOT_EXIST);
+        }
         tokenStore.removeSession(userId);
-        log.info("强制下线用户: userId={}", userId);
+        auditService.record(AuditAction.KICK, userId, target.getUsername(), "管理员强制下线");
+        log.info("强制下线用户: {}", target.getUsername());
     }
 
     /**
