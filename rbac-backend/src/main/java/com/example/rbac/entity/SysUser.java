@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @TableName("sys_user")
@@ -24,13 +25,16 @@ public class SysUser implements Serializable {
 
     private String nickname;
 
+    /** 所属组织节点ID（公司/分公司/部门） */
+    private Long deptId;
+
     private String email;
 
     private String phone;
 
     private String avatar;
 
-    /** 状态：1启用 0禁用 */
+    /** 状态：1在职 0停用 2离职（停用与离职都会立即失效登录凭证） */
     private Integer status;
 
     @TableLogic
@@ -44,4 +48,8 @@ public class SysUser implements Serializable {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
+    /** 用户已分配的岗位 ID，非数据库字段，列表查询时批量填充 */
+    @TableField(exist = false)
+    private List<Long> postIds;
 }

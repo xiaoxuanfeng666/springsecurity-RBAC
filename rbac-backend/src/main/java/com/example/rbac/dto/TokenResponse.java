@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 令牌返回：Access Token 用于访问接口，Refresh Token 仅用于调用 /auth/refresh 续期
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

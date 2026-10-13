@@ -43,9 +43,11 @@ mybatis-plus:
 jwt:
   # 生产环境请替换为随机密钥，长度至少 32 字节（HS256 要求）
   secret: rbac-jwt-secret-key-please-change-in-production-0123456789
-  # Access Token 有效期（毫秒）：15 分钟
+  # Access Token 有效期（毫秒）：15 分钟。短有效期由 Refresh Token 兜底，
+  # 过期后前端自动调用 /auth/refresh 换取新的 Access Token。
   access-token-expire: 900000
-  # Refresh Token 有效期（毫秒）：7 天
+  # Refresh Token 有效期（毫秒）：7 天。也是 Redis 会话的有效期，
+  # 停用/离职用户时删除会话即刻失效。
   refresh-token-expire: 604800000
   header: Authorization
   token-prefix: "Bearer "

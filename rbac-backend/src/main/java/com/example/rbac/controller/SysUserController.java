@@ -43,6 +43,15 @@ public class SysUserController {
         return Result.success(userService.getRoleIds(id));
     }
 
+    /**
+     * 查询用户已分配的岗位 ID
+     */
+    @GetMapping("/{id}/posts")
+    @PreAuthorize("@ss.hasPerm('system:user:query')")
+    public Result<List<Long>> posts(@PathVariable Long id) {
+        return Result.success(userService.getPostIds(id));
+    }
+
     @PostMapping
     @PreAuthorize("@ss.hasPerm('system:user:add')")
     public Result<Void> create(@Valid @RequestBody UserForm form) {
@@ -58,19 +67,35 @@ public class SysUserController {
     }
 
     /**
-     * 启用/禁用用户。禁用即「离职」，服务端会立即失效其登录凭证。
+     * 设置用户状态：1 在职 / 0 停用 / 2 离职。
+     * 停用与离职都会立即失效其登录凭证，把已登录用户踢下线。
      */
     @PutMapping("/{id}/status")
     @PreAuthorize("@ss.hasPerm('system:user:edit')")
     public Result<Void> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
         userService.updateStatus(id, status);
-        return Result.success(status == 0 ? "已禁用并失效其登录状态" : "已启用", null);
+        String message;
+        if (status != null && status == 2) {
+            message = "已标记离职并失效其登录状态";
+        } else if (status != null && status == 0) {
+            message = "已停用并失效其登录状态";
+        } else {
+            message = "已启用";
+        }
+        return Result.success(message, null);
     }
 
     @PutMapping("/{id}/roles")
     @PreAuthorize("@ss.hasPerm('system:user:role')")
     public Result<Void> updateRoles(@PathVariable Long id, @RequestBody List<Long> roleIds) {
         userService.updateRoles(id, roleIds);
+        return Result.success("分配成功", null);
+    }
+
+    @PutMapping("/{id}/posts")
+    @PreAuthorize("@ss.hasPerm('system:user:edit')")
+    public Result<Void> updatePosts(@PathVariable Long id, @RequestBody List<Long> postIds) {
+        userService.updatePosts(id, postIds);
         return Result.success("分配成功", null);
     }
 

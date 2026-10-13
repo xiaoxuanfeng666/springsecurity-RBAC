@@ -20,13 +20,11 @@ import java.io.IOException;
  * JWT 认证过滤器
  * <p>
  * 每次请求：
- * 1. 解析 Access Token；
- * 2. 校验 Redis 中的会话是否仍然有效 —— 用户被禁用/删除/强制下线后，会话键被删除，
- * 存量 Access Token 立即失效（满足「离职立刻失效」）；
- * 3. 实时加载用户权限写入 SecurityContext（满足「动态修改角色权限」）。
+ * 1. 解析 Access Token（仅接受 access 类型，Refresh Token 不能当访问凭证）；
+ * 2. 校验 Redis 会话 —— 用户停用/离职/被删除/强制下线后会话被删除，存量 Token 立即失效；
+ * 3. 实时加载用户权限写入 SecurityContext（权限变更立即生效）。
  * <p>
- * 任一环节失败都不设置认证信息，请求以未认证状态继续，最终由 EntryPoint 返回 401，
- * 前端据此触发 refresh 流程。
+ * Token 过期不做自动续期，由前端拦截 401 后调用 /auth/refresh 换取新 Access Token。
  */
 @Slf4j
 @Component
@@ -43,32 +41,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String token = resolveToken(request);
         if (StringUtils.hasText(token)) {
-            try {
-                Claims claims = jwtTokenProvider.parse(token);
-                if (jwtTokenProvider.isAccessToken(claims)) {
-                    Long userId = jwtTokenProvider.getUserId(claims);
-                    String sessionId = jwtTokenProvider.getSessionId(claims);
-
-                    // 会话校验：用户离职/被踢下线后此处立即失败
-                    if (tokenStore.isSessionValid(userId, sessionId)) {
-                        LoginUser loginUser = userDetailsService.loadLoginUser(userId, sessionId);
-                        if (loginUser != null && loginUser.isEnabled()) {
-                            UsernamePasswordAuthenticationToken authentication =
-                                    new UsernamePasswordAuthenticationToken(
-                                            loginUser, null, loginUser.getAuthorities());
-                            authentication.setDetails(
-                                    new WebAuthenticationDetailsSource().buildDetails(request));
-                            SecurityContextHolder.getContext().setAuthentication(authentication);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                // Token 过期/无效：不设置认证，交由 EntryPoint 返回 401
-                log.debug("JWT 认证失败: {}", e.getMessage());
-                SecurityContextHolder.clearContext();
-            }
+            authenticate(token, request);
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void authenticate(String token, HttpServletRequest request) {
+        Claims claims;
+        try {
+            claims = jwtTokenProvider.parse(token);
+        } catch (Exception e) {
+            log.debug("JWT 解析失败: {}", e.getMessage());
+            return;
+        }
+        if (!jwtTokenProvider.isAccessToken(claims)) {
+            return;
+        }
+
+        Long userId = jwtTokenProvider.getUserId(claims);
+        String sessionId = jwtTokenProvider.getSessionId(claims);
+
+        // 会话校验：用户离职/被踢下线后此处立即失败
+        if (!tokenStore.isSessionValid(userId, sessionId)) {
+            return;
+        }
+        LoginUser loginUser = userDetailsService.loadLoginUser(userId, sessionId);
+        if (loginUser == null || !loginUser.isEnabled()) {
+            return;
+        }
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
+        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private String resolveToken(HttpServletRequest request) {

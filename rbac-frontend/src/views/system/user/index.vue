@@ -9,8 +9,9 @@
           </el-form-item>
           <el-form-item label="状态">
             <el-select v-model="query.status" placeholder="全部" clearable style="width: 120px">
-              <el-option label="启用" :value="1" />
-              <el-option label="禁用" :value="0" />
+              <el-option label="在职" :value="1" />
+              <el-option label="停用" :value="0" />
+              <el-option label="离职" :value="2" />
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -29,28 +30,53 @@
         <el-table-column type="index" label="#" width="55" align="center" />
         <el-table-column prop="username" label="用户名" min-width="120" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
+        <el-table-column label="所属部门" min-width="140">
+          <template #default="{ row }">
+            {{ deptMap[row.deptId] || '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="岗位" min-width="170">
+          <template #default="{ row }">
+            <el-tag
+              v-for="pid in row.postIds || []"
+              :key="pid"
+              size="small"
+              style="margin-right: 4px"
+            >
+              {{ postMap[pid] || pid }}
+            </el-tag>
+            <span v-if="!(row.postIds || []).length">-</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="email" label="邮箱" min-width="180" show-overflow-tooltip />
         <el-table-column prop="phone" label="手机号" min-width="130" />
         <el-table-column label="状态" width="100" align="center">
           <template #default="{ row }">
-            <el-tag :type="row.status === 1 ? 'success' : 'danger'">
-              {{ row.status === 1 ? '启用' : '禁用' }}
-            </el-tag>
+            <el-tag :type="statusMeta(row.status).type">{{ statusMeta(row.status).text }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" min-width="170" />
-        <el-table-column label="操作" width="300" fixed="right" align="center">
+        <el-table-column label="操作" width="340" fixed="right" align="center">
           <template #default="{ row }">
             <el-button v-permission="'system:user:edit'" link type="primary" @click="openEdit(row)">
               修改
             </el-button>
             <el-button
+              v-if="row.status !== 2"
               v-permission="'system:user:edit'"
               link
               :type="row.status === 1 ? 'warning' : 'success'"
               @click="toggleStatus(row)"
             >
-              {{ row.status === 1 ? '禁用' : '启用' }}
+              {{ row.status === 1 ? '停用' : '启用' }}
+            </el-button>
+            <el-button
+              v-permission="'system:user:edit'"
+              link
+              :type="row.status === 2 ? 'success' : 'danger'"
+              @click="toggleResigned(row)"
+            >
+              {{ row.status === 2 ? '复职' : '离职' }}
             </el-button>
             <el-button v-permission="'system:user:resetPwd'" link type="info" @click="openResetPwd(row)">
               重置密码
@@ -92,6 +118,24 @@
         <el-form-item label="昵称" prop="nickname">
           <el-input v-model="form.nickname" placeholder="请输入昵称" />
         </el-form-item>
+        <el-form-item label="所属部门">
+          <el-tree-select
+            v-model="form.deptId"
+            :data="deptOptions"
+            :props="{ label: 'deptName', children: 'children', value: 'id' }"
+            node-key="id"
+            check-strictly
+            clearable
+            :render-after-expand="false"
+            placeholder="请选择部门"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="岗位">
+          <el-select v-model="form.postIds" multiple placeholder="请选择岗位" style="width: 100%">
+            <el-option v-for="p in postOptions" :key="p.id" :label="p.postName" :value="p.id" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="form.email" placeholder="请输入邮箱" />
         </el-form-item>
@@ -105,8 +149,9 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-radio-group v-model="form.status">
-            <el-radio :label="1">启用</el-radio>
-            <el-radio :label="0">禁用</el-radio>
+            <el-radio :label="1">在职</el-radio>
+            <el-radio :label="0">停用</el-radio>
+            <el-radio :label="2">离职</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注">
@@ -149,12 +194,29 @@ import {
   resetUserPassword
 } from '@/api/user'
 import { listAllRoles } from '@/api/role'
+import { getDeptTree } from '@/api/dept'
+import { listAllPosts } from '@/api/post'
 
 const loading = ref(false)
 const submitting = ref(false)
 const tableData = ref([])
 const total = ref(0)
 const roleOptions = ref([])
+const deptOptions = ref([])
+const deptMap = ref({})
+const postOptions = ref([])
+const postMap = ref({})
+
+/** 用户状态：1 在职 / 0 停用 / 2 离职 */
+const STATUS_META = {
+  1: { text: '在职', type: 'success' },
+  0: { text: '停用', type: 'info' },
+  2: { text: '离职', type: 'danger' }
+}
+
+function statusMeta(status) {
+  return STATUS_META[status] || { text: '-', type: 'info' }
+}
 
 const query = reactive({
   pageNum: 1,
@@ -171,6 +233,8 @@ const defaultForm = () => ({
   username: '',
   password: '',
   nickname: '',
+  deptId: null,
+  postIds: [],
   email: '',
   phone: '',
   status: 1,
@@ -229,6 +293,33 @@ async function loadRoles() {
   roleOptions.value = res.data
 }
 
+/** 加载部门树，并展开成 id -> 名称的映射供列表展示 */
+async function loadDepts() {
+  const res = await getDeptTree()
+  deptOptions.value = res.data
+  const map = {}
+  const walk = (nodes) => {
+    nodes.forEach((n) => {
+      map[n.id] = n.deptName
+      if (n.children && n.children.length) {
+        walk(n.children)
+      }
+    })
+  }
+  walk(res.data)
+  deptMap.value = map
+}
+
+async function loadPosts() {
+  const res = await listAllPosts()
+  postOptions.value = res.data
+  const map = {}
+  res.data.forEach((p) => {
+    map[p.id] = p.postName
+  })
+  postMap.value = map
+}
+
 function handleSearch() {
   query.pageNum = 1
   loadData()
@@ -254,6 +345,8 @@ async function openEdit(row) {
     id: row.id,
     username: row.username,
     nickname: row.nickname,
+    deptId: row.deptId,
+    postIds: [...(row.postIds || [])],
     email: row.email,
     phone: row.phone,
     status: row.status,
@@ -290,7 +383,7 @@ async function handleSubmit() {
 async function toggleStatus(row) {
   const willDisable = row.status === 1
   const tip = willDisable
-    ? '禁用后该用户会立即被强制下线，确定继续吗？'
+    ? '停用后该用户会立即被强制下线，确定继续吗？'
     : '确定要启用该用户吗？'
   try {
     await ElMessageBox.confirm(tip, '提示', {
@@ -302,7 +395,27 @@ async function toggleStatus(row) {
     return
   }
   await updateUserStatus(row.id, willDisable ? 0 : 1)
-  ElMessage.success(willDisable ? '已禁用，该用户登录状态已失效' : '已启用')
+  ElMessage.success(willDisable ? '已停用，该用户登录状态已失效' : '已启用')
+  loadData()
+}
+
+/** 标记离职 / 复职（离职会立即踢下线并禁止登录） */
+async function toggleResigned(row) {
+  const willResign = row.status !== 2
+  const tip = willResign
+    ? '标记离职后该用户会立即被强制下线，且无法再登录，确定继续吗？'
+    : '确定要恢复该用户为在职状态吗？'
+  try {
+    await ElMessageBox.confirm(tip, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+  } catch (e) {
+    return
+  }
+  await updateUserStatus(row.id, willResign ? 2 : 1)
+  ElMessage.success(willResign ? '已标记离职，该用户登录状态已失效' : '已复职')
   loadData()
 }
 
@@ -346,6 +459,8 @@ async function handleDelete(row) {
 onMounted(() => {
   loadData()
   loadRoles()
+  loadDepts()
+  loadPosts()
 })
 </script>
 

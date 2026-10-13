@@ -20,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
 
     /**
-     * 登录，返回双 Token
+     * 登录，返回 Access Token + Refresh Token
      */
     @PostMapping("/login")
     public Result<TokenResponse> login(@Valid @RequestBody LoginRequest request) {
@@ -28,7 +28,7 @@ public class AuthController {
     }
 
     /**
-     * 刷新 Access Token（前端无感知调用）
+     * 刷新 Token：Access Token 过期后前端用 Refresh Token 换取新的 Access Token
      */
     @PostMapping("/refresh")
     public Result<TokenResponse> refresh(@Valid @RequestBody RefreshRequest request) {

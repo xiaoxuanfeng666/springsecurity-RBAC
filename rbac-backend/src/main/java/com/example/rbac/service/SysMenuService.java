@@ -8,7 +8,7 @@ import com.example.rbac.entity.SysMenu;
 import com.example.rbac.entity.SysRoleMenu;
 import com.example.rbac.mapper.SysMenuMapper;
 import com.example.rbac.mapper.SysRoleMenuMapper;
-import com.example.rbac.util.MenuTreeUtils;
+import com.example.rbac.util.TreeUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ public class SysMenuService {
     public List<SysMenu> tree() {
         List<SysMenu> menus = menuMapper.selectList(
                 new LambdaQueryWrapper<SysMenu>().orderByAsc(SysMenu::getParentId, SysMenu::getSort));
-        return MenuTreeUtils.buildTree(menus);
+        return TreeUtils.buildTree(menus);
     }
 
     public SysMenu getById(Long id) {

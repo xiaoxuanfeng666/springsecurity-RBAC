@@ -13,17 +13,64 @@ CREATE TABLE `sys_user` (
     `username`    VARCHAR(64)  NOT NULL COMMENT '登录账号',
     `password`    VARCHAR(128) NOT NULL COMMENT '密码（BCrypt）',
     `nickname`    VARCHAR(64)  DEFAULT NULL COMMENT '昵称',
+    `dept_id`     BIGINT       DEFAULT NULL COMMENT '所属组织节点ID（公司/分公司/部门）',
     `email`       VARCHAR(128) DEFAULT NULL COMMENT '邮箱',
     `phone`       VARCHAR(20)  DEFAULT NULL COMMENT '手机号',
     `avatar`      VARCHAR(255) DEFAULT NULL COMMENT '头像',
+    `status`      TINYINT      NOT NULL DEFAULT 1 COMMENT '状态：1在职 0停用 2离职',
+    `del_flag`    TINYINT      NOT NULL DEFAULT 0 COMMENT '删除标记：0正常 1已删除',
+    `remark`      VARCHAR(255) DEFAULT NULL COMMENT '备注',
+    `create_time` DATETIME     DEFAULT NULL COMMENT '创建时间',
+    `update_time` DATETIME     DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_username` (`username`),
+    KEY `idx_dept_id` (`dept_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='用户表';
+
+-- ---------- 组织架构表（公司 / 分公司 / 部门）----------
+DROP TABLE IF EXISTS `sys_dept`;
+CREATE TABLE `sys_dept` (
+    `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '组织节点ID',
+    `parent_id`   BIGINT       NOT NULL DEFAULT 0 COMMENT '父节点ID，0为顶级',
+    `dept_name`   VARCHAR(64)  NOT NULL COMMENT '节点名称',
+    `type`        TINYINT      NOT NULL DEFAULT 3 COMMENT '类型：1公司 2分公司 3部门',
+    `sort`        INT          NOT NULL DEFAULT 0 COMMENT '显示顺序',
+    `leader`      VARCHAR(64)  DEFAULT NULL COMMENT '负责人',
+    `phone`       VARCHAR(20)  DEFAULT NULL COMMENT '联系电话',
+    `email`       VARCHAR(128) DEFAULT NULL COMMENT '邮箱',
+    `status`      TINYINT      NOT NULL DEFAULT 1 COMMENT '状态：1启用 0禁用',
+    `del_flag`    TINYINT      NOT NULL DEFAULT 0 COMMENT '删除标记：0正常 1已删除',
+    `create_time` DATETIME     DEFAULT NULL COMMENT '创建时间',
+    `update_time` DATETIME     DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_parent_id` (`parent_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='组织架构表（公司/分公司/部门）';
+
+-- ---------- 岗位表 ----------
+DROP TABLE IF EXISTS `sys_post`;
+CREATE TABLE `sys_post` (
+    `id`          BIGINT       NOT NULL AUTO_INCREMENT COMMENT '岗位ID',
+    `post_code`   VARCHAR(64)  NOT NULL COMMENT '岗位编码',
+    `post_name`   VARCHAR(64)  NOT NULL COMMENT '岗位名称',
+    `sort`        INT          NOT NULL DEFAULT 0 COMMENT '显示顺序',
     `status`      TINYINT      NOT NULL DEFAULT 1 COMMENT '状态：1启用 0禁用',
     `del_flag`    TINYINT      NOT NULL DEFAULT 0 COMMENT '删除标记：0正常 1已删除',
     `remark`      VARCHAR(255) DEFAULT NULL COMMENT '备注',
     `create_time` DATETIME     DEFAULT NULL COMMENT '创建时间',
     `update_time` DATETIME     DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_username` (`username`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='用户表';
+    UNIQUE KEY `uk_post_code` (`post_code`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='岗位表';
+
+-- ---------- 用户-岗位关联 ----------
+DROP TABLE IF EXISTS `sys_user_post`;
+CREATE TABLE `sys_user_post` (
+    `id`      BIGINT NOT NULL AUTO_INCREMENT,
+    `user_id` BIGINT NOT NULL COMMENT '用户ID',
+    `post_id` BIGINT NOT NULL COMMENT '岗位ID',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_post` (`user_id`, `post_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='用户岗位关联表';
 
 -- ---------- 角色表 ----------
 DROP TABLE IF EXISTS `sys_role`;

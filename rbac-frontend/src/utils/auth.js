@@ -9,10 +9,14 @@ export function getRefreshToken() {
   return localStorage.getItem(REFRESH_TOKEN_KEY)
 }
 
-export function setTokens(accessToken, refreshToken) {
+export function setAccessToken(accessToken) {
   if (accessToken) {
     localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
   }
+}
+
+export function setTokens({ accessToken, refreshToken }) {
+  setAccessToken(accessToken)
   if (refreshToken) {
     localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken)
   }

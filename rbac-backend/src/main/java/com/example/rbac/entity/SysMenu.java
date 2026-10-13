@@ -1,6 +1,7 @@
 package com.example.rbac.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.example.rbac.util.TreeNode;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Data
 @TableName("sys_menu")
-public class SysMenu implements Serializable {
+public class SysMenu implements Serializable, TreeNode<SysMenu> {
 
     private static final long serialVersionUID = 1L;
 

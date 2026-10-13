@@ -6,8 +6,8 @@
 
 | 需求 | 实现方式 |
 |---|---|
-| **登录后无感知续期** | 双 Token：Access Token（15 分钟）+ Refresh Token（7 天）。前端 axios 响应拦截器在收到 401 时自动调用刷新接口并重放原请求，用户全程无感；并发请求通过单例 Promise 合并为一次刷新。 |
-| **离职立刻失效凭证** | 会话保存在 Redis（`login:session:{userId}`）。禁用/删除用户（或强制下线）时删除会话键，配合认证过滤器的会话校验，存量 Access Token 在下一次请求即被拒绝，无需等待自然过期。 |
+| **无感知续期** | Access Token 短有效期（默认 15 分钟），过期后前端拦截 401，用 Refresh Token 自动调用 `POST /auth/refresh` 换取新的 Access Token 并重放原请求（并发 401 只刷新一次）。用户全程无感知，不需要重新登录。 |
+| **离职立刻失效凭证** | 用户状态三值：**1 在职 / 0 停用 / 2 离职**。会话保存在 Redis（`login:session:{userId}` + `login:refresh:{sessionId}`）。标记停用或离职时删除会话键，配合认证过滤器的会话校验，存量 Access Token 在下一次请求即被拒绝，旧 Refresh Token 也无法再续期，无需等待自然过期。 |
 | **动态修改角色权限** | 用户权限**不做登录快照**，每次请求都从数据库联表实时加载。管理员在角色授权页调整「角色-菜单」映射后，该角色用户下一次请求立即生效，无需重新登录。 |
 
 ## 技术栈
@@ -39,18 +39,33 @@ springsecurity-RBAC/
 │       ├── layout/        # 后台布局与递归菜单
 │       └── views/         # 登录、仪表盘、用户/角色/菜单管理
 └── sql/
-    ├── schema.sql         # 建表脚本
-    └── data.sql           # 初始化数据
+    ├── schema.sql                             # 建表脚本（8 张表）
+    ├── data.sql                               # 初始化数据
+    ├── upgrade-2026-10-13-dept.sql            # 旧库升级①：部门模块
+    ├── upgrade-2026-10-13-company.sql         # 旧库升级②：分公司模块（已被③合并回组织树）
+    └── upgrade-2026-10-13-org-post.sql        # 旧库升级③：分公司并入部门树 + 岗位模块
 ```
 
 ## 快速开始
 
 ### 1. 准备数据库与 Redis
 
+全新初始化（Windows 下务必带 `--default-character-set=utf8mb4`，否则中文会因客户端字符集报 `Data too long` 假错）：
+
 ```bash
-mysql -uroot -p < sql/schema.sql
-mysql -uroot -p < sql/data.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/schema.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/data.sql
 ```
+
+已有的旧库按文件名顺序执行增量脚本升级（脚本一次性执行，重复执行会因 `ALTER` 报错）：
+
+```bash
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-dept.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-company.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-org-post.sql
+```
+
+> 三个脚本是迭代过程留下的：先是独立部门表，再加独立分公司模块，最后把分公司并入部门树、换成岗位模块。中途的 `company` 脚本只挂载了一次独立分公司模块，随后被最后一个脚本合并回组织树并删除。**全新安装只需执行 `schema.sql` + `data.sql`。**
 
 Redis 默认连接 `localhost:6379`。
 
@@ -65,7 +80,7 @@ cd rbac-backend
 mvn spring-boot:run
 ```
 
-服务地址：`http://localhost:8080`
+服务地址：`http://localhost:7070`
 
 ### 4. 启动前端
 
@@ -75,7 +90,7 @@ npm install
 npm run dev
 ```
 
-访问：`http://localhost:5173`（`/api` 已代理到后端 8080）
+访问：`http://localhost:5173`（`/api` 已代理到后端 7070）
 
 ### 5. 默认账号
 
@@ -88,18 +103,22 @@ npm run dev
 
 | 模块 | 方法 | 路径 | 说明 |
 |---|---|---|---|
-| 认证 | POST | `/auth/login` | 登录，返回双 Token |
-| 认证 | POST | `/auth/refresh` | 刷新 Access Token |
+| 认证 | POST | `/auth/login` | 登录，返回 Access Token + Refresh Token |
+| 认证 | POST | `/auth/refresh` | 用 Refresh Token 换取新的 Access Token（Access 过期时前端自动调用） |
 | 认证 | POST | `/auth/logout` | 登出，删除会话 |
 | 认证 | GET | `/auth/info` | 当前用户信息 + 权限 + 菜单树 |
 | 认证 | DELETE | `/auth/kick/{userId}` | 强制用户下线 |
 | 用户 | GET | `/user/page` | 分页查询（`system:user:list`） |
 | 用户 | POST/PUT/DELETE | `/user`、`/user/{id}` | 增改删 |
-| 用户 | PUT | `/user/{id}/status` | 启用/禁用（禁用即失效登录凭证） |
+| 用户 | PUT | `/user/{id}/status` | 设置状态：1 在职 / 0 停用 / 2 离职（停用与离职都立即失效登录凭证） |
 | 用户 | PUT | `/user/{id}/roles` | 分配角色 |
 | 用户 | PUT | `/user/{id}/resetPassword` | 重置密码（同时强制下线） |
 | 角色 | GET | `/role/page`、`/role/all` | 分页 / 全部启用角色 |
 | 角色 | PUT | `/role/{id}/menus` | **动态修改角色权限** |
+| 部门 | GET | `/dept/tree` | 组织架构树：公司 / 分公司 / 部门（type 1/2/3），管理页与用户表单共用 |
+| 部门 | POST/PUT/DELETE | `/dept`、`/dept/{id}` | 增改删（删除前校验下级节点与关联用户） |
+| 岗位 | GET | `/post/page`、`/post/list` | 分页 / 全部启用岗位 |
+| 岗位 | POST/PUT/DELETE | `/post`、`/post/{id}` | 增改删（删除前校验是否已被用户使用） |
 | 菜单 | GET | `/menu/tree` | 菜单树 |
 | 菜单 | POST/PUT/DELETE | `/menu`、`/menu/{id}` | 增改删 |
 
@@ -109,19 +128,25 @@ npm run dev
 
 ### 1. 无感知续期
 
-1. 用 admin 登录，进入任意页面。
-2. 打开浏览器开发者工具 Network，等待 Access Token 过期（默认 15 分钟）。
-3. 期间/之后继续点击任意菜单发起请求，可见一次 `POST /auth/refresh` 成功后原请求被自动重放。
-4. 页面不会跳转到登录页，用户无感知。
+Access Token 有效期短（默认 15 分钟），过期后前端拦截 401，自动用 Refresh Token 换新并重放原请求，用户无感知。
 
-> 快速验证：把 `application.yml` 中 `jwt.access-token-expire` 改为 `60000`（1 分钟）后重启，即可在 1 分钟内观察到刷新过程。
+1. 用 admin 登录，打开开发者工具 Network，此时 `localStorage` 中会有 `rbac_access_token` 与 `rbac_refresh_token`。
+2. 等 Access Token 过期后点击任意菜单：该请求先返回 401，紧接着自动发起一次 `POST /auth/refresh`，随后原请求被重放并成功——页面无跳转、无提示。
+3. 并发多个请求同时 401 时只会触发一次刷新（单例 Promise 队列）。
+
+> 快速验证（不必等 15 分钟）：
+> ```bash
+> mvn spring-boot:run -Dspring-boot.run.arguments=--jwt.access-token-expire=30000
+> ```
+> 登录后等 30 秒再点菜单，Network 中即可看到 401 → `/auth/refresh` → 重放 的完整链路。
 
 ### 2. 离职立刻失效
 
 1. 用 zhangsan 在浏览器 A 登录，能正常访问仪表盘。
-2. 用 admin 在浏览器 B 的「用户管理」中把 zhangsan 禁用。
+2. 用 admin 在浏览器 B 的「用户管理」中点击 zhangsan 的**离职**（也可点**停用**）。
 3. 回到浏览器 A 点击任意菜单，请求立即返回 401 并跳转登录页——无需等 Token 过期。
 4. 即使拿旧的 refreshToken 调 `/auth/refresh` 也会被拒绝（会话已删除）。
+5. zhangsan 再尝试登录，会分别提示「该用户已离职」或「账号已停用」；把状态改回**在职**后即可重新登录。
 
 ### 3. 动态修改角色权限
 
@@ -132,6 +157,7 @@ npm run dev
 
 ## 说明与注意事项
 
+- **两个有效期**：`jwt.access-token-expire`（默认 15 分钟）是 Access Token 的轮换周期，过期后由前端调 `/auth/refresh` 续期；`jwt.refresh-token-expire`（默认 7 天）既是 Refresh Token 的有效期，也是 Redis 会话的有效期 —— 即登录态的真正上限。JWT 的 `exp` 只决定「该续期了」，真正的准入判断是 Redis 会话，所以删除会话（离职/停用/踢下线）能立即生效，而不必等 Token 过期。
 - **权限实时加载的取舍**：为保证「改了立刻生效」，权限不做缓存，每次请求联表查询。若后续 QPS 升高，可引入短 TTL（如 10 秒）的 Redis 权限缓存，用少量生效延迟换取数据库压力下降。
 - **超级管理员**：`admin` 角色的权限同样存在 `sys_role_menu` 中，可动态调整。请谨慎取消其角色管理相关权限，以免无法再次授权。内置 `admin` 角色与 `admin` 用户不允许删除。
 - **单会话模型**：一个用户同时只有一个有效会话，后登录会顶掉先前的会话。

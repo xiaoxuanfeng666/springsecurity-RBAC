@@ -15,7 +15,7 @@ export const useUserStore = defineStore('user', {
     async login(form) {
       const res = await loginApi(form)
       const { accessToken, refreshToken } = res.data
-      setTokens(accessToken, refreshToken)
+      setTokens({ accessToken, refreshToken })
       this.accessToken = accessToken
       this.refreshToken = refreshToken
       return res

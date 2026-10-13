@@ -6,8 +6,10 @@ import com.example.rbac.common.BusinessException;
 import com.example.rbac.common.ResultCode;
 import com.example.rbac.dto.UserForm;
 import com.example.rbac.entity.SysUser;
+import com.example.rbac.entity.SysUserPost;
 import com.example.rbac.entity.SysUserRole;
 import com.example.rbac.mapper.SysUserMapper;
+import com.example.rbac.mapper.SysUserPostMapper;
 import com.example.rbac.mapper.SysUserRoleMapper;
 import com.example.rbac.security.TokenStore;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -25,8 +29,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SysUserService {
 
+    /** 状态取值：1 在职 / 0 停用 / 2 离职 */
+    private static final int STATUS_RESIGNED = 2;
+
     private final SysUserMapper userMapper;
     private final SysUserRoleMapper userRoleMapper;
+    private final SysUserPostMapper userPostMapper;
     private final PasswordEncoder passwordEncoder;
     private final TokenStore tokenStore;
 
@@ -35,7 +43,25 @@ public class SysUserService {
                 .like(StringUtils.hasText(username), SysUser::getUsername, username)
                 .eq(status != null, SysUser::getStatus, status)
                 .orderByDesc(SysUser::getCreateTime);
-        return userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        Page<SysUser> page = userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
+        fillPostIds(page.getRecords());
+        return page;
+    }
+
+    /**
+     * 批量填充用户岗位 ID，避免逐条查询
+     */
+    private void fillPostIds(List<SysUser> users) {
+        if (users == null || users.isEmpty()) {
+            return;
+        }
+        List<Long> userIds = users.stream().map(SysUser::getId).collect(Collectors.toList());
+        Map<Long, List<Long>> postsByUser = userPostMapper.selectList(
+                        new LambdaQueryWrapper<SysUserPost>().in(SysUserPost::getUserId, userIds))
+                .stream()
+                .collect(Collectors.groupingBy(SysUserPost::getUserId,
+                        Collectors.mapping(SysUserPost::getPostId, Collectors.toList())));
+        users.forEach(u -> u.setPostIds(postsByUser.getOrDefault(u.getId(), new ArrayList<>())));
     }
 
     public SysUser getById(Long id) {
@@ -52,6 +78,12 @@ public class SysUserService {
                 .stream().map(SysUserRole::getRoleId).collect(Collectors.toList());
     }
 
+    public List<Long> getPostIds(Long userId) {
+        return userPostMapper.selectList(
+                        new LambdaQueryWrapper<SysUserPost>().eq(SysUserPost::getUserId, userId))
+                .stream().map(SysUserPost::getPostId).collect(Collectors.toList());
+    }
+
     @Transactional(rollbackFor = Exception.class)
     public void create(UserForm form) {
         if (!StringUtils.hasText(form.getPassword())) {
@@ -66,12 +98,14 @@ public class SysUserService {
         user.setUsername(form.getUsername());
         user.setPassword(passwordEncoder.encode(form.getPassword()));
         user.setNickname(form.getNickname());
+        user.setDeptId(form.getDeptId());
         user.setEmail(form.getEmail());
         user.setPhone(form.getPhone());
         user.setRemark(form.getRemark());
         user.setStatus(form.getStatus() == null ? 1 : form.getStatus());
         userMapper.insert(user);
         saveUserRoles(user.getId(), form.getRoleIds());
+        saveUserPosts(user.getId(), form.getPostIds());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -80,6 +114,7 @@ public class SysUserService {
         SysUser user = new SysUser();
         user.setId(form.getId());
         user.setNickname(form.getNickname());
+        user.setDeptId(form.getDeptId());
         user.setEmail(form.getEmail());
         user.setPhone(form.getPhone());
         user.setRemark(form.getRemark());
@@ -98,15 +133,21 @@ public class SysUserService {
             saveUserRoles(form.getId(), form.getRoleIds());
         }
 
-        // 若本次修改把用户禁用，立即失效其登录凭证
-        if (form.getStatus() != null && form.getStatus() == 0) {
+        if (form.getPostIds() != null) {
+            userPostMapper.delete(new LambdaQueryWrapper<SysUserPost>()
+                    .eq(SysUserPost::getUserId, form.getId()));
+            saveUserPosts(form.getId(), form.getPostIds());
+        }
+
+        // 若本次修改把用户停用或标记离职，立即失效其登录凭证
+        if (form.getStatus() != null && isOffline(form.getStatus())) {
             tokenStore.removeSession(exist.getId());
-            log.info("用户被禁用，已失效登录凭证: {}", exist.getUsername());
+            log.info("用户被{}，已立即失效登录凭证: {}", statusText(form.getStatus()), exist.getUsername());
         }
     }
 
     /**
-     * 启用/禁用用户。禁用即「离职」场景，立即失效登录凭证。
+     * 启用/停用/离职用户。停用与离职都会立即失效登录凭证，把已登录用户踢下线。
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateStatus(Long id, Integer status) {
@@ -116,10 +157,19 @@ public class SysUserService {
         user.setStatus(status);
         userMapper.updateById(user);
 
-        if (status != null && status == 0) {
+        if (status != null && isOffline(status)) {
             tokenStore.removeSession(id);
-            log.info("用户被禁用，已立即失效登录凭证: {}", exist.getUsername());
+            log.info("用户被{}，已立即失效登录凭证: {}", statusText(status), exist.getUsername());
         }
+    }
+
+    /** 停用(0)与离职(2)都会让用户立即下线 */
+    private boolean isOffline(int status) {
+        return status == 0 || status == STATUS_RESIGNED;
+    }
+
+    private String statusText(int status) {
+        return status == STATUS_RESIGNED ? "标记离职" : "停用";
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -162,5 +212,27 @@ public class SysUserService {
             userRole.setRoleId(roleId);
             userRoleMapper.insert(userRole);
         }
+    }
+
+    private void saveUserPosts(Long userId, List<Long> postIds) {
+        if (postIds == null || postIds.isEmpty()) {
+            return;
+        }
+        for (Long postId : postIds) {
+            SysUserPost userPost = new SysUserPost();
+            userPost.setUserId(userId);
+            userPost.setPostId(postId);
+            userPostMapper.insert(userPost);
+        }
+    }
+
+    /**
+     * 重置用户岗位（多对多）
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updatePosts(Long userId, List<Long> postIds) {
+        getById(userId);
+        userPostMapper.delete(new LambdaQueryWrapper<SysUserPost>().eq(SysUserPost::getUserId, userId));
+        saveUserPosts(userId, postIds);
     }
 }
