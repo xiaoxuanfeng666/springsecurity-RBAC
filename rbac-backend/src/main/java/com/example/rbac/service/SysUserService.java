@@ -11,6 +11,7 @@ import com.example.rbac.entity.SysUserRole;
 import com.example.rbac.mapper.SysUserMapper;
 import com.example.rbac.mapper.SysUserPostMapper;
 import com.example.rbac.mapper.SysUserRoleMapper;
+import com.example.rbac.security.PermissionSnapshotStore;
 import com.example.rbac.security.TokenStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class SysUserService {
     private final SysUserPostMapper userPostMapper;
     private final PasswordEncoder passwordEncoder;
     private final TokenStore tokenStore;
+    private final PermissionSnapshotStore snapshotStore;
 
     public Page<SysUser> page(long pageNum, long pageSize, String username, Integer status) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<SysUser>()
@@ -131,6 +133,8 @@ public class SysUserService {
             userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
                     .eq(SysUserRole::getUserId, form.getId()));
             saveUserRoles(form.getId(), form.getRoleIds());
+            // 角色变了，权限快照立即失效
+            snapshotStore.invalidateUser(form.getId());
         }
 
         if (form.getPostIds() != null) {
@@ -190,6 +194,8 @@ public class SysUserService {
         getById(userId);
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, userId));
         saveUserRoles(userId, roleIds);
+        // 角色变了，权限快照立即失效，下一次请求重建
+        snapshotStore.invalidateUser(userId);
     }
 
     public void resetPassword(Long userId, String password) {

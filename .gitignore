@@ -1,0 +1,13 @@
+### IDE ###
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+
+### Claude Code 本地配置（共享配置 settings.json 可提交）###
+.claude/settings.local.json
+
+### OS ###
+.DS_Store
+Thumbs.db

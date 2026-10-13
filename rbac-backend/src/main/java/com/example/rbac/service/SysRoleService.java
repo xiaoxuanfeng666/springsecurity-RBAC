@@ -12,6 +12,7 @@ import com.example.rbac.mapper.SysMenuMapper;
 import com.example.rbac.mapper.SysRoleMapper;
 import com.example.rbac.mapper.SysRoleMenuMapper;
 import com.example.rbac.mapper.SysUserRoleMapper;
+import com.example.rbac.security.PermissionSnapshotStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,6 +31,7 @@ public class SysRoleService {
     private final SysRoleMenuMapper roleMenuMapper;
     private final SysUserRoleMapper userRoleMapper;
     private final SysMenuMapper menuMapper;
+    private final PermissionSnapshotStore snapshotStore;
 
     public Page<SysRole> page(long pageNum, long pageSize, String roleName) {
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<SysRole>()
@@ -112,8 +115,8 @@ public class SysRoleService {
      * 动态修改角色权限（核心接口）
      * <p>
      * 只修改角色与菜单的映射关系，不触碰任何用户的 Token。
-     * 由于用户权限在每次请求时实时联表查询，保存后该角色的用户
-     * 在下一次请求即可使用新权限，无需重新登录。
+     * 修改后失效该角色下所有用户的权限快照，用户在下一次请求即重建快照并拿到新权限，
+     * 无需重新登录。
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateRoleMenus(Long roleId, List<Long> menuIds) {
@@ -127,7 +130,18 @@ public class SysRoleService {
                 roleMenuMapper.insert(roleMenu);
             }
         }
+        invalidateSnapshotsOfRole(roleId);
         log.info("角色权限已更新: roleKey={}, menuCount={}", role.getRoleKey(),
                 menuIds == null ? 0 : menuIds.size());
+    }
+
+    /**
+     * 失效该角色下所有用户的权限快照，使其下一次请求重建
+     */
+    private void invalidateSnapshotsOfRole(Long roleId) {
+        List<Long> userIds = userRoleMapper.selectList(
+                        new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getRoleId, roleId))
+                .stream().map(SysUserRole::getUserId).collect(Collectors.toList());
+        snapshotStore.invalidateUsers(userIds);
     }
 }

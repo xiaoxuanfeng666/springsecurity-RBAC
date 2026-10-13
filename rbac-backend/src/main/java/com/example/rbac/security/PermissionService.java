@@ -7,8 +7,9 @@ import java.util.Set;
 /**
  * 权限校验服务，配合 @PreAuthorize("@ss.hasPerm('system:user:list')") 使用
  * <p>
- * 权限来源为每次请求实时查询的 LoginUser.permissions，
- * 因此角色权限被动态修改后无需重新登录即可生效。
+ * 权限来源为 LoginUser.permissions，即登录时建立的会话快照
+ * （见 {@link PermissionSnapshotStore}）。角色权限被动态修改时会失效受影响用户的快照，
+ * 用户下一次请求重建快照，因此无需重新登录即可生效。
  */
 @Service("ss")
 public class PermissionService {
