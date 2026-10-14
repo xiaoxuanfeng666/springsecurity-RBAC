@@ -1,6 +1,8 @@
 package com.example.rbac.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.rbac.common.AuditAction;
+import com.example.rbac.common.OperLog;
 import com.example.rbac.common.Result;
 import com.example.rbac.dto.RoleForm;
 import com.example.rbac.entity.SysRole;
@@ -52,6 +54,7 @@ public class SysRoleController {
 
     @PostMapping
     @PreAuthorize("@ss.hasPerm('system:role:add')")
+    @OperLog(module = "角色管理", action = AuditAction.CREATE, description = "新增角色")
     public Result<Void> create(@Valid @RequestBody RoleForm form) {
         roleService.create(form);
         return Result.success("新增成功", null);
@@ -59,6 +62,7 @@ public class SysRoleController {
 
     @PutMapping
     @PreAuthorize("@ss.hasPerm('system:role:edit')")
+    @OperLog(module = "角色管理", action = AuditAction.UPDATE, description = "修改角色")
     public Result<Void> update(@Valid @RequestBody RoleForm form) {
         roleService.update(form);
         return Result.success("修改成功", null);
@@ -70,6 +74,7 @@ public class SysRoleController {
      */
     @PutMapping("/{id}/menus")
     @PreAuthorize("@ss.hasPerm('system:role:menu')")
+    @OperLog(module = "角色管理", action = AuditAction.GRANT, description = "分配角色权限")
     public Result<Void> updateRoleMenus(@PathVariable Long id, @RequestBody List<Long> menuIds) {
         roleService.updateRoleMenus(id, menuIds);
         return Result.success("权限已更新，对该角色用户立即生效", null);
@@ -77,6 +82,7 @@ public class SysRoleController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('system:role:remove')")
+    @OperLog(module = "角色管理", action = AuditAction.DELETE, description = "删除角色")
     public Result<Void> delete(@PathVariable Long id) {
         roleService.delete(id);
         return Result.success("删除成功", null);

@@ -1,5 +1,7 @@
 package com.example.rbac.controller;
 
+import com.example.rbac.common.AuditAction;
+import com.example.rbac.common.OperLog;
 import com.example.rbac.common.Result;
 import com.example.rbac.dto.DeptForm;
 import com.example.rbac.entity.SysDept;
@@ -35,6 +37,7 @@ public class SysDeptController {
 
     @PostMapping
     @PreAuthorize("@ss.hasPerm('system:dept:add')")
+    @OperLog(module = "部门管理", action = AuditAction.CREATE, description = "新增组织节点")
     public Result<Void> create(@Valid @RequestBody DeptForm form) {
         deptService.create(form);
         return Result.success("新增成功", null);
@@ -42,6 +45,7 @@ public class SysDeptController {
 
     @PutMapping
     @PreAuthorize("@ss.hasPerm('system:dept:edit')")
+    @OperLog(module = "部门管理", action = AuditAction.UPDATE, description = "修改组织节点")
     public Result<Void> update(@Valid @RequestBody DeptForm form) {
         deptService.update(form);
         return Result.success("修改成功", null);
@@ -49,6 +53,7 @@ public class SysDeptController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('system:dept:remove')")
+    @OperLog(module = "部门管理", action = AuditAction.DELETE, description = "删除组织节点")
     public Result<Void> delete(@PathVariable Long id) {
         deptService.delete(id);
         return Result.success("删除成功", null);

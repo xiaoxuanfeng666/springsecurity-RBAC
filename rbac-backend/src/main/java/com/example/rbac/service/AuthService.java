@@ -36,11 +36,14 @@ public class AuthService {
     private static final int STATUS_ENABLED = 1;
     private static final int STATUS_RESIGNED = 2;
 
+    /** 操作日志模块名 */
+    private static final String MODULE_AUTH = "认证";
+
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenStore tokenStore;
     private final PermissionSnapshotStore snapshotStore;
-    private final SysLoginAuditService auditService;
+    private final SysOperationLogService logService;
     private final PasswordEncoder passwordEncoder;
     private final SysUserMapper userMapper;
     private final SysMenuMapper menuMapper;
@@ -68,13 +71,14 @@ public class AuthService {
         String accessToken = jwtTokenProvider.createAccessToken(userId, username, sessionId);
         String refreshToken = jwtTokenProvider.createRefreshToken(userId, username, sessionId);
         tokenStore.saveSession(userId, sessionId, refreshToken, jwtTokenProvider.getRefreshTokenExpireMillis());
-        // 登录快照：把此刻的权限与角色固化到会话上，后续请求不再联表查询
+        // 登录快照：把用户信息、权限与角色固化到会话上，后续请求不再访问数据库
         snapshotStore.save(sessionId,
-                new PermissionSnapshot(loginUser.getPermissions(), loginUser.getRoles()),
+                new PermissionSnapshot(loginUser.getUser(), loginUser.getPermissions(),
+                        loginUser.getRoles()),
                 jwtTokenProvider.getRefreshTokenExpireMillis());
 
         log.info("用户登录成功: {} (userId={})", username, userId);
-        auditService.record(AuditAction.LOGIN, userId, username, "登录成功");
+        logService.record(MODULE_AUTH, AuditAction.LOGIN, userId, username, "登录成功");
         return new TokenResponse(accessToken, refreshToken, jwtTokenProvider.getAccessTokenExpireSeconds());
     }
 
@@ -127,7 +131,7 @@ public class AuthService {
             return;
         }
         tokenStore.removeSession(loginUser.getUser().getId());
-        auditService.record(AuditAction.LOGOUT,
+        logService.record(MODULE_AUTH, AuditAction.LOGOUT,
                 loginUser.getUser().getId(), loginUser.getUsername(), "主动登出");
         log.info("用户登出: {}", loginUser.getUsername());
     }
@@ -135,19 +139,18 @@ public class AuthService {
     /**
      * 获取当前登录用户信息（含权限与菜单树），前端据此渲染动态路由
      * <p>
-     * 权限与角色取自会话快照（即服务端实际的鉴权依据），保证前端按钮显隐与后端判定一致；
-     * 用户资料与菜单树仍实时查库。
+     * 用户信息、权限与角色均取自会话快照（也就是服务端实际的鉴权依据），
+     * 保证前端展示与后端判定一致；只有菜单树实时查库。
      */
     public LoginInfoResponse getInfo(LoginUser loginUser) {
         Long userId = loginUser.getUser().getId();
-        SysUser user = userMapper.selectById(userId);
         // 快照内部是 Set，排序后返回保证接口输出稳定
         List<String> roles = loginUser.getRoles().stream().sorted().collect(Collectors.toList());
         List<String> permissions = loginUser.getPermissions().stream().sorted().collect(Collectors.toList());
         List<SysMenu> menus = TreeUtils.buildTree(menuMapper.selectMenusByUserId(userId));
 
         LoginInfoResponse response = new LoginInfoResponse();
-        response.setUser(user);
+        response.setUser(loginUser.getUser());
         response.setRoles(roles);
         response.setPermissions(permissions);
         response.setMenus(menus);
@@ -162,7 +165,13 @@ public class AuthService {
      */
     public void changeOwnPassword(LoginUser loginUser, String oldPassword, String newPassword) {
         Long userId = loginUser.getUser().getId();
-        String currentEncoded = loginUser.getUser().getPassword();
+        // 密码散列不在登录快照里（SysUser.password 标注了 @JsonIgnore），单独查一次；
+        // 顺带保证校验的是「库里此刻的散列」，而不是会话建立时的旧值
+        SysUser current = userMapper.selectById(userId);
+        if (current == null) {
+            throw new BusinessException(ResultCode.USER_NOT_EXIST);
+        }
+        String currentEncoded = current.getPassword();
         if (!passwordEncoder.matches(oldPassword, currentEncoded)) {
             throw new BusinessException(ResultCode.OLD_PASSWORD_ERROR);
         }
@@ -176,7 +185,8 @@ public class AuthService {
         userMapper.updateById(update);
 
         // 刻意不调用 tokenStore.removeSession，当前会话保持不变
-        auditService.record(AuditAction.CHANGE_PWD, userId, loginUser.getUsername(), "自助修改密码");
+        logService.record(MODULE_AUTH, AuditAction.CHANGE_PWD, userId,
+                loginUser.getUsername(), "自助修改密码");
         log.info("用户自助修改密码: {}", loginUser.getUsername());
     }
 
@@ -196,7 +206,7 @@ public class AuthService {
             throw new BusinessException(ResultCode.USER_NOT_EXIST);
         }
         tokenStore.removeSession(userId);
-        auditService.record(AuditAction.KICK, userId, target.getUsername(), "管理员强制下线");
+        logService.record(MODULE_AUTH, AuditAction.KICK, userId, target.getUsername(), "强制下线");
         log.info("强制下线用户: {}", target.getUsername());
     }
 

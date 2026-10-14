@@ -13,6 +13,7 @@ import com.example.rbac.mapper.SysRoleMapper;
 import com.example.rbac.mapper.SysRoleMenuMapper;
 import com.example.rbac.mapper.SysUserRoleMapper;
 import com.example.rbac.security.PermissionSnapshotStore;
+import com.example.rbac.util.UniqueKeyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class SysRoleService {
+
+    /** sys_role.role_key 列长度 */
+    private static final int ROLE_KEY_MAX_LENGTH = 64;
 
     private final SysRoleMapper roleMapper;
     private final SysRoleMenuMapper roleMenuMapper;
@@ -100,8 +104,20 @@ public class SysRoleService {
         if (used != null && used > 0) {
             throw new BusinessException(ResultCode.ROLE_IN_USE);
         }
+        releaseRoleKey(role);
         roleMapper.deleteById(id);
         roleMenuMapper.delete(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId, id));
+    }
+
+    /**
+     * 腾出 role_key 唯一键：逻辑删除后行仍在表中，不改名同标识的角色就再也建不出来
+     */
+    private void releaseRoleKey(SysRole role) {
+        SysRole renamed = new SysRole();
+        renamed.setId(role.getId());
+        renamed.setRoleKey(
+                UniqueKeyUtils.release(role.getRoleKey(), role.getId(), ROLE_KEY_MAX_LENGTH));
+        roleMapper.updateById(renamed);
     }
 
     /**

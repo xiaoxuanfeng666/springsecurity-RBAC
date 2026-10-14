@@ -9,6 +9,7 @@ import com.example.rbac.entity.SysPost;
 import com.example.rbac.entity.SysUserPost;
 import com.example.rbac.mapper.SysPostMapper;
 import com.example.rbac.mapper.SysUserPostMapper;
+import com.example.rbac.util.UniqueKeyUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SysPostService {
+
+    /** sys_post.post_code 列长度 */
+    private static final int POST_CODE_MAX_LENGTH = 64;
 
     private final SysPostMapper postMapper;
     private final SysUserPostMapper userPostMapper;
@@ -67,13 +71,25 @@ public class SysPostService {
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
-        getById(id);
+        SysPost post = getById(id);
         Long used = userPostMapper.selectCount(
                 new LambdaQueryWrapper<SysUserPost>().eq(SysUserPost::getPostId, id));
         if (used != null && used > 0) {
             throw new BusinessException(ResultCode.POST_IN_USE);
         }
+        releasePostCode(post);
         postMapper.deleteById(id);
+    }
+
+    /**
+     * 腾出 post_code 唯一键：逻辑删除后行仍在表中，不改名同编码的岗位就再也建不出来
+     */
+    private void releasePostCode(SysPost post) {
+        SysPost renamed = new SysPost();
+        renamed.setId(post.getId());
+        renamed.setPostCode(
+                UniqueKeyUtils.release(post.getPostCode(), post.getId(), POST_CODE_MAX_LENGTH));
+        postMapper.updateById(renamed);
     }
 
     private void checkCodeUnique(String postCode, Long excludeId) {

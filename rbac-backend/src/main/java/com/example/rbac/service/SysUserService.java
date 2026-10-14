@@ -14,6 +14,7 @@ import com.example.rbac.mapper.SysUserPostMapper;
 import com.example.rbac.mapper.SysUserRoleMapper;
 import com.example.rbac.security.PermissionSnapshotStore;
 import com.example.rbac.security.TokenStore;
+import com.example.rbac.util.UniqueKeyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,7 +33,14 @@ import java.util.stream.Collectors;
 public class SysUserService {
 
     /** 状态取值：1 在职 / 0 停用 / 2 离职 */
+    private static final int STATUS_ENABLED = 1;
     private static final int STATUS_RESIGNED = 2;
+
+    /** 操作日志模块名 */
+    private static final String MODULE_USER = "用户管理";
+
+    /** sys_user.username 列长度 */
+    private static final int USERNAME_MAX_LENGTH = 64;
 
     private final SysUserMapper userMapper;
     private final SysUserRoleMapper userRoleMapper;
@@ -40,7 +48,7 @@ public class SysUserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenStore tokenStore;
     private final PermissionSnapshotStore snapshotStore;
-    private final SysLoginAuditService auditService;
+    private final SysOperationLogService logService;
 
     public Page<SysUser> page(long pageNum, long pageSize, String username, Integer status) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<SysUser>()
@@ -135,8 +143,6 @@ public class SysUserService {
             userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
                     .eq(SysUserRole::getUserId, form.getId()));
             saveUserRoles(form.getId(), form.getRoleIds());
-            // 角色变了，权限快照立即失效
-            snapshotStore.invalidateUser(form.getId());
         }
 
         if (form.getPostIds() != null) {
@@ -149,6 +155,9 @@ public class SysUserService {
         if (form.getStatus() != null && isOffline(form.getStatus())) {
             offlineUser(exist, form.getStatus());
         }
+
+        // 用户资料与角色都在登录快照里，改完必须失效，否则昵称/部门等要等重新登录才更新
+        snapshotStore.invalidateUser(form.getId());
     }
 
     /**
@@ -164,6 +173,9 @@ public class SysUserService {
 
         if (status != null && isOffline(status)) {
             offlineUser(exist, status);
+        } else if (status != null && status == STATUS_ENABLED) {
+            logService.record(MODULE_USER, AuditAction.ENABLED, exist.getId(),
+                    exist.getUsername(), "启用账号");
         }
     }
 
@@ -178,7 +190,7 @@ public class SysUserService {
     private void offlineUser(SysUser user, int status) {
         boolean resigned = status == STATUS_RESIGNED;
         tokenStore.removeSession(user.getId());
-        auditService.record(resigned ? AuditAction.RESIGNED : AuditAction.DISABLED,
+        logService.record(MODULE_USER, resigned ? AuditAction.RESIGNED : AuditAction.DISABLED,
                 user.getId(), user.getUsername(),
                 resigned ? "标记离职，强制下线" : "停用，强制下线");
         log.info("用户被{}，已立即失效登录凭证: {}", resigned ? "标记离职" : "停用", user.getUsername());
@@ -192,9 +204,21 @@ public class SysUserService {
         }
         // 先失效登录凭证，再删除数据
         tokenStore.removeSession(id);
+        releaseUsername(exist);
         userMapper.deleteById(id);
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, id));
         log.info("用户已删除并失效登录凭证: {}", exist.getUsername());
+    }
+
+    /**
+     * 腾出 username 唯一键：逻辑删除后行仍在表中，不改名同名用户就再也建不出来
+     */
+    private void releaseUsername(SysUser user) {
+        SysUser renamed = new SysUser();
+        renamed.setId(user.getId());
+        renamed.setUsername(
+                UniqueKeyUtils.release(user.getUsername(), user.getId(), USERNAME_MAX_LENGTH));
+        userMapper.updateById(renamed);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -219,7 +243,7 @@ public class SysUserService {
         userMapper.updateById(update);
         // 重置密码后强制重新登录
         tokenStore.removeSession(userId);
-        auditService.record(AuditAction.RESET_PWD, userId, user.getUsername(), "重置密码，强制下线");
+        logService.record(MODULE_USER, AuditAction.RESET_PWD, userId, user.getUsername(), "重置密码，强制下线");
     }
 
     private void saveUserRoles(Long userId, List<Long> roleIds) {

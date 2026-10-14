@@ -1,6 +1,8 @@
 package com.example.rbac.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.rbac.common.AuditAction;
+import com.example.rbac.common.OperLog;
 import com.example.rbac.common.Result;
 import com.example.rbac.dto.PostForm;
 import com.example.rbac.entity.SysPost;
@@ -45,6 +47,7 @@ public class SysPostController {
 
     @PostMapping
     @PreAuthorize("@ss.hasPerm('system:post:add')")
+    @OperLog(module = "岗位管理", action = AuditAction.CREATE, description = "新增岗位")
     public Result<Void> create(@Valid @RequestBody PostForm form) {
         postService.create(form);
         return Result.success("新增成功", null);
@@ -52,6 +55,7 @@ public class SysPostController {
 
     @PutMapping
     @PreAuthorize("@ss.hasPerm('system:post:edit')")
+    @OperLog(module = "岗位管理", action = AuditAction.UPDATE, description = "修改岗位")
     public Result<Void> update(@Valid @RequestBody PostForm form) {
         postService.update(form);
         return Result.success("修改成功", null);
@@ -59,6 +63,7 @@ public class SysPostController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('system:post:remove')")
+    @OperLog(module = "岗位管理", action = AuditAction.DELETE, description = "删除岗位")
     public Result<Void> delete(@PathVariable Long id) {
         postService.delete(id);
         return Result.success("删除成功", null);

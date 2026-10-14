@@ -1,5 +1,7 @@
 package com.example.rbac.controller;
 
+import com.example.rbac.common.AuditAction;
+import com.example.rbac.common.OperLog;
 import com.example.rbac.common.Result;
 import com.example.rbac.dto.MenuForm;
 import com.example.rbac.entity.SysMenu;
@@ -35,6 +37,7 @@ public class SysMenuController {
 
     @PostMapping
     @PreAuthorize("@ss.hasPerm('system:menu:add')")
+    @OperLog(module = "菜单管理", action = AuditAction.CREATE, description = "新增菜单")
     public Result<Void> create(@Valid @RequestBody MenuForm form) {
         menuService.create(form);
         return Result.success("新增成功", null);
@@ -42,6 +45,7 @@ public class SysMenuController {
 
     @PutMapping
     @PreAuthorize("@ss.hasPerm('system:menu:edit')")
+    @OperLog(module = "菜单管理", action = AuditAction.UPDATE, description = "修改菜单")
     public Result<Void> update(@Valid @RequestBody MenuForm form) {
         menuService.update(form);
         return Result.success("修改成功", null);
@@ -49,6 +53,7 @@ public class SysMenuController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('system:menu:remove')")
+    @OperLog(module = "菜单管理", action = AuditAction.DELETE, description = "删除菜单")
     public Result<Void> delete(@PathVariable Long id) {
         menuService.delete(id);
         return Result.success("删除成功", null);

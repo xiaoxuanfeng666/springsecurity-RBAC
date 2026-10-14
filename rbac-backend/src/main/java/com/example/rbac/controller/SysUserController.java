@@ -1,6 +1,8 @@
 package com.example.rbac.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.rbac.common.AuditAction;
+import com.example.rbac.common.OperLog;
 import com.example.rbac.common.Result;
 import com.example.rbac.dto.UserForm;
 import com.example.rbac.entity.SysUser;
@@ -54,6 +56,7 @@ public class SysUserController {
 
     @PostMapping
     @PreAuthorize("@ss.hasPerm('system:user:add')")
+    @OperLog(module = "用户管理", action = AuditAction.CREATE, description = "新增用户")
     public Result<Void> create(@Valid @RequestBody UserForm form) {
         userService.create(form);
         return Result.success("新增成功", null);
@@ -61,6 +64,7 @@ public class SysUserController {
 
     @PutMapping
     @PreAuthorize("@ss.hasPerm('system:user:edit')")
+    @OperLog(module = "用户管理", action = AuditAction.UPDATE, description = "修改用户")
     public Result<Void> update(@Valid @RequestBody UserForm form) {
         userService.update(form);
         return Result.success("修改成功", null);
@@ -87,6 +91,7 @@ public class SysUserController {
 
     @PutMapping("/{id}/roles")
     @PreAuthorize("@ss.hasPerm('system:user:role')")
+    @OperLog(module = "用户管理", action = AuditAction.GRANT, description = "分配用户角色")
     public Result<Void> updateRoles(@PathVariable Long id, @RequestBody List<Long> roleIds) {
         userService.updateRoles(id, roleIds);
         return Result.success("分配成功", null);
@@ -94,6 +99,7 @@ public class SysUserController {
 
     @PutMapping("/{id}/posts")
     @PreAuthorize("@ss.hasPerm('system:user:edit')")
+    @OperLog(module = "用户管理", action = AuditAction.GRANT, description = "分配用户岗位")
     public Result<Void> updatePosts(@PathVariable Long id, @RequestBody List<Long> postIds) {
         userService.updatePosts(id, postIds);
         return Result.success("分配成功", null);
@@ -108,6 +114,7 @@ public class SysUserController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('system:user:remove')")
+    @OperLog(module = "用户管理", action = AuditAction.DELETE, description = "删除用户")
     public Result<Void> delete(@PathVariable Long id) {
         userService.delete(id);
         return Result.success("删除成功", null);
