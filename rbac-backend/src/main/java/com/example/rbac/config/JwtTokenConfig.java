@@ -1,10 +1,13 @@
 package com.example.rbac.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -18,7 +21,10 @@ import java.security.KeyPairGenerator;
  * 而 Spring Boot 2.6+ 默认禁止循环引用（{@code allow-circular-references=false}），会启动失败。
  */
 @Configuration
+@RequiredArgsConstructor
 public class JwtTokenConfig {
+
+    private final JwtCAProperties jwtCAProperties;
 
     /**
      * JWT 令牌转换器：access token 与 refresh token 都是自包含的 JWT（RSA 签名），
@@ -40,11 +46,15 @@ public class JwtTokenConfig {
         return new JwtTokenStore(jwtAccessTokenConverter);
     }
 
-    private static KeyPair generateRsaKeyPair() {
+    private  KeyPair generateRsaKeyPair() {
         try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            return keyPairGenerator.generateKeyPair();
+//            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+//            keyPairGenerator.initialize(2048);
+//            return keyPairGenerator.generateKeyPair();
+
+            KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(
+                    new ClassPathResource(jwtCAProperties.getKeyPairName()), jwtCAProperties.getKeyPairSecret().toCharArray());
+            return keyStoreKeyFactory.getKeyPair(jwtCAProperties.getKeyPairAlias(), jwtCAProperties.getKeyPairStoreSecret().toCharArray());
         } catch (Exception e) {
             throw new IllegalStateException("生成 RSA 密钥对失败", e);
         }

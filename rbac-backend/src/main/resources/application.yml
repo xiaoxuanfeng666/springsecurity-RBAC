@@ -84,7 +84,12 @@ oauth2:
     # 换令牌用的客户端，必须与发起授权时的 client_id 一致（这里对应示例客户端与它的明文密钥）
     client-id: rbac-third-party
     client-secret: client123
-
+    #密钥对
+  jwt:
+    keyPairName: jwt.jks
+    keyPairAlias: jwt
+    keyPairSecret: 123123
+    keyPairStoreSecret: 123123
 logging:
   level:
     com.example.rbac: debug
