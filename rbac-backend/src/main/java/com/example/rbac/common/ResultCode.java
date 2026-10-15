@@ -35,7 +35,10 @@ public enum ResultCode {
     RESIGNED(1018, "该用户已离职"),
     KICK_SELF(1019, "不能强制下线当前登录的账号"),
     OLD_PASSWORD_ERROR(1020, "原密码不正确"),
-    NEW_PASSWORD_SAME(1021, "新密码不能与原密码相同");
+    NEW_PASSWORD_SAME(1021, "新密码不能与原密码相同"),
+    CLIENT_ID_EXISTS(1022, "客户端标识已存在"),
+    CLIENT_NOT_EXIST(1023, "客户端不存在"),
+    CLIENT_SECRET_REQUIRED(1024, "客户端密钥不能为空");
 
     private final Integer code;
     private final String message;

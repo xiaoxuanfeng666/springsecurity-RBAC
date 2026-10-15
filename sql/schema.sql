@@ -151,3 +151,25 @@ CREATE TABLE `sys_operation_log` (
     KEY `idx_create_time` (`create_time`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='操作日志';
 
+-- ---------- OAuth2 客户端配置 ----------
+-- 沿用 Spring Security OAuth 的 clientdetails 约定：主键为非自增的 appId，列名为驼峰，
+-- grantTypes / scope / redirectUrl / authorities / autoApproveScopes 均为逗号分隔多值
+-- appSecret 为 NOT NULL：客户端密钥不允许为空（空密钥等同于公开客户端，任何人都能换令牌），
+-- 存储的是 AES 密文（密钥来自配置项 oauth2.client-secret-key）—— 用可逆加密而非哈希，
+-- 是为了让「客户端管理」页面能展示明文供复制给第三方。
+DROP TABLE IF EXISTS `clientdetails`;
+CREATE TABLE `clientdetails` (
+    `appId`                  VARCHAR(128)  NOT NULL COMMENT '客户端标识，唯一',
+    `resourceIds`            VARCHAR(255)  DEFAULT NULL COMMENT '资源ID，逗号分隔',
+    `appSecret`              VARCHAR(255)  NOT NULL COMMENT '客户端密钥（AES 密文，不允许为空）',
+    `scope`                  VARCHAR(255)  DEFAULT NULL COMMENT '授权范围，逗号分隔',
+    `grantTypes`             VARCHAR(255)  DEFAULT NULL COMMENT '授权模式，逗号分隔：authorization_code/client_credentials/password/refresh_token/implicit',
+    `redirectUrl`            VARCHAR(255)  DEFAULT NULL COMMENT '回调地址，逗号分隔',
+    `authorities`            VARCHAR(255)  DEFAULT NULL COMMENT '客户端本身拥有的权限，逗号分隔',
+    `access_token_validity`  INT           DEFAULT NULL COMMENT '访问令牌有效期（秒）',
+    `refresh_token_validity` INT           DEFAULT NULL COMMENT '刷新令牌有效期（秒）',
+    `additionalInformation`  VARCHAR(4096) DEFAULT NULL COMMENT '扩展信息（JSON）',
+    `autoApproveScopes`      VARCHAR(255)  DEFAULT NULL COMMENT '自动放行的授权范围，逗号分隔',
+    PRIMARY KEY (`appId`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='OAuth2 客户端配置';
+

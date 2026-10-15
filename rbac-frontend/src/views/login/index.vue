@@ -2,6 +2,23 @@
   <div class="login-page">
     <el-card class="login-card">
       <div class="login-title">RBAC 权限管理后台</div>
+      <el-alert
+        v-if="oauthMode"
+        type="info"
+        :closable="false"
+        show-icon
+        class="oauth-alert"
+        title="第三方应用请求授权"
+        description="请先登录本系统，登录后将返回授权页面"
+      />
+      <el-alert
+        v-if="oauthError"
+        type="error"
+        :closable="false"
+        show-icon
+        class="oauth-alert"
+        title="用户名或密码错误"
+      />
       <el-form ref="formRef" :model="form" :rules="rules" size="large" @keyup.enter="handleLogin">
         <el-form-item prop="username">
           <el-input v-model="form.username" placeholder="请输入用户名" :prefix-icon="User" clearable />
@@ -32,14 +49,19 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { User, Lock } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store/user'
 
+const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+
+// 后端授权端点发现未登录时会带 oauth2=1 跳到本页（见 OAuth2LoginEntryPoint）
+const oauthMode = computed(() => route.query.oauth2 === '1')
+const oauthError = computed(() => route.query.error === '1')
 
 const formRef = ref()
 const loading = ref(false)
@@ -59,6 +81,12 @@ async function handleLogin() {
   } catch (e) {
     return
   }
+
+  if (oauthMode.value) {
+    submitOAuthLogin()
+    return
+  }
+
   loading.value = true
   try {
     await userStore.login({ ...form })
@@ -69,6 +97,29 @@ async function handleLogin() {
   } finally {
     loading.value = false
   }
+}
+
+/**
+ * OAuth2 授权流程的表单登录。
+ *
+ * 与上面的 SPA 登录不同：授权码/隐式模式靠浏览器跳转，带不上 JWT，
+ * 因此登录态必须落在后端的 HttpSession 里 —— 走 Spring Security 的表单登录端点
+ * /oauth/login。登录成功后由后端跳回此前被缓存的 /oauth/authorize。
+ */
+function submitOAuthLogin() {
+  loading.value = true
+  const formEl = document.createElement('form')
+  formEl.method = 'POST'
+  formEl.action = '/oauth/login'
+  Object.entries({ username: form.username, password: form.password }).forEach(([name, value]) => {
+    const input = document.createElement('input')
+    input.type = 'hidden'
+    input.name = name
+    input.value = value
+    formEl.appendChild(input)
+  })
+  document.body.appendChild(formEl)
+  formEl.submit()
 }
 </script>
 
@@ -96,6 +147,10 @@ async function handleLogin() {
 
 .login-button {
   width: 100%;
+}
+
+.oauth-alert {
+  margin-bottom: 16px;
 }
 
 .login-tip {

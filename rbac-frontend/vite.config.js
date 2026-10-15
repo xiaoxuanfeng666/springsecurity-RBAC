@@ -17,6 +17,12 @@ export default defineConfig({
         target: 'http://localhost:7070',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      // OAuth2 授权端点：授权码/隐式模式由浏览器直接跳转与表单提交，
+      // 必须与前端同源（会话 Cookie 才能带上），因此原样代理、不做路径重写
+      '/oauth': {
+        target: 'http://localhost:7070',
+        changeOrigin: true
       }
     }
   }

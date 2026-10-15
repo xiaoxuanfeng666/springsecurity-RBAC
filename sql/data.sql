@@ -59,7 +59,8 @@ VALUES (100, 1, '用户管理', 'user', 'system/user/index', 'system:user:list',
        (102, 1, '菜单管理', 'menu', 'system/menu/index', 'system:menu:list', 2, 'Menu', 3, 1, 1, NOW(), NOW()),
        (103, 1, '部门管理', 'dept', 'system/dept/index', 'system:dept:list', 2, 'OfficeBuilding', 4, 1, 1, NOW(), NOW()),
        (105, 1, '岗位管理', 'post', 'system/post/index', 'system:post:list', 2, 'Postcard', 5, 1, 1, NOW(), NOW()),
-       (106, 1, '操作日志', 'audit', 'system/audit/index', 'system:audit:list', 2, 'Document', 6, 1, 1, NOW(), NOW());
+       (106, 1, '操作日志', 'audit', 'system/audit/index', 'system:audit:list', 2, 'Document', 6, 1, 1, NOW(), NOW()),
+       (107, 1, '客户端管理', 'client', 'system/client/index', 'system:client:list', 2, 'Key', 7, 1, 1, NOW(), NOW());
 
 -- 按钮权限：用户管理
 INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
@@ -99,6 +100,13 @@ VALUES (1051, 105, '岗位查询', NULL, NULL, 'system:post:query', 3, NULL, 1, 
        (1053, 105, '岗位修改', NULL, NULL, 'system:post:edit', 3, NULL, 3, 1, 1, NOW(), NOW()),
        (1054, 105, '岗位删除', NULL, NULL, 'system:post:remove', 3, NULL, 4, 1, 1, NOW(), NOW());
 
+-- 按钮权限：客户端管理
+INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
+VALUES (1071, 107, '客户端查询', NULL, NULL, 'system:client:query', 3, NULL, 1, 1, 1, NOW(), NOW()),
+       (1072, 107, '客户端新增', NULL, NULL, 'system:client:add', 3, NULL, 2, 1, 1, NOW(), NOW()),
+       (1073, 107, '客户端修改', NULL, NULL, 'system:client:edit', 3, NULL, 3, 1, 1, NOW(), NOW()),
+       (1074, 107, '客户端删除', NULL, NULL, 'system:client:remove', 3, NULL, 4, 1, 1, NOW(), NOW());
+
 -- ---------- 角色-菜单：admin 拥有全部 ----------
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
 SELECT 1, id FROM `sys_menu`;
@@ -106,3 +114,26 @@ SELECT 1, id FROM `sys_menu`;
 -- ---------- 角色-菜单：common 仅有仪表盘 + 用户查询 ----------
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
 VALUES (2, 2), (2, 1), (2, 100), (2, 1001);
+
+-- ---------- 示例 OAuth2 客户端（第三方系统接入，覆盖全部五种授权模式）----------
+-- appSecret 存的是明文 client123 经 AES 加密后的密文（密钥来自配置项 oauth2.client-secret-key）。
+-- 之所以用可逆加密而非哈希，是因为「客户端管理」页面需要把明文展示出来供复制给第三方。
+-- 若更换了 oauth2.client-secret-key，这条密文将无法解密，需在页面上重新设置密钥。
+-- 授权码与隐式模式由浏览器发起（response_type=code / token），登录页复用本系统 /login；
+-- 隐式模式要求回调地址已登记在 redirectUrl 中，令牌以 URL fragment 形式返回。
+-- 【本项目定制】授权地址必须带上 client_secret，服务端会校验（标准 OAuth2 不需要这一步，
+-- 密钥原本只在令牌端点使用）。浏览器直接打开下面这个地址即可走通授权码流程：
+--   http://localhost:7070/oauth/authorize?response_type=code&client_id=rbac-third-party&client_secret=client123&redirect_uri=http://localhost:7070/oauth/test-callback&scope=read&state=abc
+-- 注意：密钥会因此出现在浏览器历史与访问日志中，生产环境需在网关层做日志脱敏。
+-- redirectUrl 最后一项是本项目自带的授权码回调联调端点（GET /oauth/test-callback），
+-- 换用其他回调地址时必须一并登记，否则授权端点会以「回调地址不匹配」拒绝。
+-- autoApproveScopes 留空：客户端若把请求的 scope 全部列为自动放行，用户不会看到授权确认页
+-- （本项目已把默认确认页替换为自研的前端页面 /approve，见 OAuth2ApprovalConfig）。
+-- 联调示例：
+--   curl -u rbac-third-party:client123 -d grant_type=client_credentials http://localhost:7070/oauth/token
+--   curl -u rbac-third-party:client123 -d grant_type=password -d username=admin -d password=admin123 http://localhost:7070/oauth/token
+INSERT INTO `clientdetails` (`appId`, `resourceIds`, `appSecret`, `scope`, `grantTypes`, `redirectUrl`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additionalInformation`, `autoApproveScopes`)
+VALUES ('rbac-third-party', NULL, 'cnZXzMbXqybU6Pwk0x4XTbHWZOgE8o9GCrb4JKkrLIHxu84jyQ==',
+        'read,write', 'authorization_code,password,implicit,client_credentials,refresh_token',
+        'http://localhost:8080/callback,http://localhost:5173/oauth/callback,http://localhost:7070/oauth/test-callback',
+        'ROLE_CLIENT', 3600, 604800, NULL, NULL);
