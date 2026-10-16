@@ -6,7 +6,6 @@ import com.example.rbac.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -56,12 +55,10 @@ public class SecurityConfig {
     /**
      * 本系统自身的接口链（JWT + 无状态）
      * <p>
-     * {@code @Order(3)}：排在授权服务器的两条链之后 —— 顺序 1 是令牌端点的客户端认证链，
-     * 顺序 2 是授权端点的浏览器登录链。这样各管一段，本链只处理业务接口，
-     * {@code /auth/**} 的行为与接入 OAuth2 之前完全一致。
+     * 本服务只有这一条链：OAuth2 授权服务器与第三方开放接口（{@code /openapi/**}）已拆到
+     * rbac-oauth 服务，这里只处理 RBAC 业务接口与 {@code /auth/**}。
      */
     @Bean
-    @Order(3)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
@@ -70,9 +67,6 @@ public class SecurityConfig {
                 .authorizeRequests()
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .antMatchers("/auth/login", "/auth/refresh").permitAll()
-                    // OAuth2 授权服务器的端点均不使用 JWT 认证（客户端凭证/授权码/登录会话），
-                    // 由授权服务器自己的链处理；此处放行以免被本链拦截
-                    .antMatchers("/oauth/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

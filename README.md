@@ -1,6 +1,6 @@
 # RBAC 权限管理后台
 
-基于 **Spring Boot + Spring Security + MySQL + Redis + Vue 3** 的前后端分离 RBAC 权限管理系统。
+基于 **Spring Boot + Spring Security + MySQL + Redis + Vue 3** 的前后端分离 RBAC 权限管理系统，内置独立的 **OAuth2 授权服务器**供第三方系统接入。
 
 ## 核心能力
 
@@ -12,44 +12,81 @@
 | **动态修改角色权限** | 管理员在角色授权页调整「角色-菜单」映射后，服务端立即**失效该角色下所有用户的权限快照**，用户下一次请求重建快照并拿到新权限，无需重新登录。 |
 | **操作日志** | 全部落库到 `sys_operation_log`：登录、登出、强制下线、停用/启用/离职、重置密码、自助改密，以及用户/角色/菜单/部门/岗位的**新增、修改、删除、授权**。写入类操作由 `@OperLog` 注解 + AOP 切面自动记录（含模块、说明、请求方法路径、成败、耗时、来源 IP），查询类接口不记，避免日志表被翻页请求淹没。管理端「操作日志」页可按用户名、模块、动作、结果、时间段检索。 |
 
+## 服务划分
+
+授权相关代码已从 RBAC 后台拆出，现在是两个后端 + 两个前端：
+
+| 服务 | 端口 | 职责 |
+|---|---|---|
+| **rbac-backend** | 7070 | RBAC 业务：登录/续期、用户、角色、菜单、部门、岗位、操作日志 |
+| **rbac-oauth** | 7071 | OAuth2 授权服务器：五种授权模式的端点、客户端配置管理、第三方开放接口 `/openapi/**` |
+| **rbac-frontend** | 5173 | RBAC 管理后台界面 |
+| **rbac-oauth-web** | 5174 | OAuth2 授权流程页面：授权登录页、授权确认页 |
+
+两个后端**共用同一个 MySQL 库与同一套 Redis**，配置上有几项必须一致，见文末「拆分后的共享约定」。
+
 ## 技术栈
 
 - **后端**：Spring Boot 2.7.18 / JDK 8 / Spring Security 5.7 / MyBatis-Plus 3.5 / jjwt 0.11.5 / Maven
-- **存储**：MySQL 8.0（业务数据）+ Redis（登录会话）
-- **前端**：Vue 3 / Vite 5 / Element Plus / Pinia / Vue Router 4 / axios
+  - rbac-oauth 另用 spring-security-oauth2 2.5.2（传统授权服务器）+ spring-security-jwt（JWT 令牌）
+- **存储**：MySQL 8.0（业务数据）+ Redis（登录会话 + OAuth2 授权流程的会话/跳转地址）
+- **前端**：Vue 3 / Vite 5 / Element Plus / Vue Router 4（rbac-frontend 另用 Pinia 与 axios）
 
 ## 目录结构
 
 ```
 springsecurity-RBAC/
-├── rbac-backend/          # Spring Boot 后端
+├── rbac-backend/          # ① RBAC 后端（7070）
 │   └── src/main/java/com/example/rbac/
 │       ├── common/        # 统一返回、异常、状态码
 │       ├── config/        # Security / Redis / MyBatis-Plus 配置
-│       ├── security/      # JWT、会话存储、权限校验、过滤器
+│       ├── aspect/        # @OperLog 操作日志切面
+│       ├── security/      # JWT、会话存储、权限快照、权限校验、过滤器
 │       ├── entity/        # 9 张表的实体
 │       ├── mapper/        # MyBatis-Plus Mapper
 │       ├── service/       # 业务逻辑
 │       ├── controller/    # 接口
 │       ├── dto/           # 请求/响应对象
 │       └── util/          # 菜单树工具
-├── rbac-frontend/         # Vue 3 前端
+├── rbac-oauth/            # ② OAuth2 授权服务器（7071）
+│   └── src/main/
+│       ├── java/com/example/oauth/
+│       │   ├── config/    # 四条安全链（令牌端点/授权端点/开放接口/管理接口）+ 令牌签名
+│       │   ├── oauth/     # 客户端密钥加解密、客户端加载、确认页数据、登录入口点
+│       │   ├── controller/# 客户端管理 /client/**、开放接口 /openapi/**
+│       │   ├── entity/    # 本服务用到的表：clientdetails、sys_user
+│       │   ├── mapper/    # 对应的 Mapper
+│       │   ├── security/  # 登录态过滤器、会话校验、令牌解析
+│       │   ├── service/   # 客户端配置读写、开放接口的用户访问
+│       │   ├── dto/       # 客户端表单、开放接口用户视图
+│       │   └── common/    # 统一返回与异常（与 rbac-backend 同一套约定）
+│       └── resources/
+│           ├── application.yml
+│           └── jwt.jks    # OAuth2 令牌的 RSA 签名密钥对
+├── rbac-frontend/         # ③ RBAC 管理后台前端（5173）
 │   └── src/
 │       ├── api/           # axios 实例（含无感刷新）与各模块接口
 │       ├── store/         # Pinia：用户信息、动态路由
 │       ├── router/        # 静态路由 + 路由守卫 + 动态 addRoute
 │       ├── layout/        # 后台布局与递归菜单
-│       └── views/         # 登录、仪表盘、用户/角色/菜单管理
+│       └── views/         # 登录、仪表盘、用户/角色/菜单/部门/岗位/客户端/操作日志
+├── rbac-oauth-web/        # ④ OAuth2 授权流程页面（5174）
+│   └── src/
+│       ├── router/        # /login、/approve 两个页面
+│       └── views/         # 授权登录页（表单登录）、授权确认页
 └── sql/
-    ├── schema.sql                             # 建表脚本（9 张表）
+    ├── schema.sql                             # 建表脚本（含 clientdetails）
     ├── data.sql                               # 初始化数据
     ├── upgrade-2026-10-13-dept.sql            # 旧库升级①：部门模块
     ├── upgrade-2026-10-13-company.sql         # 旧库升级②：分公司模块（已被③合并回组织树）
     ├── upgrade-2026-10-13-org-post.sql        # 旧库升级③：分公司并入部门树 + 岗位模块
     ├── upgrade-2026-10-13-audit.sql           # 旧库升级④：登录/下线审计日志
     ├── upgrade-2026-10-13-operlog.sql         # 旧库升级⑤：审计日志扩展为通用操作日志（表改名）
-    └── upgrade-2026-10-13-release-unique-key.sql  # 数据修复：释放被逻辑删除行占用的唯一键
+    ├── upgrade-2026-10-13-release-unique-key.sql  # 数据修复：释放被逻辑删除行占用的唯一键
+    ├── upgrade-2026-10-14-client.sql          # OAuth2 客户端配置表 + 示例客户端
+    └── upgrade-2026-10-16-oauth-server.sql    # 授权服务器拆出后：修正示例客户端的回调地址端口
 ```
+
 
 ## 快速开始
 
@@ -71,6 +108,8 @@ mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-org-pos
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-audit.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-operlog.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-13-release-unique-key.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-14-client.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-16-oauth-server.sql
 ```
 
 > 三个脚本是迭代过程留下的：先是独立部门表，再加独立分公司模块，最后把分公司并入部门树、换成岗位模块。中途的 `company` 脚本只挂载了一次独立分公司模块，随后被最后一个脚本合并回组织树并删除。**全新安装只需执行 `schema.sql` + `data.sql`。**
@@ -79,26 +118,38 @@ Redis 默认连接 `localhost:6379`。
 
 ### 2. 修改后端配置
 
-编辑 `rbac-backend/src/main/resources/application.yml`，确认 MySQL 账号密码与 Redis 地址，并按需更换 `jwt.secret`（生产环境务必更换，长度 ≥ 32 字节）。
+两个后端的 `application.yml` 都要改，**其中几项两服务必须一致**：
 
-### 3. 启动后端
+- `rbac-backend/src/main/resources/application.yml`
+- `rbac-oauth/src/main/resources/application.yml`
+
+| 配置项 | 说明 |
+|---|---|
+| `jwt.secret` | 两服务必须相同。rbac-oauth 用它校验后台签发的登录令牌（客户端管理接口的登录态） |
+| `oauth2.client-secret-key` | 仅 rbac-oauth 使用；一旦变更，库中已存的客户端密钥将无法解密 |
+| MySQL 连接 | 同一个库：`sys_user` 供授权服务的密码模式校验身份，`clientdetails` 由授权服务读写 |
+| Redis 连接 | 同一套 Redis（库号也要一致）：`login:session:*` 由 rbac-backend 写、rbac-oauth 读 |
+
+`jwt.secret` 生产环境务必更换，长度 ≥ 32 字节。
+
+### 3. 启动两个后端
 
 ```bash
-cd rbac-backend
-mvn spring-boot:run
+cd rbac-backend && mvn spring-boot:run     # RBAC 业务：http://localhost:7070
+cd rbac-oauth   && mvn spring-boot:run     # OAuth2 授权服务器：http://localhost:7071
 ```
 
-服务地址：`http://localhost:7070`
+两者无启动顺序要求（各自独立连库与 Redis）。
 
-### 4. 启动前端
+### 4. 启动两个前端
 
 ```bash
-cd rbac-frontend
-npm install
-npm run dev
+cd rbac-frontend  && npm install && npm run dev    # 管理后台：http://localhost:5173
+cd rbac-oauth-web && npm install && npm run dev    # 授权流程页：http://localhost:5174
 ```
 
-访问：`http://localhost:5173`（`/api` 已代理到后端 7070）
+- 管理后台 `http://localhost:5173`：`/api` 代理到 rbac-backend（7070），`/api/client` 代理到 rbac-oauth（7071）
+- 授权流程页 `http://localhost:5174`：`/oauth` 原样代理到 rbac-oauth（7071）——授权码/隐式模式靠浏览器跳转与原生表单提交，必须与授权端点同源，会话 Cookie 才带得上
 
 ### 5. 默认账号
 
@@ -133,6 +184,27 @@ npm run dev
 | 审计 | GET | `/audit/page` | 操作日志分页查询（`system:audit:list`），支持用户名 / 模块 / 动作 / 结果 / 时间段 |
 
 接口鉴权使用 `@PreAuthorize("@ss.hasPerm('system:user:list')")`，权限来自用户所属角色的菜单权限标识。
+
+> 唯一例外是「客户端管理」——它的接口在 rbac-oauth 上，只校验登录态，不校验 RBAC 权限点，详见下表。
+
+### OAuth2 授权服务器（rbac-oauth，`http://localhost:7071`）
+
+| 端点 | 方法 | 说明 |
+|---|---|---|
+| `/oauth/authorize` | GET/POST | 授权端点（授权码 / 隐式模式）；确认页把审批结果 POST 回这里 |
+| `/oauth/login` | POST | 授权流程的表单登录（原生表单提交，登录态落在 HTTP 会话里，不是 JWT） |
+| `/oauth/token` | GET/POST | 令牌端点，需先通过客户端认证（HTTP Basic，或表单参数 client_id/client_secret） |
+| `/oauth/check_token` | GET/POST | 远程校验令牌，对外开放 |
+| `/oauth/token_key` | GET | 令牌签名公钥，对外开放，供第三方本地验签 |
+| `/oauth/approval-info` | GET | 待授权请求的信息（clientId / scopes / state），供确认页渲染 |
+| `/oauth/test-callback` | GET | 授权码回调联调端点，**仅测试用**（`oauth2.test-callback.enabled=false` 可关闭） |
+| `/client/page`、`/client/{appId}` | GET | 客户端列表 / 详情（需后台登录令牌） |
+| `/client`、`/client/{appId}` | POST / PUT / DELETE | 客户端新增 / 修改 / 删除（需后台登录令牌） |
+| `/openapi/userinfo` | GET | 令牌自检：返回该令牌的 subject / clientId / scopes |
+| `/openapi/users` | GET | 用户列表，需要 scope `read` |
+| `/openapi/users/{id}/status` | PUT | 修改用户状态，需要 scope `write` |
+
+同一个服务里两套鉴权并存：`/client/**` 只校验登录态（rbac-backend 签发的登录令牌 + Redis 会话有效），`/openapi/**` 只认 OAuth2 令牌的 scope。两条链的令牌互不通用。
 
 ## 核心功能验证步骤
 
@@ -183,6 +255,55 @@ Access Token 有效期短（默认 15 分钟），过期后前端拦截 401，�
 
 7. 按模块 `岗位管理`、动作 `DELETE`、结果 `失败`、时间段筛选，结果随之收窄。
 8. 用 zhangsan 访问 `/audit/page` 返回 403 —— 日志只对有 `system:audit:list` 的角色开放。
+
+### 5. OAuth2 授权（第三方接入）
+
+授权服务器在 rbac-oauth（7071），授权流程页面在 rbac-oauth-web（5174）。以示例客户端 `rbac-third-party`（密钥 `client123`）为例：
+
+1. **客户端凭证模式** —— 不涉及用户，最快验证令牌端点：
+
+   ```bash
+   curl -u rbac-third-party:client123 -d grant_type=client_credentials http://localhost:7071/oauth/token
+   ```
+
+2. **密码模式** —— 用本系统 `sys_user` 表的账号密码校验：
+
+   ```bash
+   curl -u rbac-third-party:client123 -d grant_type=password -d username=admin -d password=admin123 http://localhost:7071/oauth/token
+   ```
+
+3. **授权码模式** —— 需要浏览器：
+
+   1. 打开下面的地址（注意 `client_secret` 是本项目要求在授权地址上携带并校验的，标准 OAuth2 不需要）：
+
+      ```
+      http://localhost:7071/oauth/authorize?response_type=code&client_id=rbac-third-party&client_secret=client123&redirect_uri=http://localhost:7071/oauth/test-callback&scope=read&state=abc
+      ```
+
+   2. 未登录时会 302 到 rbac-oauth-web 的登录页（`http://localhost:5174/login`），用 admin / admin123 登录。
+   3. 登录后自动跳回授权确认页（`/approve`），确认 clientId 与申请的 scope 后点「同意授权」。
+   4. 浏览器带 `?code=...` 回到 `/oauth/test-callback`，这个联调端点会直接换令牌并解析出令牌里的用户信息。
+
+   > 若第 4 步提示「回调地址不匹配」，说明 `clientdetails.redirectUrl` 里没有该地址：旧库执行 [upgrade-2026-10-16-oauth-server.sql](sql/upgrade-2026-10-16-oauth-server.sql)，或在「客户端管理」页把回调地址改到 7071。
+
+4. **第三方开放接口** —— 用上一步拿到的 access_token 调用：
+
+   ```bash
+   curl -H "Authorization: Bearer <access_token>" http://localhost:7071/openapi/userinfo
+   curl -H "Authorization: Bearer <access_token>" http://localhost:7071/openapi/users
+   ```
+
+   无令牌返回 401，scope 不足返回 403，错误体是 OAuth2 风格的 `error` / `error_description`（而非本系统那套「登录已过期」）。
+
+## 拆分后的共享约定
+
+两个后端是独立的 Spring Boot 进程，但**共用同一个 MySQL 库与同一套 Redis**。跨进程的耦合点只有下面几处，改动时需两边同步：
+
+- **登录令牌**：后台登录令牌由 rbac-backend 用 `jwt.secret`（HS256）签发；rbac-oauth 只验签、不签发，用于「客户端管理」的登录态判断。密钥不一致则一律 401。
+- **Redis 键**：`login:session:{userId}`（当前会话）、`login:refresh:{sessionId}`、`login:perm:{sessionId}`（权限快照）由 rbac-backend 维护。rbac-oauth 读 `login:session:*` 校验登录态，并在第三方经 `/openapi` 停用/离职用户时删除这三个键（立即下线）。键名变更需两边同步。
+- **库表**：`clientdetails` 只由 rbac-oauth 读写；`sys_user` 两边都读 —— rbac-oauth 用它做密码模式的身份校验与开放接口的用户访问。
+- **授权服务不加载 RBAC 权限**：rbac-oauth 里没有权限快照与 `@PreAuthorize`，因此 `/client/**` 只校验登录态，**任何登录用户都能管理客户端配置**。若需按 `system:client:*` 收紧，要在授权服务里补上权限快照的读取。
+- **操作日志**：`sys_operation_log` 仍由 rbac-backend 独占写入（含 `@OperLog` 切面）。以下两类动作不再留痕，是有意为之的取舍：客户端配置的增删改（原本由切面记录），以及第三方经 `/openapi/users/{id}/status` 停用/离职用户（原本会记一条 `DISABLED`/`RESIGNED`；**强制下线本身仍然生效**）。不把日志表与切面复制到授权服务，是为了避免两处实现漂移；若要审计第三方的动作，应在授权服务侧补一个精简写入。
 
 ## 说明与注意事项
 

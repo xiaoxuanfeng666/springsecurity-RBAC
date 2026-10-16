@@ -22,8 +22,6 @@
         <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
         <jjwt.version>0.11.5</jjwt.version>
         <knife4j.version>4.3.0</knife4j.version>
-        <spring-security-oauth2.version>2.5.2.RELEASE</spring-security-oauth2.version>
-        <spring-security-jwt.version>1.1.1.RELEASE</spring-security-jwt.version>
     </properties>
 
     <dependencies>
@@ -37,24 +35,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <!--
-            OAuth2 授权服务器（传统 spring-security-oauth2）：把本系统作为授权服务器供第三方系统接入。
-            该库原生支持授权码/密码/隐式/客户端凭证/刷新令牌五种模式，且 clientdetails 表就是它的标准 schema。
-            说明：只引底层库、不引 spring-cloud-starter-oauth2 —— 后者传递依赖
-            spring-security-oauth2-autoconfigure:2.1.2（Spring Boot 2.1 时代产物），与 Boot 2.7 冲突。
-        -->
-        <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>${spring-security-oauth2.version}</version>
-        </dependency>
-        <!-- JWT 令牌支持：JwtTokenStore + JwtAccessTokenConverter，令牌自包含、无需令牌表 -->
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-jwt</artifactId>
-            <version>${spring-security-jwt.version}</version>
         </dependency>
 
         <!-- AOP：@PreAuthorize 动态权限需要 -->
@@ -73,16 +53,6 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
-        </dependency>
-
-        <!--
-            Spring Session（Redis 会话）：为多节点部署准备 —— OAuth2 授权码/隐式流程的登录态存在
-            HTTP 会话里，节点间不共享会话时，在 A 节点登录、跳回落到 B 节点会一直要求重新登录。
-            引入后 HttpSession 由 Redis 承载，任一节点都能读到。
-        -->
-        <dependency>
-            <groupId>org.springframework.session</groupId>
-            <artifactId>spring-session-data-redis</artifactId>
         </dependency>
 
         <!-- MyBatis-Plus -->

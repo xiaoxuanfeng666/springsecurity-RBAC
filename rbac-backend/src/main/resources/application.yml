@@ -25,14 +25,6 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
     default-property-inclusion: non_null
-  # 会话存到 Redis，供多节点部署共享。
-  # 只影响 OAuth2 授权流程的登录态（授权码/隐式模式需要浏览器会话）；
-  # 本系统的业务接口链是无状态的 JWT，不使用会话。
-  session:
-    store-type: redis
-    timeout: 30m
-    redis:
-      namespace: rbac:session
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
@@ -60,36 +52,6 @@ jwt:
   header: Authorization
   token-prefix: "Bearer "
 
-# OAuth2 客户端密钥的加解密配置
-# 客户端密钥（clientdetails.appSecret）需要能在页面上展示明文，故用对称加密存储：
-# 库里是 AES 密文，展示时解密。这里就是那把密钥。
-# 【重要】此值一旦变更，库中已有的客户端密钥将无法解密、对应客户端会认证失败，
-# 需要在「客户端管理」页面重新设置密钥。生产环境请替换为随机值并妥善保存。
-oauth2:
-  client-secret-key: rbac-client-secret-key-please-change-in-production-0123456789
-  # 授权码/隐式模式的登录页地址。授权端点发现未登录时会 302 到这里，
-  # 必须是浏览器可达的前端绝对地址 —— 用相对路径只在「从前端源发起授权」时成立，
-  # 从后端源发起时会跳到后端的 /login 而那里并没有页面，最终以 401 收场。
-  # 开发环境指向前端 dev server；生产环境改为对外的前端地址（如 https://your-app.com/login）。
-  login-page-url: http://localhost:5173/login
-  # 授权（确认）页地址，同样必须是浏览器可达的前端绝对地址。
-  # 未配 autoApproveScopes 的客户端，用户在授权端点会先被带到这个页面确认。
-  # 注意路径不要落在 /oauth 下 —— 该前缀会被 Vite 代理 / Nginx 反代给后端，前端页面将无法加载。
-  approval-page-url: http://localhost:5173/approve
-  # 授权码回调的联调端点（GET /oauth/test-callback）
-  test-callback:
-    # 仅测试用：该端点无需登录即可访问，并且会把换到的令牌直接返回给调用方。
-    # 生产环境请置为 false —— 关闭后该端点不会被注册。
-    enabled: true
-    # 换令牌用的客户端，必须与发起授权时的 client_id 一致（这里对应示例客户端与它的明文密钥）
-    client-id: rbac-third-party
-    client-secret: client123
-    #密钥对
-  jwt:
-    keyPairName: jwt.jks
-    keyPairAlias: jwt
-    keyPairSecret: 123123
-    keyPairStoreSecret: 123123
 logging:
   level:
     com.example.rbac: debug

@@ -12,17 +12,18 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // 开发环境代理，避免跨域问题
+      // 客户端管理（OAuth2 接入方配置）随授权服务器拆到了 rbac-oauth。
+      // 必须声明在 '/api' 之前：代理按键的声明顺序匹配，'/api' 若在前会把这条一并吃掉。
+      '/api/client': {
+        target: 'http://localhost:7071',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      // 本系统自身的业务接口仍在 rbac-backend
       '/api': {
         target: 'http://localhost:7070',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
-      },
-      // OAuth2 授权端点：授权码/隐式模式由浏览器直接跳转与表单提交，
-      // 必须与前端同源（会话 Cookie 才能带上），因此原样代理、不做路径重写
-      '/oauth': {
-        target: 'http://localhost:7070',
-        changeOrigin: true
       }
     }
   }
