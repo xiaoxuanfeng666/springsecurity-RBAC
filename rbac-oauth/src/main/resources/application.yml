@@ -1,0 +1,93 @@
+server:
+  port: 7071
+
+spring:
+  application:
+    name: rbac-oauth
+  # 【必须与 rbac-backend 一致】两服务共享同一个库：
+  # clientdetails 是本服务的客户端配置表，sys_user 是密码模式/授权码模式校验用户身份的数据源。
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/rbac?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  # 【必须与 rbac-backend 一致】共享 Redis：管理端登录态（login:session:*）由那边写入、这边校验，
+  # 因此停用/离职删除会话后，本服务持有的令牌也会立即失效。
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    password:
+    timeout: 5000ms
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        min-idle: 0
+        max-wait: -1ms
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+  # 会话存到 Redis，供多节点部署共享。
+  # 只影响 OAuth2 授权流程的登录态（授权码/隐式模式需要浏览器会话）；
+  # 管理接口链是无状态的 JWT，不使用会话。
+  session:
+    store-type: redis
+    timeout: 30m
+    redis:
+      namespace: rbac:session
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.example.oauth.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: delFlag
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 访问令牌的携带方式：第三方调 /openapi/** 时用 Authorization: Bearer <令牌>。
+# 本服务不解析后台的登录令牌（客户端管理已移回 rbac-backend），因此没有 jwt.secret。
+jwt:
+  header: Authorization
+  token-prefix: "Bearer "
+
+# OAuth2 客户端密钥的加解密配置
+# 库里 clientdetails.appSecret 存的是 AES 密文（由 rbac-backend 的「客户端管理」写入），
+# 本服务要用同一把密钥解密它，才能校验客户端身份。
+# 【必须与 rbac-backend 一致】两服务的该配置不一致时，解密失败，所有客户端都会认证失败。
+# 【重要】此值一旦变更，库中已有的客户端密钥将无法解密，需要在「客户端管理」页面重新设置密钥。
+oauth2:
+  client-secret-key: rbac-client-secret-key-please-change-in-production-0123456789
+  # 授权码/隐式模式的登录页地址。授权端点发现未登录时会 302 到这里。
+  # 页面由 rbac-oauth-web（独立前端工程，开发环境 5174）提供，因此默认给绝对地址 ——
+  # 用户从授权服务源（7071）发起授权时，相对路径 /login 会被解析到授权服务自己身上（那里没有页面）。
+  # 若前端与授权服务同源部署（生产环境 Nginx 统一入口），配成 /login 这类相对路径也可以。
+  login-page-url: http://localhost:5174/login
+  # 授权（确认）页地址，规则同上。未配 autoApproveScopes 的客户端，
+  # 用户在授权端点会先被带到这个页面确认。
+  approval-page-url: http://localhost:5174/approve
+  # 授权码回调的联调端点（GET /oauth/test-callback）
+  test-callback:
+    # 仅测试用：该端点无需登录即可访问，并且会把换到的令牌直接返回给调用方。
+    # 生产环境请置为 false —— 关闭后该端点不会被注册。
+    enabled: true
+    # 换令牌用的客户端，必须与发起授权时的 client_id 一致（这里对应示例客户端与它的明文密钥）
+    client-id: rbac-third-party
+    client-secret: client123
+  # 令牌签名密钥对（jwt.jks）。令牌自包含，第三方可直接用 /oauth/token_key 暴露的公钥验签。
+  # 多实例部署时各实例需使用同一份 keystore，否则跨实例验签会失败。
+  jwt:
+    keyPairName: jwt.jks
+    keyPairAlias: jwt
+    keyPairSecret: 123123
+    keyPairStoreSecret: 123123
+logging:
+  level:
+    com.example.oauth: debug
+    org.springframework.security: info

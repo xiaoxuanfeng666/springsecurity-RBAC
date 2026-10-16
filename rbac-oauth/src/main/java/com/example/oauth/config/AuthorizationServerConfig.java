@@ -1,0 +1,79 @@
+package com.example.oauth.config;
+
+import com.example.oauth.oauth.MybatisClientDetailsService;
+import com.example.oauth.security.UserDetailsServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerEndpointsConfiguration;
+import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * OAuth2 授权服务器：供第三方系统接入本系统的登录（五种模式全部支持）
+ * <p>
+ * <b>不含 {@code @EnableAuthorizationServer}</b>：该注解会连带导入
+ * {@code AuthorizationServerSecurityConfiguration}（一个 {@code WebSecurityConfigurerAdapter}），
+ * 而 Spring Security 5.7 明确禁止它与 {@code SecurityFilterChain} 共用
+ * （{@code WebSecurityConfiguration} 中的硬断言），本项目主链正是 {@code SecurityFilterChain} 风格。
+ * 因此这里只导入端点半部分 {@link AuthorizationServerEndpointsConfiguration} ——
+ * 授权端点、令牌端点与五种 TokenGranter 照常获得，仅客户端认证由本项目的安全链自行接管
+ * （见 {@link OAuth2TokenEndpointSecurityConfig}）。
+ * <p>
+ * 客户端配置不经 {@code ClientDetailsServiceConfigurer} 注册，而是把
+ * {@link MybatisClientDetailsService} 直接暴露为 Bean，由端点半部分按类型注入取用。
+ * <p>
+ * 五种授权模式均由此库原生实现，取决于客户端在 {@code clientdetails.grantTypes} 中的配置：
+ * <ul>
+ *   <li>authorization_code —— 授权码模式</li>
+ *   <li>password —— 密码模式（用本系统的用户体系校验用户名密码）</li>
+ *   <li>implicit —— 隐式模式</li>
+ *   <li>client_credentials —— 客户端凭证模式</li>
+ *   <li>refresh_token —— 刷新令牌模式</li>
+ * </ul>
+ */
+@Configuration
+@Import(AuthorizationServerEndpointsConfiguration.class)
+@RequiredArgsConstructor
+public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final TokenStore jwtTokenStore;
+    private final JwtAccessTokenConverter jwtAccessTokenConverter;
+    private final Oauth2TokenEnhancer oauth2TokenEnhancer;
+
+    @Override
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
+
+        //配置JWT的内容增强器
+        TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
+        List<TokenEnhancer> delegates = new ArrayList<>();
+        delegates.add(oauth2TokenEnhancer);
+        delegates.add(jwtAccessTokenConverter);
+        enhancerChain.setTokenEnhancers(delegates);
+
+        endpoints
+                .tokenStore(jwtTokenStore)
+                .accessTokenConverter(jwtAccessTokenConverter)
+                .tokenEnhancer(enhancerChain) //配置tokenEnhancer
+                // 密码模式：用本系统的用户体系校验 username/password（同一个 sys_user 表）
+                .authenticationManager(authenticationManager)
+                // 刷新令牌模式需要
+                .userDetailsService(userDetailsService)
+                // 授权码用内存存储；单实例足够，重启会丢失尚未兑换的授权码
+                .authorizationCodeServices(new InMemoryAuthorizationCodeServices())
+                .reuseRefreshTokens(true)
+                 .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST); //支持GET,POST请求
+    }
+}

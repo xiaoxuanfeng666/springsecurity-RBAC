@@ -1,0 +1,18 @@
+package com.example.order.dto;
+
+import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
+
+/**
+ * 授权码模式登录请求：前端从回调地址上拿到 code 后交给后端换取令牌
+ */
+@Data
+public class CodeLoginRequest implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @NotBlank(message = "授权码不能为空")
+    private String code;
+}
