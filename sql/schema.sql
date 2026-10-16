@@ -173,3 +173,64 @@ CREATE TABLE `clientdetails` (
     PRIMARY KEY (`appId`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='OAuth2 客户端配置';
 
+-- ============================================================
+-- 子系统菜单权限
+-- ============================================================
+-- 这套表服务于「RBAC 作为中枢，统一给各子系统配菜单权限」：
+--   sys_subsystem             登记有哪些子系统
+--   sys_subsystem_menu        每个子系统自己的菜单树（目录 + 菜单 + 按钮，带 perms 权限标识）
+--   sys_role_subsystem_menu   角色能看子系统里的哪些菜单
+-- 与 sys_menu / sys_role_menu 完全独立：那两张表管的是 RBAC 后台自己的导航与权限点，
+-- 这里的菜单不参与 RBAC 的 @PreAuthorize 判定，只用于下发给子系统，由子系统自己鉴权。
+
+-- ---------- 子系统登记 ----------
+DROP TABLE IF EXISTS `sys_subsystem`;
+CREATE TABLE `sys_subsystem` (
+    `id`             BIGINT       NOT NULL AUTO_INCREMENT COMMENT '子系统ID',
+    `subsystem_code` VARCHAR(64)  NOT NULL COMMENT '子系统编码，如 order-center',
+    `subsystem_name` VARCHAR(64)  NOT NULL COMMENT '子系统名称',
+    `sort`           INT          NOT NULL DEFAULT 0 COMMENT '显示顺序',
+    `status`         TINYINT      NOT NULL DEFAULT 1 COMMENT '状态：1启用 0禁用',
+    `del_flag`       TINYINT      NOT NULL DEFAULT 0 COMMENT '删除标记：0正常 1已删除',
+    `remark`         VARCHAR(255) DEFAULT NULL COMMENT '备注',
+    `create_time`    DATETIME     DEFAULT NULL COMMENT '创建时间',
+    `update_time`    DATETIME     DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_subsystem_code` (`subsystem_code`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='子系统登记表';
+
+-- ---------- 子系统菜单 ----------
+-- type：1目录 / 2菜单 / 3按钮。目录与菜单是导航，按钮是权限点，
+-- 三者的 perms 都会被下发给子系统，由子系统在接口上判权。
+DROP TABLE IF EXISTS `sys_subsystem_menu`;
+CREATE TABLE `sys_subsystem_menu` (
+    `id`           BIGINT       NOT NULL AUTO_INCREMENT COMMENT '菜单ID',
+    `subsystem_id` BIGINT       NOT NULL COMMENT '所属子系统ID',
+    `parent_id`    BIGINT       NOT NULL DEFAULT 0 COMMENT '父菜单ID，0为顶级',
+    `menu_name`    VARCHAR(64)  NOT NULL COMMENT '菜单名称',
+    `type`         TINYINT      NOT NULL DEFAULT 2 COMMENT '类型：1目录 2菜单 3按钮',
+    `perms`        VARCHAR(100) DEFAULT NULL COMMENT '权限标识，如 marketing:activity:add',
+    `path`         VARCHAR(200) DEFAULT NULL COMMENT '路由地址',
+    `component`    VARCHAR(255) DEFAULT NULL COMMENT '前端组件路径',
+    `icon`         VARCHAR(64)  DEFAULT NULL COMMENT '图标',
+    `sort`         INT          NOT NULL DEFAULT 0 COMMENT '显示顺序',
+    `visible`      TINYINT      NOT NULL DEFAULT 1 COMMENT '是否显示：1显示 0隐藏',
+    `status`       TINYINT      NOT NULL DEFAULT 1 COMMENT '状态：1启用 0禁用',
+    `create_time`  DATETIME     DEFAULT NULL COMMENT '创建时间',
+    `update_time`  DATETIME     DEFAULT NULL COMMENT '更新时间',
+    PRIMARY KEY (`id`),
+    KEY `idx_subsystem_id` (`subsystem_id`),
+    KEY `idx_parent_id` (`parent_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='子系统菜单表';
+
+-- ---------- 角色-子系统菜单关联 ----------
+DROP TABLE IF EXISTS `sys_role_subsystem_menu`;
+CREATE TABLE `sys_role_subsystem_menu` (
+    `id`                BIGINT NOT NULL AUTO_INCREMENT,
+    `role_id`           BIGINT NOT NULL COMMENT '角色ID',
+    `subsystem_menu_id` BIGINT NOT NULL COMMENT '子系统菜单ID',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_role_subsystem_menu` (`role_id`, `subsystem_menu_id`),
+    KEY `idx_subsystem_menu_id` (`subsystem_menu_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='角色子系统菜单关联表';
+

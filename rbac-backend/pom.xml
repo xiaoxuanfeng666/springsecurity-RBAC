@@ -22,6 +22,7 @@
         <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
         <jjwt.version>0.11.5</jjwt.version>
         <knife4j.version>4.3.0</knife4j.version>
+        <rocketmq.version>2.2.3</rocketmq.version>
     </properties>
 
     <dependencies>
@@ -60,6 +61,13 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>${mybatis-plus.version}</version>
+        </dependency>
+
+        <!-- RocketMQ：给子系统下发「用户-角色-权限-菜单」 -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <version>${rocketmq.version}</version>
         </dependency>
 
         <!-- MySQL 驱动 -->

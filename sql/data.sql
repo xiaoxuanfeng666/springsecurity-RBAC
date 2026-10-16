@@ -107,9 +107,31 @@ VALUES (1071, 107, '客户端查询', NULL, NULL, 'system:client:query', 3, NULL
        (1073, 107, '客户端修改', NULL, NULL, 'system:client:edit', 3, NULL, 3, 1, 1, NOW(), NOW()),
        (1074, 107, '客户端删除', NULL, NULL, 'system:client:remove', 3, NULL, 4, 1, 1, NOW(), NOW());
 
--- ---------- 角色-菜单：admin 拥有全部 ----------
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
-SELECT 1, id FROM `sys_menu`;
+-- ---------- 子系统菜单权限（RBAC 给子系统配菜单）----------
+-- 这里挂的是「管理子系统菜单」这个后台功能本身，与 sys_subsystem_menu（被管理的子系统菜单）是两回事
+INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
+VALUES (108, 1, '子系统管理', 'subsystem', 'system/subsystem/index', 'system:subsystem:list', 2, 'Grid', 8, 1, 1, NOW(), NOW()),
+       (109, 1, '子系统菜单管理', 'subsystem-menu', 'system/subsystem-menu/index', 'system:subsystem:menu:list', 2, 'Menu', 9, 1, 1, NOW(), NOW());
+
+-- 按钮权限：子系统管理
+INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
+VALUES (1081, 108, '子系统查询', NULL, NULL, 'system:subsystem:query', 3, NULL, 1, 1, 1, NOW(), NOW()),
+       (1082, 108, '子系统新增', NULL, NULL, 'system:subsystem:add', 3, NULL, 2, 1, 1, NOW(), NOW()),
+       (1083, 108, '子系统修改', NULL, NULL, 'system:subsystem:edit', 3, NULL, 3, 1, 1, NOW(), NOW()),
+       (1084, 108, '子系统删除', NULL, NULL, 'system:subsystem:remove', 3, NULL, 4, 1, 1, NOW(), NOW());
+
+-- 按钮权限：子系统菜单管理
+INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
+VALUES (1091, 109, '子系统菜单查询', NULL, NULL, 'system:subsystem:menu:query', 3, NULL, 1, 1, 1, NOW(), NOW()),
+       (1092, 109, '子系统菜单新增', NULL, NULL, 'system:subsystem:menu:add', 3, NULL, 2, 1, 1, NOW(), NOW()),
+       (1093, 109, '子系统菜单修改', NULL, NULL, 'system:subsystem:menu:edit', 3, NULL, 3, 1, 1, NOW(), NOW()),
+       (1094, 109, '子系统菜单删除', NULL, NULL, 'system:subsystem:menu:remove', 3, NULL, 4, 1, 1, NOW(), NOW());
+
+-- ---------- 角色-菜单：admin 刻意不插任何记录 ----------
+-- 超级管理员的权限由代码隐式授予（见 rbac-backend 的 security/SuperAdmin）：
+-- 权限判定用通配符 *:*:* 一律放行，菜单树直接返回全部启用菜单。
+-- 因此 role_id=1 在 sys_role_menu 里**没有行**，新增菜单后也无需给超级管理员补授权。
+-- 换句话说，admin 角色在这张表里的数据不代表它的真实权限（那张表只管普通角色）。
 
 -- ---------- 角色-菜单：common 仅有仪表盘 + 用户查询 ----------
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
@@ -138,3 +160,71 @@ VALUES ('rbac-third-party', NULL, 'cnZXzMbXqybU6Pwk0x4XTbHWZOgE8o9GCrb4JKkrLIHxu
         'read,write', 'authorization_code,password,implicit,client_credentials,refresh_token',
         'http://localhost:8080/callback,http://localhost:5173/oauth/callback,http://localhost:7071/oauth/test-callback',
         'ROLE_CLIENT', 3600, 604800, NULL, NULL);
+
+-- ---------- 营销系统（真实接入的独立子系统）----------
+-- 营销系统有自己的独立库（marketing）、独立前后端，没有自己的权限管理：
+-- 登录授权走本授权服务，权限数据由 RBAC 经 RocketMQ 下发。
+-- redirectUrl 里的 5175 是营销系统前端的回调页（授权码模式），换令牌时校验必须完全一致。
+INSERT INTO `clientdetails` (`appId`, `resourceIds`, `appSecret`, `scope`, `grantTypes`, `redirectUrl`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additionalInformation`, `autoApproveScopes`)
+VALUES ('marketing', NULL, 'a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==',
+        'read,write', 'authorization_code,password,refresh_token',
+        'http://localhost:5175/oauth/callback',
+        'ROLE_CLIENT', 3600, 604800, NULL, NULL);
+
+-- ---------- 订单中心（真实接入的独立子系统）----------
+-- 与营销系统同样的模式：独立库（order_center）、独立前后端，没有自己的权限管理。
+-- redirectUrl 里的 5176 是订单中心前端的回调页（授权码模式）。
+INSERT INTO `clientdetails` (`appId`, `resourceIds`, `appSecret`, `scope`, `grantTypes`, `redirectUrl`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additionalInformation`, `autoApproveScopes`)
+VALUES ('order-center', NULL, 'yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE',
+        'read,write', 'authorization_code,password,refresh_token',
+        'http://localhost:5176/oauth/callback',
+        'ROLE_CLIENT', 3600, 604800, NULL, NULL);
+
+-- ---------- 子系统及其菜单 ----------
+-- sys_subsystem_menu 里的菜单只用于「下发给子系统」，与 RBAC 后台自己的 sys_menu 无关：
+-- type 为 1目录 / 2菜单 / 3按钮，按钮才是增删改查的权限点（带 perms）。
+INSERT INTO `sys_subsystem` (`id`, `subsystem_code`, `subsystem_name`, `sort`, `status`, `del_flag`, `remark`, `create_time`, `update_time`)
+VALUES (1, 'order-center', '订单中心', 1, 1, 0, '订单的增删改查与统计汇总', NOW(), NOW()),
+       (2, 'marketing', '营销系统', 2, 1, 0, '抽奖活动、积分任务与流水记录', NOW(), NOW());
+
+-- 订单中心的菜单树：与订单中心前端 order-frontend/src/views 下的路径一一对应。
+-- 主键从 201 起，与营销系统的 100~121 分段错开，避免两边撞号。
+INSERT INTO `sys_subsystem_menu` (`id`, `subsystem_id`, `parent_id`, `menu_name`, `type`, `perms`, `path`, `component`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
+VALUES (1, 1, 0, '订单管理', 1, NULL, '/order', 'Layout', 'Document', 1, 1, 1, NOW(), NOW()),
+       (2, 1, 1, '订单列表', 2, 'order:order:list', 'list', 'order/list/index', 'List', 1, 1, 1, NOW(), NOW()),
+       (3, 1, 1, '订单统计', 2, 'order:stat:list', 'stat', 'order/stat/index', 'DataLine', 2, 1, 1, NOW(), NOW()),
+       (201, 1, 2, '订单查询', 3, 'order:order:query', NULL, NULL, NULL, 1, 0, 1, NOW(), NOW()),
+       (202, 1, 2, '订单新增', 3, 'order:order:add', NULL, NULL, NULL, 2, 0, 1, NOW(), NOW()),
+       (203, 1, 2, '订单修改', 3, 'order:order:edit', NULL, NULL, NULL, 3, 0, 1, NOW(), NOW()),
+       (204, 1, 2, '订单删除', 3, 'order:order:remove', NULL, NULL, NULL, 4, 0, 1, NOW(), NOW());
+
+-- 营销系统的菜单树：菜单节点自带 list 权限，按钮节点是细化权限点，
+-- component 与营销前端 marketing-frontend/src/views 下的路径一一对应。
+INSERT INTO `sys_subsystem_menu` (`id`, `subsystem_id`, `parent_id`, `menu_name`, `type`, `perms`, `path`, `component`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
+VALUES
+    (100, 2, 0, '抽奖管理', 1, NULL, '/lottery', 'Layout', 'Trophy', 1, 1, 1, NOW(), NOW()),
+    (101, 2, 100, '抽奖活动', 2, 'marketing:activity:list', 'activity', 'lottery/activity/index', 'Tickets', 1, 1, 1, NOW(), NOW()),
+    (102, 2, 101, '活动查询', 3, 'marketing:activity:query', NULL, NULL, NULL, 1, 0, 1, NOW(), NOW()),
+    (103, 2, 101, '活动新增', 3, 'marketing:activity:add', NULL, NULL, NULL, 2, 0, 1, NOW(), NOW()),
+    (104, 2, 101, '活动修改', 3, 'marketing:activity:edit', NULL, NULL, NULL, 3, 0, 1, NOW(), NOW()),
+    (105, 2, 101, '活动删除', 3, 'marketing:activity:remove', NULL, NULL, NULL, 4, 0, 1, NOW(), NOW()),
+    (106, 2, 100, '抽奖记录', 2, 'marketing:record:list', 'record', 'lottery/record/index', 'Memo', 2, 1, 1, NOW(), NOW()),
+    (117, 2, 100, '奖品配置', 2, 'marketing:prize:list', 'prize', 'lottery/prize/index', 'Present', 3, 1, 1, NOW(), NOW()),
+    (118, 2, 117, '奖品查询', 3, 'marketing:prize:query', NULL, NULL, NULL, 1, 0, 1, NOW(), NOW()),
+    (119, 2, 117, '奖品新增', 3, 'marketing:prize:add', NULL, NULL, NULL, 2, 0, 1, NOW(), NOW()),
+    (120, 2, 117, '奖品修改', 3, 'marketing:prize:edit', NULL, NULL, NULL, 3, 0, 1, NOW(), NOW()),
+    (121, 2, 117, '奖品删除', 3, 'marketing:prize:remove', NULL, NULL, NULL, 4, 0, 1, NOW(), NOW()),
+    (110, 2, 0, '积分管理', 1, NULL, '/points', 'Layout', 'Coin', 2, 1, 1, NOW(), NOW()),
+    (111, 2, 110, '积分任务', 2, 'marketing:task:list', 'task', 'points/task/index', 'List', 1, 1, 1, NOW(), NOW()),
+    (112, 2, 111, '任务查询', 3, 'marketing:task:query', NULL, NULL, NULL, 1, 0, 1, NOW(), NOW()),
+    (113, 2, 111, '任务新增', 3, 'marketing:task:add', NULL, NULL, NULL, 2, 0, 1, NOW(), NOW()),
+    (114, 2, 111, '任务修改', 3, 'marketing:task:edit', NULL, NULL, NULL, 3, 0, 1, NOW(), NOW()),
+    (115, 2, 111, '任务删除', 3, 'marketing:task:remove', NULL, NULL, NULL, 4, 0, 1, NOW(), NOW()),
+    (116, 2, 110, '积分流水', 2, 'marketing:points:list', 'flow', 'points/flow/index', 'DataLine', 2, 1, 1, NOW(), NOW());
+
+-- 普通角色(common)在每个子系统里都只拿到只读页面（订单列表/订单统计、抽奖记录/积分流水），
+-- 用于演示「权限经 MQ 下发 → 子系统只能看到被授权的菜单、写接口 403」。
+-- 超级管理员(admin)在这里没有任何记录：它的权限由代码隐式给全集。
+INSERT INTO `sys_role_subsystem_menu` (`role_id`, `subsystem_menu_id`)
+VALUES (2, 1), (2, 2), (2, 3),                                      -- 订单中心：目录 + 两个只读页面
+       (2, 100), (2, 106), (2, 110), (2, 116);                      -- 营销系统：目录 + 两个只读页面

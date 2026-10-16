@@ -32,3 +32,13 @@ export function updateRoleMenus(id, menuIds) {
 export function deleteRole(id) {
   return request.delete(`/role/${id}`)
 }
+
+/** 查询角色在指定子系统下已分配的菜单 ID（子系统授权页回显） */
+export function getRoleSubsystemMenuIds(id, subsystemId) {
+  return request.get(`/role/${id}/subsystem-menus`, { params: { subsystemId } })
+}
+
+/** 分配角色的子系统菜单（按子系统局部替换，不影响其他子系统） */
+export function updateRoleSubsystemMenus(id, data) {
+  return request.put(`/role/${id}/subsystem-menus`, data)
+}

@@ -37,8 +37,27 @@ public interface SysMenuMapper extends BaseMapper<SysMenu> {
     List<SysMenu> selectMenusByUserId(@Param("userId") Long userId);
 
     /**
+     * 查询全部启用的目录与菜单（type 1/2）
+     * <p>
+     * 供超级管理员使用：它的权限不落库，菜单也就不能按 sys_role_menu 过滤。
+     */
+    @Select("SELECT id, parent_id, menu_name, path, component, perms, " +
+            "type, icon, sort, visible, status " +
+            "FROM sys_menu WHERE status = 1 AND type IN (1, 2) " +
+            "ORDER BY parent_id, sort")
+    List<SysMenu> selectAllEnabledMenus();
+
+    /**
      * 查询角色已分配的菜单 ID 列表，用于角色授权页回显
      */
     @Select("SELECT menu_id FROM sys_role_menu WHERE role_id = #{roleId}")
     List<Long> selectMenuIdsByRoleId(@Param("roleId") Long roleId);
+
+    /**
+     * 全部菜单 ID（含按钮、含禁用）
+     * <p>
+     * 供超级管理员的授权树回显：它没有 sys_role_menu 记录，按"全选"呈现才与实际情况一致。
+     */
+    @Select("SELECT id FROM sys_menu")
+    List<Long> selectAllMenuIds();
 }

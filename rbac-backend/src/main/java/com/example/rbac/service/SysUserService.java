@@ -12,6 +12,7 @@ import com.example.rbac.entity.SysUserRole;
 import com.example.rbac.mapper.SysUserMapper;
 import com.example.rbac.mapper.SysUserPostMapper;
 import com.example.rbac.mapper.SysUserRoleMapper;
+import com.example.rbac.mq.SubsystemSyncService;
 import com.example.rbac.security.PermissionSnapshotStore;
 import com.example.rbac.security.TokenStore;
 import com.example.rbac.util.UniqueKeyUtils;
@@ -49,6 +50,7 @@ public class SysUserService {
     private final TokenStore tokenStore;
     private final PermissionSnapshotStore snapshotStore;
     private final SysOperationLogService logService;
+    private final SubsystemSyncService subsystemSyncService;
 
     public Page<SysUser> page(long pageNum, long pageSize, String username, Integer status) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<SysUser>()
@@ -118,6 +120,7 @@ public class SysUserService {
         userMapper.insert(user);
         saveUserRoles(user.getId(), form.getRoleIds());
         saveUserPosts(user.getId(), form.getPostIds());
+        syncSubsystems();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -158,6 +161,7 @@ public class SysUserService {
 
         // 用户资料与角色都在登录快照里，改完必须失效，否则昵称/部门等要等重新登录才更新
         snapshotStore.invalidateUser(form.getId());
+        syncSubsystems();
     }
 
     /**
@@ -177,6 +181,7 @@ public class SysUserService {
             logService.record(MODULE_USER, AuditAction.ENABLED, exist.getId(),
                     exist.getUsername(), "启用账号");
         }
+        syncSubsystems();
     }
 
     /** 停用(0)与离职(2)都会让用户立即下线 */
@@ -208,6 +213,7 @@ public class SysUserService {
         userMapper.deleteById(id);
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, id));
         log.info("用户已删除并失效登录凭证: {}", exist.getUsername());
+        syncSubsystems();
     }
 
     /**
@@ -228,6 +234,14 @@ public class SysUserService {
         saveUserRoles(userId, roleIds);
         // 角色变了，权限快照立即失效，下一次请求重建
         snapshotStore.invalidateUser(userId);
+        syncSubsystems();
+    }
+
+    /**
+     * 用户表与用户角色表是全子系统共用的，任何用户变更都要给所有子系统重新下发
+     */
+    private void syncSubsystems() {
+        subsystemSyncService.syncAll();
     }
 
     /**

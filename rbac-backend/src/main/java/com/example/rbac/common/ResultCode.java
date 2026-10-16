@@ -38,7 +38,11 @@ public enum ResultCode {
     NEW_PASSWORD_SAME(1021, "新密码不能与原密码相同"),
     CLIENT_ID_EXISTS(1022, "客户端标识已存在"),
     CLIENT_NOT_EXIST(1023, "客户端不存在"),
-    CLIENT_SECRET_REQUIRED(1024, "客户端密钥不能为空");
+    CLIENT_SECRET_REQUIRED(1024, "客户端密钥不能为空"),
+    SUBSYSTEM_CODE_EXISTS(1025, "子系统编码已存在"),
+    SUBSYSTEM_NOT_EXIST(1026, "子系统不存在"),
+    SUBSYSTEM_HAS_MENUS(1027, "该子系统下还有菜单，无法删除"),
+    SUPER_ADMIN_NO_GRANT(1028, "超级管理员隐式拥有全部权限，无需分配");
 
     private final Integer code;
     private final String message;

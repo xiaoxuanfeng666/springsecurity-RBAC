@@ -52,6 +52,28 @@ jwt:
   header: Authorization
   token-prefix: "Bearer "
 
+# OAuth2 客户端密钥的加解密配置
+# 客户端密钥（clientdetails.appSecret）需要能在「客户端管理」页面上展示明文供复制给第三方，
+# 因此用可逆加密存储：库里是 AES 密文，本服务负责写入时加密、展示时解密。
+# 【必须与 rbac-oauth 一致】授权服务器要用同一把密钥解密 appSecret 才能校验客户端身份；
+# 两边配置不一致时，客户端会认证失败。
+# 【重要】此值一旦变更，库中已有的客户端密钥将无法解密，需要在「客户端管理」页面重新设置密钥。
+oauth2:
+  client-secret-key: rbac-client-secret-key-please-change-in-production-0123456789
+
+# RocketMQ：把子系统菜单与用户角色权限下发给对应子系统（消费方订阅 topic RBAC_SUBSYSTEM_SYNC）
+# 需要先启动 RocketMQ（NameServer 默认 9876）。broker 未启动时发送失败只记日志，不影响 RBAC 本体。
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: rbac-backend-producer
+    send-message-timeout: 3000
+
+# 子系统数据下发开关。置为 false 可彻底关闭（连定时/启动兜底下发也不做）
+rbac:
+  subsystem-sync:
+    enabled: true
+
 logging:
   level:
     com.example.rbac: debug

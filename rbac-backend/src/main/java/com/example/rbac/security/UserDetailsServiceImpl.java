@@ -11,7 +11,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 用户信息加载
@@ -72,8 +74,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private PermissionSnapshot buildSnapshot(SysUser user) {
-        return new PermissionSnapshot(user,
-                new HashSet<>(menuMapper.selectPermsByUserId(user.getId())),
-                new HashSet<>(userMapper.selectRoleKeysByUserId(user.getId())));
+        Set<String> roleKeys = new HashSet<>(userMapper.selectRoleKeysByUserId(user.getId()));
+        // 超级管理员的权限不查库：直接给通配符，新增菜单后无需手动补授权
+        Set<String> permissions = SuperAdmin.matches(roleKeys)
+                ? new HashSet<>(Collections.singletonList(SuperAdmin.WILDCARD_PERMISSION))
+                : new HashSet<>(menuMapper.selectPermsByUserId(user.getId()));
+        return new PermissionSnapshot(user, permissions, roleKeys);
     }
 }

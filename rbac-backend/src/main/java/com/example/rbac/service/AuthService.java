@@ -140,14 +140,19 @@ public class AuthService {
      * 获取当前登录用户信息（含权限与菜单树），前端据此渲染动态路由
      * <p>
      * 用户信息、权限与角色均取自会话快照（也就是服务端实际的鉴权依据），
-     * 保证前端展示与后端判定一致；只有菜单树实时查库。
+     * 保证前端展示与后端判定一致；菜单树实时查库。
+     * <p>
+     * 超级管理员的权限不落库（见 {@link SuperAdmin}），菜单也就不能按 sys_role_menu 过滤，
+     * 直接返回全部启用菜单 —— 这样新加菜单不需要给超级管理员补授权。
      */
     public LoginInfoResponse getInfo(LoginUser loginUser) {
         Long userId = loginUser.getUser().getId();
         // 快照内部是 Set，排序后返回保证接口输出稳定
         List<String> roles = loginUser.getRoles().stream().sorted().collect(Collectors.toList());
         List<String> permissions = loginUser.getPermissions().stream().sorted().collect(Collectors.toList());
-        List<SysMenu> menus = TreeUtils.buildTree(menuMapper.selectMenusByUserId(userId));
+        List<SysMenu> menus = TreeUtils.buildTree(SuperAdmin.matches(loginUser.getRoles())
+                ? menuMapper.selectAllEnabledMenus()
+                : menuMapper.selectMenusByUserId(userId));
 
         LoginInfoResponse response = new LoginInfoResponse();
         response.setUser(loginUser.getUser());

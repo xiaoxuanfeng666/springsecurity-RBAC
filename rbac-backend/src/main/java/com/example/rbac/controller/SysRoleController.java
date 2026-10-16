@@ -5,6 +5,7 @@ import com.example.rbac.common.AuditAction;
 import com.example.rbac.common.OperLog;
 import com.example.rbac.common.Result;
 import com.example.rbac.dto.RoleForm;
+import com.example.rbac.dto.RoleSubsystemMenusForm;
 import com.example.rbac.entity.SysRole;
 import com.example.rbac.service.SysRoleService;
 import lombok.RequiredArgsConstructor;
@@ -86,5 +87,29 @@ public class SysRoleController {
     public Result<Void> delete(@PathVariable Long id) {
         roleService.delete(id);
         return Result.success("删除成功", null);
+    }
+
+    /**
+     * 查询角色在指定子系统下已分配的菜单 ID（子系统授权页回显勾选状态）
+     */
+    @GetMapping("/{id}/subsystem-menus")
+    @PreAuthorize("@ss.hasPerm('system:role:menu')")
+    public Result<List<Long>> subsystemMenuIds(@PathVariable Long id, @RequestParam Long subsystemId) {
+        return Result.success(roleService.getSubsystemMenuIds(id, subsystemId));
+    }
+
+    /**
+     * 分配角色的子系统菜单（按子系统局部替换，不影响其他子系统）
+     * <p>
+     * 与 {@code PUT /role/{id}/menus} 的区别：那是本系统后台的菜单权限（影响 @PreAuthorize 判定），
+     * 这里是下发给子系统的导航菜单，不参与本系统鉴权。
+     */
+    @PutMapping("/{id}/subsystem-menus")
+    @PreAuthorize("@ss.hasPerm('system:role:menu')")
+    @OperLog(module = "角色管理", action = AuditAction.GRANT, description = "分配子系统菜单")
+    public Result<Void> updateRoleSubsystemMenus(@PathVariable Long id,
+                                                @Valid @RequestBody RoleSubsystemMenusForm form) {
+        roleService.updateRoleSubsystemMenus(id, form.getSubsystemId(), form.getMenuIds());
+        return Result.success("子系统菜单已更新", null);
     }
 }
