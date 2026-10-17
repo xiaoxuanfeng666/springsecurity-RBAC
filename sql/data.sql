@@ -127,23 +127,15 @@ VALUES (1091, 109, '子系统菜单查询', NULL, NULL, 'system:subsystem:menu:q
        (1093, 109, '子系统菜单修改', NULL, NULL, 'system:subsystem:menu:edit', 3, NULL, 3, 1, 1, NOW(), NOW()),
        (1094, 109, '子系统菜单删除', NULL, NULL, 'system:subsystem:menu:remove', 3, NULL, 4, 1, 1, NOW(), NOW());
 
-INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
-VALUES (110, 1, 'SSO 会话', 'sso-session', 'system/sso-session/index', 'system:sso:list', 2, 'Connection', 10, 1, 1, NOW(), NOW());
-
-INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
-VALUES (1095, 110, '会话查询', NULL, NULL, 'system:sso:query', 3, NULL, 1, 1, 1, NOW(), NOW()),
-       (1096, 110, '强制下线', NULL, NULL, 'system:sso:kick', 3, NULL, 2, 1, 1, NOW(), NOW());
-
 -- ---------- 角色-菜单：admin 刻意不插任何记录 ----------
 -- 超级管理员的权限由代码隐式授予（见 rbac-backend 的 security/SuperAdmin）：
 -- 权限判定用通配符 *:*:* 一律放行，菜单树直接返回全部启用菜单。
 -- 因此 role_id=1 在 sys_role_menu 里**没有行**，新增菜单后也无需给超级管理员补授权。
 -- 换句话说，admin 角色在这张表里的数据不代表它的真实权限（那张表只管普通角色）。
 
--- ---------- 角色-菜单：common 仅有仪表盘 + 用户查询 + SSO 会话（只读）----------
--- SSO 会话只给到「页面 + 查询」：能看到谁在线，但没有「强制下线」按钮（system:sso:kick）。
+-- ---------- 角色-菜单：common 仅有仪表盘 + 用户查询 ----------
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
-VALUES (2, 2), (2, 1), (2, 100), (2, 1001), (2, 110), (2, 1095);
+VALUES (2, 2), (2, 1), (2, 100), (2, 1001);
 
 -- ---------- 示例 OAuth2 客户端（第三方系统接入，覆盖全部五种授权模式）----------
 -- appSecret 存的是明文 client123 经 AES 加密后的密文（密钥来自配置项 oauth2.client-secret-key）。

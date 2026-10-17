@@ -9,6 +9,7 @@ import com.example.oauth.oauth.SsoLoginSuccessHandler;
 import com.example.oauth.security.OauthAuthStore;
 import com.example.oauth.security.RedisRequestCache;
 import com.example.oauth.security.SsoSessionStore;
+import com.example.oauth.service.SsoSessionRecordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,6 +65,7 @@ public class OAuth2AuthorizationSecurityConfig {
     private final SsoSessionStore ssoSessionStore;
     private final OauthAuthStore oauthAuthStore;
     private final OauthAuthCookieFilter oauthAuthCookieFilter;
+    private final SsoSessionRecordService ssoSessionRecordService;
 
     @Bean
     @Order(2)
@@ -75,7 +77,7 @@ public class OAuth2AuthorizationSecurityConfig {
 
         // 登录成功后跳回此前被缓存的 /oauth/authorize
         SavedRequestAwareAuthenticationSuccessHandler successHandler =
-                new SsoLoginSuccessHandler(oauthAuthStore, ssoSessionStore);
+                new SsoLoginSuccessHandler(oauthAuthStore, ssoSessionStore, ssoSessionRecordService);
         successHandler.setRequestCache(requestCache);
         // 缓存里存的就是相对地址（路径 + 查询串），原样发出即可 —— 浏览器按当前源解析，
         // 因此不会把用户带离前端源。切勿在此再「绝对转相对」：地址的查询串里嵌套了

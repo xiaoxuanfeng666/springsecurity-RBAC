@@ -15,11 +15,11 @@ import org.springframework.util.StringUtils;
 /**
  * 操作日志
  * <p>
- * 只做追加与查询，不提供修改删除。两类写入来源：
- * <ul>
- *   <li>业务代码直接记录（登录、登出、强制下线、停用/启用/离职、重置密码、自助改密）</li>
- *   <li>{@link com.example.rbac.aspect.OperLogAspect} 依据 {@code @OperLog} 注解自动记录增删改</li>
- * </ul>
+ * 只做追加与查询，不提供修改删除。
+ * <p>
+ * 本表只保留登录、登出、强制下线、停用/启用/离职、改密等账号与会话类动作；
+ * 接口的增删改（CREATE/UPDATE/DELETE/GRANT）已迁到独立的审计日志系统
+ * （见 {@code OperLogAspect} 与 topic {@code RBAC_AUDIT_LOG}），避免两处重复记录。
  */
 @Slf4j
 @Service
@@ -48,26 +48,6 @@ public class SysOperationLogService {
         save(module, action, description, userId, username,
                 operator.getUser().getId(), operator.getUsername(),
                 null, null, true, null, null);
-    }
-
-    /**
-     * 供切面记录增删改：带请求信息与执行结果。
-     * <p>
-     * 这里的写入发生在业务事务提交**之后**，失败了也无法回滚业务，
-     * 所以只记 error 日志而不向外抛 —— 否则会把已成功的操作回给前端一个失败。
-     */
-    public void recordAction(String module, String action, String description,
-                             String httpMethod, String requestUri,
-                             boolean success, String errorMsg, long durationMs) {
-        LoginUser operator = SecurityUtils.getLoginUser();
-        Long operatorId = operator == null ? null : operator.getUser().getId();
-        String operatorName = operator == null ? null : operator.getUsername();
-        try {
-            save(module, action, description, null, null, operatorId, operatorName,
-                    httpMethod, requestUri, success, errorMsg, durationMs);
-        } catch (Exception e) {
-            log.error("操作日志写入失败: module={}, action={}, uri={}", module, action, requestUri, e);
-        }
     }
 
     private void save(String module, String action, String description,

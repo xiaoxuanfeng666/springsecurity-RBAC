@@ -1,6 +1,7 @@
 package com.example.order.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.order.common.OperLog;
 import com.example.order.common.Result;
 import com.example.order.dto.OrderForm;
 import com.example.order.dto.OrderStatView;
@@ -50,6 +51,7 @@ public class OrderController {
 
     @PostMapping
     @PreAuthorize("@ss.hasPerm('order:order:add')")
+    @OperLog(module = "订单管理", action = "CREATE", description = "新增订单")
     public Result<Void> create(@Valid @RequestBody OrderForm form) {
         orderService.create(form);
         return Result.success("新增成功", null);
@@ -57,6 +59,7 @@ public class OrderController {
 
     @PutMapping
     @PreAuthorize("@ss.hasPerm('order:order:edit')")
+    @OperLog(module = "订单管理", action = "UPDATE", description = "修改订单")
     public Result<Void> update(@Valid @RequestBody OrderForm form) {
         orderService.update(form);
         return Result.success("修改成功", null);
@@ -64,6 +67,7 @@ public class OrderController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('order:order:remove')")
+    @OperLog(module = "订单管理", action = "DELETE", description = "删除订单")
     public Result<Void> delete(@PathVariable Long id) {
         orderService.delete(id);
         return Result.success("删除成功", null);

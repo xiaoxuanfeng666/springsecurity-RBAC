@@ -8,8 +8,10 @@ com\example\marketing\security\SuperAdmin.class
 com\example\marketing\security\RestAuthenticationEntryPoint.class
 com\example\marketing\security\SecurityUtils.class
 com\example\marketing\service\LotteryActivityService.class
+com\example\marketing\util\AuditParamUtils.class
 com\example\marketing\entity\LotteryActivityPrize.class
 com\example\marketing\entity\MarketingUserRole.class
+com\example\marketing\aspect\OperLogAspect.class
 com\example\marketing\dto\LotteryPrizeForm.class
 com\example\marketing\dto\LoginInfoResponse.class
 com\example\marketing\common\Result.class
@@ -27,7 +29,9 @@ com\example\marketing\controller\LotteryRecordController.class
 com\example\marketing\mq\SubsystemSyncMessage$UserRole.class
 com\example\marketing\dto\PointsTaskForm.class
 com\example\marketing\util\TreeUtils.class
+com\example\marketing\mq\AuditLogPublisher$1.class
 com\example\marketing\entity\MarketingMenu.class
+com\example\marketing\mq\AuditLogPublisher.class
 com\example\marketing\config\RestTemplateConfig.class
 com\example\marketing\controller\LotteryPrizeController.class
 com\example\marketing\mapper\PointsFlowMapper.class
@@ -57,7 +61,9 @@ com\example\marketing\mapper\MarketingUserRoleMapper.class
 com\example\marketing\controller\LotteryActivityController.class
 com\example\marketing\mapper\MarketingMenuMapper.class
 com\example\marketing\security\OAuth2TokenAuthenticationFilter.class
+com\example\marketing\mq\AuditLogMessage.class
 com\example\marketing\common\ResultCode.class
+com\example\marketing\common\OperLog.class
 com\example\marketing\entity\PointsTask.class
 com\example\marketing\service\PointsFlowService.class
 com\example\marketing\service\LotteryPrizeService.class
@@ -66,6 +72,7 @@ com\example\marketing\mapper\LotteryActivityPrizeMapper.class
 com\example\marketing\entity\LotteryPrize.class
 com\example\marketing\entity\LotteryRecord.class
 com\example\marketing\mq\SubsystemSyncMessage$Menu.class
+com\example\marketing\util\WebUtils.class
 com\example\marketing\mapper\MarketingRoleMenuMapper.class
 com\example\marketing\mq\SubsystemSyncConsumer.class
 com\example\marketing\mq\SubsystemSyncMessage$RoleMenu.class

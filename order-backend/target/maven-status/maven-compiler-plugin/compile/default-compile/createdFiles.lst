@@ -6,11 +6,16 @@ com\example\order\common\Result.class
 com\example\order\service\AuthService.class
 com\example\order\config\RestTemplateConfig.class
 com\example\order\mq\SubsystemSyncMessage$RoleMenu.class
+com\example\order\util\WebUtils.class
 com\example\order\security\OAuth2TokenAuthenticationFilter.class
 com\example\order\service\OrderSyncService.class
 com\example\order\mapper\OrderUserMapper.class
+com\example\order\aspect\OperLogAspect.class
+com\example\order\mq\AuditLogPublisher.class
 com\example\order\common\BusinessException.class
+com\example\order\util\AuditParamUtils.class
 com\example\order\dto\LoginInfoResponse.class
+com\example\order\mq\AuditLogPublisher$1.class
 com\example\order\security\LoginUser.class
 com\example\order\dto\RefreshRequest.class
 com\example\order\config\JacksonConfig.class
@@ -29,6 +34,7 @@ com\example\order\security\RestAuthenticationEntryPoint.class
 com\example\order\security\SuperAdmin.class
 com\example\order\common\ResultCode.class
 com\example\order\util\TreeNode.class
+com\example\order\common\OperLog.class
 com\example\order\config\MyMetaObjectHandler.class
 com\example\order\mapper\OrderRoleMenuMapper.class
 com\example\order\entity\OrderUser.class
@@ -48,4 +54,5 @@ com\example\order\security\OAuth2TokenClient.class
 com\example\order\dto\OrderStatView.class
 com\example\order\dto\PasswordLoginRequest.class
 com\example\order\mq\SubsystemSyncMessage.class
+com\example\order\mq\AuditLogMessage.class
 com\example\order\security\SecurityUtils.class

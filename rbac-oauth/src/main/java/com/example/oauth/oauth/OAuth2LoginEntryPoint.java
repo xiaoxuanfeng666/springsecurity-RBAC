@@ -3,10 +3,13 @@ package com.example.oauth.oauth;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * 授权端点的未登录入口点：302 跳到 OAuth2 登录页（rbac-oauth-web）
@@ -22,8 +25,18 @@ import java.io.IOException;
  * <p>
  * 登录成功后的「跳回原地址」由 Spring Security 的请求缓存机制完成
  * （{@code ExceptionTranslationFilter} 在调用本入口点前已保存原始请求），无需在此处理。
+ * <p>
+ * <b>为什么还要在登录页地址上带 {@code returnTo}</b>：请求缓存（Redis）与索引 Cookie
+ * 只有 30 分钟。用户如果在登录页停留超过这个时间，缓存先过期，登录成功后成功处理器就找不到
+ * 要跳回的授权地址，只能落到默认首页 —— 子系统再也回不去。把本次授权请求的相对地址一并交给
+ * 登录页（表单再原样带回），成功处理器在缓存为空时据此恢复，等待多久都不受影响。
+ * 地址里虽然包含 client_secret，但浏览器此前已经访问过同一个 {@code /oauth/authorize} 地址，
+ * 且 {@code returnTo} 在服务端严格限制为以 {@code /oauth/} 开头的相对路径，避免开放重定向。
  */
 public class OAuth2LoginEntryPoint implements AuthenticationEntryPoint {
+
+    /** 登录页带回原始授权地址用的参数名，与 SsoLoginSuccessHandler、前端登录页保持一致 */
+    public static final String RETURN_TO_PARAM = "returnTo";
 
     private final String loginPageUrl;
 
@@ -34,8 +47,12 @@ public class OAuth2LoginEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
+        String returnTo = request.getRequestURI();
+        if (StringUtils.hasText(request.getQueryString())) {
+            returnTo += "?" + request.getQueryString();
+        }
         response.setStatus(HttpServletResponse.SC_FOUND);
-        response.setHeader(HttpHeaders.LOCATION, loginPageUrl);
+        response.setHeader(HttpHeaders.LOCATION, appendReturnTo(loginPageUrl, returnTo));
     }
 
     /**
@@ -46,5 +63,16 @@ public class OAuth2LoginEntryPoint implements AuthenticationEntryPoint {
     public static String withErrorFlag(String loginPageUrl) {
         String separator = loginPageUrl.contains("?") ? "&" : "?";
         return loginPageUrl + separator + "error=1";
+    }
+
+    private static String appendReturnTo(String loginPageUrl, String returnTo) {
+        String separator = loginPageUrl.contains("?") ? "&" : "?";
+        try {
+            return loginPageUrl + separator + RETURN_TO_PARAM + "="
+                    + URLEncoder.encode(returnTo, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // UTF-8 不会发生；兜底返回原地址，登录仍可完成，只是恢复不了授权上下文
+            return loginPageUrl;
+        }
     }
 }

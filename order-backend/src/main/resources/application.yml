@@ -49,8 +49,14 @@ oauth2:
   # 本系统不按 scope 判权（用的是 RBAC 下发的权限点），所以申请单个 read 即可。
   scope: read
 
-# RocketMQ：消费 RBAC 下发的子系统数据（topic RBAC_SUBSYSTEM_SYNC，tag 为本子系统编码 order-center）
+# RocketMQ：
+#   消费 RBAC 下发的子系统数据（topic RBAC_SUBSYSTEM_SYNC，tag 为本子系统编码 order-center）
+#   上报增删改审计日志（topic RBAC_AUDIT_LOG）
+# producer.group 必须配置，否则 starter 不创建 RocketMQTemplate，审计上报会被跳过。
 # 需要先启动 RocketMQ（NameServer 默认 9876）。broker 未启动时收不到数据，
 # 此时用户无法登录本系统（权限数据来源于 RBAC），这是预期行为。
 rocketmq:
   name-server: localhost:9876
+  producer:
+    group: order-backend-producer
+    send-message-timeout: 3000

@@ -60,21 +60,6 @@ jwt:
 # 【重要】此值一旦变更，库中已有的客户端密钥将无法解密，需要在「客户端管理」页面重新设置密钥。
 oauth2:
   client-secret-key: rbac-client-secret-key-please-change-in-production-0123456789
-  # 统一门户（5177）与授权服务的对接。门户本身没有用户体系：
-  # 它自己也走 rbac-oauth 的授权码模式登录（客户端为 portal），登录后浏览器里就有了
-  # 授权服务的会话，再凭这个会话一键把其余子系统的令牌都换出来。
-  # client-id / client-secret 必须与「客户端管理」里 portal 客户端的配置一致。
-  portal:
-    server-url: http://localhost:7071
-    client-id: portal
-    client-secret: portal123
-    # 必须与 clientdetails 里 portal 的 redirectUrl 完全一致，否则换令牌会被拒
-    redirect-uri: http://localhost:5177/oauth/callback
-    # 门户自己申请的范围
-    scope: read
-    # 一键登录时替子系统申请的授权范围。子系统客户端都已在 autoApproveScopes 里放行了 read，
-    # 因此这一步不会弹出确认页（见 sql/upgrade-2026-10-16-sso.sql）。
-    subsystem-scope: read
 
 # RocketMQ：把子系统菜单与用户角色权限下发给对应子系统（消费方订阅 topic RBAC_SUBSYSTEM_SYNC）
 # 需要先启动 RocketMQ（NameServer 默认 9876）。broker 未启动时发送失败只记日志，不影响 RBAC 本体。
@@ -88,6 +73,9 @@ rocketmq:
 rbac:
   subsystem-sync:
     enabled: true
+  # 强制下线 SSO 会话的通知 topic：本服务生产，rbac-oauth 消费
+  sso:
+    kick-topic: RBAC_OAUTH_SESSION
 
 logging:
   level:

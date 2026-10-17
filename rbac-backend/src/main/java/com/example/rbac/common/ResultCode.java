@@ -42,7 +42,8 @@ public enum ResultCode {
     SUBSYSTEM_CODE_EXISTS(1025, "子系统编码已存在"),
     SUBSYSTEM_NOT_EXIST(1026, "子系统不存在"),
     SUBSYSTEM_HAS_MENUS(1027, "该子系统下还有菜单，无法删除"),
-    SUPER_ADMIN_NO_GRANT(1028, "超级管理员隐式拥有全部权限，无需分配");
+    SUPER_ADMIN_NO_GRANT(1028, "超级管理员隐式拥有全部权限，无需分配"),
+    SSO_SESSION_NOT_EXIST(1029, "SSO 会话记录不存在");
 
     private final Integer code;
     private final String message;

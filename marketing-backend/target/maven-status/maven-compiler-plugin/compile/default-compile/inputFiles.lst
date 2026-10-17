@@ -13,7 +13,9 @@ D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\ex
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\dto\TokenResponse.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\entity\MarketingUserRole.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\mapper\LotteryPrizeMapper.java
+D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\common\OperLog.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\security\SecurityUtils.java
+D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\util\AuditParamUtils.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\entity\MarketingUser.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\service\AuthService.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\service\LotteryActivityService.java
@@ -37,11 +39,13 @@ D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\ex
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\util\TreeNode.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\util\TreeUtils.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\mq\SubsystemSyncMessage.java
+D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\aspect\OperLogAspect.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\dto\LoginInfoResponse.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\security\OAuth2TokenAuthenticationFilter.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\entity\LotteryActivity.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\controller\PointsFlowController.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\entity\PointsTask.java
+D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\mq\AuditLogMessage.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\dto\PointsTaskForm.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\MarketingApplication.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\mapper\PointsFlowMapper.java
@@ -55,6 +59,7 @@ D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\ex
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\service\LotteryPrizeService.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\controller\PointsTaskController.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\mapper\PointsTaskMapper.java
+D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\mq\AuditLogPublisher.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\controller\LotteryActivityController.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\common\BusinessException.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\config\MyMetaObjectHandler.java
@@ -63,5 +68,6 @@ D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\ex
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\mapper\MarketingUserRoleMapper.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\security\PermissionService.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\security\RestAccessDeniedHandler.java
+D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\util\WebUtils.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\config\SecurityConfig.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\service\PointsTaskService.java

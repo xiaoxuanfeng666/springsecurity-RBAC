@@ -90,6 +90,13 @@
             <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- JJWT API -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.5</version>
+        </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>

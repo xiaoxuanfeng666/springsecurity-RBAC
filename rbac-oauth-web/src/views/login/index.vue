@@ -30,10 +30,25 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
+
+/** 授权请求缓存（30 分钟）过期后，靠它恢复「登录后跳回授权页」 */
+const RETURN_TO_KEY = 'oauth_return_to'
+const returnTo = ref('')
+
+onMounted(() => {
+  const fromQuery = route.query.returnTo
+  if (typeof fromQuery === 'string' && fromQuery) {
+    // 存一份到 sessionStorage：登录失败会跳回 /login?error=1，查询串没了，但本次等待仍在
+    sessionStorage.setItem(RETURN_TO_KEY, fromQuery)
+    returnTo.value = fromQuery
+  } else {
+    returnTo.value = sessionStorage.getItem(RETURN_TO_KEY) || ''
+  }
+})
 
 /** 授权端点登录失败时会带 error=1 跳回这里（见 OAuth2AuthorizationSecurityConfig 的 failureUrl） */
 const loginError = ref(route.query.error === '1')
@@ -70,7 +85,12 @@ function submitLogin() {
   const formEl = document.createElement('form')
   formEl.method = 'POST'
   formEl.action = '/oauth/login'
-  Object.entries({ username: form.username, password: form.password }).forEach(([name, value]) => {
+  const fields = { username: form.username, password: form.password }
+  // 原始授权地址（相对路径）：服务端在请求缓存过期时据此跳回 /oauth/authorize
+  if (returnTo.value) {
+    fields.returnTo = returnTo.value
+  }
+  Object.entries(fields).forEach(([name, value]) => {
     const input = document.createElement('input')
     input.type = 'hidden'
     input.name = name

@@ -5,7 +5,7 @@
  * 四条路径的落点都必须是 5174/login：
  *   A. 未登录打开子系统（订单中心）
  *   B. 在子系统点「退出登录」
- *   C. 在门户点「统一登出」（门户标签页 + 被踢的子系统标签页）
+ *   C. 在另一个子系统（不同源）登出后，这边的标签页跟着被踢
  *   D. 登出后带着已失效的旧令牌再进子系统
  *
  * 另外验一件容易被忽略的事：**落到 5174 之后登录确实能用**。
@@ -14,7 +14,7 @@
  * 因此落点正确还不够，必须验「在那儿登录能进得去」。
  */
 import {
-  AUTH_WEB, ORDER_WEB, PORTAL_WEB,
+  AUTH_WEB, MARKETING_WEB, ORDER_WEB,
   check, checkTrue, summary, sleep, launchChrome, firstTab, newTab,
   submitOauthLogin
 } from './cdp.mjs'
@@ -115,64 +115,50 @@ async function main() {
     // ============================================================ 路径 C
     console.log()
     console.log('='.repeat(90))
-    console.log('路径 C：在门户点「统一登出」')
+    console.log('路径 C：在【营销系统】点「退出登录」—— 另一个子系统的标签页会被踢')
     console.log('='.repeat(90))
-    // 重新登录（还是走 5174），再开第二个订单中心标签页，让它跟着一起被踢。
-    // 【注意】这里不用营销系统：本机 7072 跑的还是加缓存那一版代码（没重启过），
-    // 它的 check_token 缓存会让令牌在登出后最多继续有效 5 分钟 —— 那是实例没更新，不是代码问题。
-    // 订单中心 7073 已是最新代码，同一条路径在这里立刻生效。
+    // 必须换一个**源**来验：同源的两个标签页共享 localStorage，登出方一清令牌，
+    // 另一个标签页连令牌都没了，走不到「401 被踢」那条路。营销系统（5175）与订单中心（5176）
+    // 是两个源，各存各的令牌 —— 这才是真实场景。
     await submitOauthLogin(tabA, 'admin', 'admin123')
     await tabA.waitFor(`!!localStorage.getItem('order_access_token')`, '重新登录', 40000)
-    const tabC = await newTab(tabA, ORDER_WEB + '/')
-    await tabC.waitFor('document.readyState === "complete" && document.body.innerText.length > 0',
-      '第二个订单中心标签页就绪', 25000)
 
-    // 门户是**独立入口**（不在子系统的登录链上），所以先单独登录一次门户。
-    // 此时授权服务的会话还活着，点「统一登录」不会再要密码。
-    const portalTab = await newTab(tabA, PORTAL_WEB + '/')
-    await portalTab.waitFor('document.body.innerText.length > 0', '门户打开', 20000)
-    if (!(await portalTab.eval('document.body.innerText.includes("我的子系统")'))) {
-      await portalTab.waitFor(
-        '[...document.querySelectorAll("button")].some(b => b.innerText.includes("统一登录"))',
-        '门户登录页的按钮', 15000)
-      await portalTab.eval(`(() => {
-        const b = [...document.querySelectorAll('button')].find(x => x.innerText.includes('统一登录'));
-        if (!b) return false; b.click(); return true;
-      })()`)
-    }
-    await portalTab.waitFor('document.body.innerText.includes("我的子系统")',
-      '门户工作台渲染', 40000)
-    await portalTab.bringToFront()
+    const mktTab = await newTab(tabA, MARKETING_WEB + '/')
+    await mktTab.waitFor(`!!localStorage.getItem('marketing_access_token')`, '营销系统就绪', 25000)
+    checkTrue('营销系统静默登录（同一次授权服务的登录态）', true, await mktTab.url())
+
+    await mktTab.bringToFront()
     await sleep(300)
-    check('点到「统一登出」', await clickText(portalTab, '统一登出'), true)
-    await confirmBox(portalTab)
+    check('在营销系统点到「退出登录」', await clickText(mktTab, '退出登录'), true)
+    await confirmBox(mktTab)
 
-    const traceP = await traceUntil(portalTab, atLanding, 30)
-    reportTrace('门户标签页的轨迹', traceP)
-    checkTrue('门户标签页落在授权服务的登录页', atLanding(await portalTab.url()), await portalTab.url())
+    const traceP = await traceUntil(mktTab, atLanding, 30)
+    reportTrace('营销系统标签页的轨迹', traceP)
+    checkTrue('营销系统标签页落在授权服务的登录页', atLanding(await mktTab.url()),
+      await mktTab.url())
 
-    // 被踢的子系统标签页：切回来触发惰性校验。
+    // 被踢的子系统标签页（订单中心，与营销系统不同源）：切回来触发惰性校验。
     // 这里要等 1.5 秒再开始看 —— sessionWatch 有 1 秒节流，切标签页本身也会产生
     // visibilitychange/focus，掐着时间看会把「刚被节流掉」误判成「没被踢」。
-    await tabC.bringToFront()
+    await tabA.bringToFront()
     await sleep(1500)
-    let traceK = await traceUntil(tabC, atLanding, 12)
-    if (!atLanding(await tabC.url())) {
+    let traceK = await traceUntil(tabA, atLanding, 12)
+    if (!atLanding(await tabA.url())) {
       // 真实事件没生效（headless 下激活标签页不一定派发），手动触发一次它此刻适用的分支。
       // 这不是绕过验证：focus 分支就是真实代码路径，只是由合成事件触发而已。
-      const visible = await tabC.eval('document.visibilityState')
+      const visible = await tabA.eval('document.visibilityState')
       console.log('  （真实事件未触发，手动触发 %s 分支）', visible === 'visible' ? 'visibilitychange' : 'focus')
       await sleep(1200)
-      await tabC.eval(visible === 'visible'
+      await tabA.eval(visible === 'visible'
         ? 'document.dispatchEvent(new Event("visibilitychange")), true'
         : 'window.dispatchEvent(new Event("focus")), true')
-      traceK = traceK.concat(await traceUntil(tabC, atLanding, 20))
+      traceK = traceK.concat(await traceUntil(tabA, atLanding, 20))
     }
     reportTrace('被踢的订单中心标签页的轨迹', traceK)
-    checkTrue('被踢的子系统标签页也落在授权服务的登录页', atLanding(await tabC.url()),
-      await tabC.url())
+    checkTrue('被踢的子系统标签页也落在授权服务的登录页', atLanding(await tabA.url()),
+      await tabA.url())
     check('被踢标签页的本地令牌也清掉了',
-      await tabC.eval('localStorage.getItem("order_access_token")'), null)
+      await tabA.eval('localStorage.getItem("order_access_token")'), null)
 
     // ============================================================ 路径 D
     console.log()

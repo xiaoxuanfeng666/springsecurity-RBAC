@@ -2,10 +2,12 @@ package com.example.oauth.oauth;
 
 import com.example.oauth.common.Result;
 import com.example.oauth.entity.ClientDetails;
+import com.example.oauth.entity.SsoSessionRecord;
 import com.example.oauth.mapper.ClientDetailsMapper;
 import com.example.oauth.security.LoginUser;
 import com.example.oauth.security.OauthAuthStore;
 import com.example.oauth.security.SsoSessionStore;
+import com.example.oauth.service.SsoSessionRecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,6 +74,7 @@ public class SsoLogoutController {
 
     private final SsoSessionStore ssoSessionStore;
     private final OauthAuthStore oauthAuthStore;
+    private final SsoSessionRecordService ssoSessionRecordService;
     private final TokenStore jwtTokenStore;
     private final ClientDetailsMapper clientDetailsMapper;
 
@@ -120,6 +123,12 @@ public class SsoLogoutController {
             loginStateRemoved = true;
         }
         OauthAuthStore.clearCookie(response);
+
+        // 落库：把这次登录对应的会话记录标成「已登出」（没有对应记录时是空操作）
+        if (StringUtils.hasText(username)) {
+            ssoSessionRecordService.closeOnlineRows(username,
+                    SsoSessionRecord.STATUS_OFFLINE, "主动登出");
+        }
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("username", username);

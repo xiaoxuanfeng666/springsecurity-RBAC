@@ -1,6 +1,7 @@
 package com.example.marketing.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.marketing.common.OperLog;
 import com.example.marketing.common.Result;
 import com.example.marketing.entity.PointsTask;
 import com.example.marketing.dto.PointsTaskForm;
@@ -46,6 +47,7 @@ public class PointsTaskController {
 
     @PostMapping
     @PreAuthorize("@ss.hasPerm('marketing:task:add')")
+    @OperLog(module = "积分任务", action = "CREATE", description = "新增积分任务")
     public Result<Void> create(@Valid @RequestBody PointsTaskForm form) {
         taskService.create(form);
         return Result.success("新增成功", null);
@@ -53,6 +55,7 @@ public class PointsTaskController {
 
     @PutMapping
     @PreAuthorize("@ss.hasPerm('marketing:task:edit')")
+    @OperLog(module = "积分任务", action = "UPDATE", description = "修改积分任务")
     public Result<Void> update(@Valid @RequestBody PointsTaskForm form) {
         taskService.update(form);
         return Result.success("修改成功", null);
@@ -60,6 +63,7 @@ public class PointsTaskController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('marketing:task:remove')")
+    @OperLog(module = "积分任务", action = "DELETE", description = "删除积分任务")
     public Result<Void> delete(@PathVariable Long id) {
         taskService.delete(id);
         return Result.success("删除成功", null);

@@ -1,6 +1,7 @@
 package com.example.marketing.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.marketing.common.OperLog;
 import com.example.marketing.common.Result;
 import com.example.marketing.dto.LotteryPrizeForm;
 import com.example.marketing.entity.LotteryPrize;
@@ -57,6 +58,7 @@ public class LotteryPrizeController {
 
     @PostMapping
     @PreAuthorize("@ss.hasPerm('marketing:prize:add')")
+    @OperLog(module = "奖品管理", action = "CREATE", description = "新增奖品")
     public Result<Void> create(@Valid @RequestBody LotteryPrizeForm form) {
         prizeService.create(form);
         return Result.success("新增成功", null);
@@ -64,6 +66,7 @@ public class LotteryPrizeController {
 
     @PutMapping
     @PreAuthorize("@ss.hasPerm('marketing:prize:edit')")
+    @OperLog(module = "奖品管理", action = "UPDATE", description = "修改奖品")
     public Result<Void> update(@Valid @RequestBody LotteryPrizeForm form) {
         prizeService.update(form);
         return Result.success("修改成功", null);
@@ -71,6 +74,7 @@ public class LotteryPrizeController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('marketing:prize:remove')")
+    @OperLog(module = "奖品管理", action = "DELETE", description = "删除奖品")
     public Result<Void> delete(@PathVariable Long id) {
         prizeService.delete(id);
         return Result.success("删除成功", null);

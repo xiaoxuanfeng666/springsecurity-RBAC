@@ -1,125 +1,159 @@
 <template>
   <div class="page-container">
     <el-card shadow="never">
-      <el-alert
-        type="info"
-        :closable="false"
-        show-icon
-        title="这里是经过统一门户/子系统登录的在线用户"
-        description="「强制下线」会删除该用户的 SSO 会话并销毁其浏览器会话，他在所有子系统里的令牌下一个请求即失效。本系统后台自己的登录态（用户管理里的「强制下线」）与这里是两回事。"
-        style="margin-bottom: 12px"
-      />
-
       <div class="table-toolbar">
-        <el-form :inline="true" @submit.prevent>
+        <el-form :inline="true" :model="query" @submit.prevent>
           <el-form-item label="用户名">
             <el-input
-              v-model="keyword"
-              placeholder="用户名 / 昵称"
+              v-model="query.username"
+              placeholder="请输入用户名"
               clearable
-              style="width: 170px"
+              style="width: 160px"
               @keyup.enter="handleSearch"
             />
           </el-form-item>
+          <el-form-item label="状态">
+            <el-select v-model="query.status" placeholder="全部" clearable style="width: 140px">
+              <el-option label="在线" :value="1" />
+              <el-option label="已登出" :value="0" />
+              <el-option label="被强制下线" :value="2" />
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" :icon="Search" @click="handleSearch">查询</el-button>
-            <el-button :icon="Refresh" @click="loadData">刷新</el-button>
+            <el-button :icon="Refresh" @click="handleReset">重置</el-button>
           </el-form-item>
         </el-form>
       </div>
 
-      <el-table v-loading="loading" :data="filteredData" border stripe>
+      <el-table v-loading="loading" :data="tableData" border stripe>
         <el-table-column type="index" label="#" width="55" align="center" />
-        <el-table-column prop="username" label="用户名" width="150" />
-        <el-table-column label="昵称" width="150">
+        <el-table-column prop="username" label="用户名" min-width="110" />
+        <el-table-column prop="nickname" label="昵称" min-width="110">
           <template #default="{ row }">{{ row.nickname || '-' }}</template>
         </el-table-column>
-        <el-table-column label="已登录的客户端" min-width="260">
+        <el-table-column prop="device" label="设备" min-width="140">
+          <template #default="{ row }">{{ row.device || '-' }}</template>
+        </el-table-column>
+        <el-table-column prop="loginIp" label="登录IP" min-width="130">
+          <template #default="{ row }">{{ row.loginIp || '-' }}</template>
+        </el-table-column>
+        <el-table-column prop="loginTime" label="登录时间" min-width="170" />
+        <el-table-column prop="logoutTime" label="登出时间" min-width="170">
+          <template #default="{ row }">{{ row.logoutTime || '-' }}</template>
+        </el-table-column>
+        <el-table-column label="状态" width="120" align="center">
           <template #default="{ row }">
-            <template v-if="row.clients && row.clients.length">
-              <el-tag v-for="c in row.clients" :key="c" size="small" style="margin-right: 6px">
-                {{ c }}
-              </el-tag>
-            </template>
-            <span v-else>-</span>
+            <el-tag :type="statusMeta(row.status).type" size="small">
+              {{ statusMeta(row.status).text }}
+            </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="loginTime" label="登录时间" width="180">
-          <template #default="{ row }">{{ row.loginTime || '-' }}</template>
+        <el-table-column prop="logoutReason" label="登出原因" min-width="130">
+          <template #default="{ row }">{{ row.logoutReason || '-' }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="120" align="center" fixed="right">
+        <el-table-column label="操作" width="110" fixed="right" align="center">
           <template #default="{ row }">
             <el-button
+              v-if="row.status === 1"
               v-permission="'system:sso:kick'"
               link
               type="danger"
-              :disabled="row.username === currentUsername"
               @click="handleKick(row)"
             >
               强制下线
             </el-button>
+            <span v-else>-</span>
           </template>
         </el-table-column>
       </el-table>
+
+      <div class="pagination-wrapper">
+        <el-pagination
+          v-model:current-page="query.pageNum"
+          v-model:page-size="query.pageSize"
+          :page-sizes="[10, 20, 50]"
+          :total="total"
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="loadData"
+          @current-change="loadData"
+        />
+      </div>
     </el-card>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Search, Refresh } from '@element-plus/icons-vue'
-import { listSsoSessions, kickSsoSession } from '@/api/ssoSession'
-import { useUserStore } from '@/store/user'
+import { pageSsoSessions, kickSsoSession } from '@/api/ssoSession'
 
-const userStore = useUserStore()
+/** 与后端 SsoSessionRecord 的状态常量一致：1 在线 / 0 已登出 / 2 被强制下线 */
+const STATUS_META = {
+  1: { text: '在线', type: 'success' },
+  0: { text: '已登出', type: 'info' },
+  2: { text: '被强制下线', type: 'danger' }
+}
+
+function statusMeta(status) {
+  return STATUS_META[status] || { text: '-', type: 'info' }
+}
 
 const loading = ref(false)
 const tableData = ref([])
-const keyword = ref('')
+const total = ref(0)
 
-const currentUsername = computed(() => userStore.userInfo?.username || '')
-
-/**
- * 客户端的过滤放在前端做：这张表的数据源是 Redis 里的会话（服务端一次性全量返回），
- * 本来就不大，再为它加一个分页/筛选接口不划算。
- */
-const filteredData = computed(() => {
-  const kw = keyword.value.trim()
-  if (!kw) {
-    return tableData.value
-  }
-  return tableData.value.filter(
-    (row) => (row.username || '').includes(kw) || (row.nickname || '').includes(kw)
-  )
+const query = reactive({
+  pageNum: 1,
+  pageSize: 10,
+  username: '',
+  status: null
 })
 
 async function loadData() {
   loading.value = true
   try {
-    const res = await listSsoSessions()
-    tableData.value = res.data || []
+    const res = await pageSsoSessions({
+      pageNum: query.pageNum,
+      pageSize: query.pageSize,
+      username: query.username || undefined,
+      status: query.status === null ? undefined : query.status
+    })
+    tableData.value = res.data.records
+    total.value = res.data.total
   } finally {
     loading.value = false
   }
 }
 
 function handleSearch() {
-  // 过滤是响应式的，这里只是让「查询」按钮有反馈
+  query.pageNum = 1
+  loadData()
+}
+
+function handleReset() {
+  query.username = ''
+  query.status = null
+  query.pageNum = 1
   loadData()
 }
 
 async function handleKick(row) {
   try {
     await ElMessageBox.confirm(
-      `确定让「${row.nickname || row.username}」下线吗？他在所有子系统里的登录会立即失效。`,
+      `确定要强制下线用户「${row.username}」吗？该用户当前的登录状态会立即失效。`,
       '提示',
-      { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
     )
   } catch (e) {
     return
   }
-  await kickSsoSession(row.userId)
+  await kickSsoSession(row.id)
   ElMessage.success('已强制下线')
   loadData()
 }

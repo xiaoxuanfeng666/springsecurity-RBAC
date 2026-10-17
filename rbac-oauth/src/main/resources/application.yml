@@ -83,6 +83,25 @@ oauth2:
     keyPairAlias: jwt
     keyPairSecret: 123123
     keyPairStoreSecret: 123123
+# RocketMQ：本服务只做**消费端** —— 接收 rbac-backend 的「强制下线」通知，
+# 删掉该用户的 Redis 会话，使他在所有子系统的令牌立刻失效。
+# 【必须与 rbac-backend 的 rbac.sso.kick-topic 一致】
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    # 本服务不主动发消息；starter 仍会创建生产者，给个独立的组名避免与其他服务混淆
+    group: rbac-oauth-producer
+
+# SSO 会话管理
+rbac:
+  sso:
+    # 强制下线的 topic（生产端在 rbac-backend 的 SsoSessionService）
+    kick-topic: RBAC_OAUTH_SESSION
+    # 消费组名，要与其他消费者区分开
+    kick-consumer-group: rbac-oauth-session-consumer
+    # 库里 sso 会话「在线」记录与 Redis 实际会话的对齐周期（毫秒）
+    reconcile-interval-ms: 60000
+
 logging:
   level:
     com.example.oauth: debug

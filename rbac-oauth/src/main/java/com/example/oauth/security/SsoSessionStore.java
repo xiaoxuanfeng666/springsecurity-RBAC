@@ -67,13 +67,16 @@ public class SsoSessionStore {
     private static final String BROWSER_KEY = "sso:browser:";
     private static final String USER_ID_KEY = "sso:uid:";
 
-    /** 与客户端 refresh_token_validity 对齐 */
+    /**
+     * 与客户端 refresh_token_validity 对齐
+     */
     private static final long TTL_SECONDS = 7 * 24 * 60 * 60L;
 
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
+    private final OauthAuthStore oauthAuthStore;
 
     /**
      * 建立会话；已存在则续期，并把本次的客户端追加进去。
@@ -88,8 +91,7 @@ public class SsoSessionStore {
         if (session == null) {
             session = new SsoSession(username, userId, nickname,
                     LocalDateTime.now().format(TIME_FORMAT), new ArrayList<>());
-        }
-        else {
+        } else {
             // 续期时刷新展示用的信息：用户改了昵称后，后台列表不该还显示旧的
             session.setUserId(userId);
             session.setNickname(nickname);
@@ -127,6 +129,11 @@ public class SsoSessionStore {
             return;
         }
         SsoSession session = read(username);
+        String token = stringRedisTemplate.opsForValue().get(BROWSER_KEY + username);
+        if (StringUtils.hasText(token)) {
+            //由于oauth2:auth: key是覆盖操作
+            oauthAuthStore.delete(token);
+        }
         stringRedisTemplate.delete(SESSION_KEY + username);
         stringRedisTemplate.delete(BROWSER_KEY + username);
         if (session != null && session.getUserId() != null) {
@@ -212,8 +219,7 @@ public class SsoSessionStore {
         }
         try {
             return objectMapper.readValue(json, SsoSession.class);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             // 值格式不对（历史数据、被别处写坏）时按「会话不存在」处理：
             // 宁可让用户重新登录，也不能因为一条脏数据让校验逻辑抛异常。
             log.warn("SSO 会话反序列化失败，按不存在处理: {}", e.getMessage());
@@ -230,8 +236,7 @@ public class SsoSessionStore {
                         .set(USER_ID_KEY + session.getUserId(), session.getUsername(),
                                 TTL_SECONDS, TimeUnit.SECONDS);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new IllegalStateException("写入 SSO 会话失败: username=" + session.getUsername(), e);
         }
     }
