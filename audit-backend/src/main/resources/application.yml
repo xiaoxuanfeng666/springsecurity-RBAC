@@ -1,0 +1,53 @@
+server:
+  port: 7074
+
+spring:
+  application:
+    name: audit-backend
+  # 审计日志系统自己的独立库 audit_log，与 RBAC 库（rbac）没有任何关联
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/audit_log?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  jackson:
+    # 注意：这里没有 spring.jackson.date-format —— 它只作用于 java.util.Date，
+    # 对 LocalDateTime 无效。实体里的时间字段统一由 JacksonConfig 按 yyyy-MM-dd HH:mm:ss 处理。
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+
+mybatis-plus:
+  type-aliases-package: com.example.audit.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+# 本系统没有用户体系，登录授权全部交给 rbac-oauth（授权服务器，端口 7071）：
+#   授权码模式 -> 前端跳 /oauth/authorize，回调后由后端调 /oauth/token（grant_type=authorization_code）
+#   请求鉴权   -> 取 Bearer 令牌调 /oauth/check_token 换回用户名
+# client-id / client-secret 必须与 RBAC 库 clientdetails 里的 audit 客户端一致。
+oauth2:
+  # 后端到后端调用用（换令牌、check_token）
+  server-url: http://localhost:7071
+  # 浏览器跳转到授权端点用的地址：走授权前端（5174）的 /oauth 代理，与登录页同源。
+  # 分工的原因见 OAuth2ClientProperties#browserAuthorizeBaseUrl。
+  browser-authorize-base-url: http://localhost:5174
+  client-id: audit
+  client-secret: audit123
+  # 授权码模式的回调地址，必须与 clientdetails.redirectUrl 里登记的一模一样，否则换令牌会被拒
+  redirect-uri: http://localhost:5178/oauth/callback
+  # 申请的授权范围。
+  # 【注意】令牌端点的 scope 参数按 RFC 6749 是**空格**分隔的（授权服务用 StringTokenizer(scope, " ") 解析），
+  # 所以这里不能写成 "read,write" —— 那会被当成一个名叫 "read,write" 的范围而报 invalid_scope。
+  scope: read
+
+# RocketMQ：
+#   消费 RBAC 下发的子系统数据（topic RBAC_SUBSYSTEM_SYNC，tag 为本子系统编码 audit）
+#   消费各系统上报的审计日志（topic RBAC_AUDIT_LOG）
+# 需要先启动 RocketMQ（NameServer 默认 9876）。broker 未启动时收不到数据，
+# 此时用户无法登录本系统（权限数据来源于 RBAC），这是预期行为。
+rocketmq:
+  name-server: localhost:9876

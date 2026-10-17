@@ -1,0 +1,151 @@
+package com.example.audit.service;
+
+import com.example.audit.common.BusinessException;
+import com.example.audit.common.ResultCode;
+import com.example.audit.config.OAuth2ClientProperties;
+import com.example.audit.dto.LoginInfoResponse;
+import com.example.audit.dto.TokenResponse;
+import com.example.audit.entity.AuditMenu;
+import com.example.audit.entity.AuditUser;
+import com.example.audit.mapper.AuditMenuMapper;
+import com.example.audit.mapper.AuditUserMapper;
+import com.example.audit.security.LoginUser;
+import com.example.audit.security.OAuth2TokenClient;
+import com.example.audit.security.SecurityUtils;
+import com.example.audit.security.SuperAdmin;
+import com.example.audit.util.TreeUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+/**
+ * 登录授权
+ * <p>
+ * 本系统没有登录页与用户体系：用户在 rbac-oauth 完成授权（授权码模式），
+ * 拿到 OAuth2 令牌，令牌里的 user_name 就是本系统识别用户的唯一依据。
+ */
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class AuthService {
+
+    private final OAuth2TokenClient tokenClient;
+    private final OAuth2ClientProperties properties;
+    private final AuditUserMapper userMapper;
+    private final AuditMenuMapper menuMapper;
+
+    /**
+     * 授权码模式登录：用回调地址上的 code 换取令牌
+     */
+    public TokenResponse loginByCode(String code) {
+        Map<String, Object> token = tokenClient.authorizationCodeGrant(code);
+        return toTokenResponse(token);
+    }
+
+    /**
+     * 刷新令牌
+     */
+    public TokenResponse refresh(String refreshToken) {
+        Map<String, Object> token = tokenClient.refreshTokenGrant(refreshToken);
+        return toTokenResponse(token);
+    }
+
+    /**
+     * 授权码模式的授权地址（由本系统**后端**拼装，并由后端直接发起跳转）
+     * <p>
+     * 为什么不让前端拼、也不把地址返回给前端：授权地址上必须带 {@code client_secret}
+     * （本项目对授权端点的定制要求）。一旦把它作为接口数据交给前端，密钥就会出现在
+     * 前端代码、浏览器网络面板与前端日志里。现在前端只做一次「导航」到本系统的
+     * {@code /auth/sso-login}，URL 由后端拼、302 由后端发 —— 客户端标识与密钥全程只在服务端。
+     * <p>
+     * 浏览器访问的地址走 {@code oauth2.browser-authorize-base-url}（授权前端 5174，与登录页同源）；
+     * 后端自己调令牌端点仍用 {@code serverUrl}（7071），那条是服务端到服务端。
+     */
+    public String buildAuthorizeUrl(String state) {
+        String base = StringUtils.hasText(properties.getBrowserAuthorizeBaseUrl())
+                ? properties.getBrowserAuthorizeBaseUrl()
+                : properties.getServerUrl();
+        String effectiveState = StringUtils.hasText(state)
+                ? state
+                : UUID.randomUUID().toString().replace("-", "");
+        return UriComponentsBuilder.fromHttpUrl(base + "/oauth/authorize")
+                .queryParam("response_type", "code")
+                .queryParam("client_id", properties.getClientId())
+                .queryParam("client_secret", properties.getClientSecret())
+                .queryParam("redirect_uri", properties.getRedirectUri())
+                .queryParam("scope", properties.getScope())
+                .queryParam("state", effectiveState)
+                .build()
+                .toUriString();
+    }
+
+    /**
+     * 当前登录用户的信息：身份 + 角色 + 权限点 + 菜单树
+     */
+    public LoginInfoResponse getInfo() {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        if (loginUser == null) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED);
+        }
+        AuditUser user = loginUser.getUser();
+        List<AuditMenu> menus = SuperAdmin.matches(loginUser.getRoles())
+                ? menuMapper.selectAllEnabledMenus()
+                : menuMapper.selectMenusByUserId(user.getId());
+
+        LoginInfoResponse response = new LoginInfoResponse();
+        response.setUserId(user.getId());
+        response.setUsername(user.getUsername());
+        response.setNickname(user.getNickname());
+        response.setRoles(loginUser.getRoles());
+        response.setPermissions(loginUser.getPermissions());
+        response.setMenus(TreeUtils.buildTree(menus));
+        return response;
+    }
+
+    /**
+     * 授权服务已签出令牌，还要确认这个人在本系统的同步表里、且在职。
+     * <p>
+     * 令牌有效只说明「他是 RBAC 的合法用户」，不代表「他被授权使用审计日志系统」——
+     * 后者取决于 RBAC 是否给他配了本子系统的菜单/权限（经 MQ 下发）。
+     * 同步表里没有他，就直接拒掉，不把一个用不了的令牌发给前端。
+     */
+    private TokenResponse toTokenResponse(Map<String, Object> token) {
+        String accessToken = asString(token.get("access_token"));
+        if (accessToken == null) {
+            throw new BusinessException(ResultCode.OAUTH_UNAVAILABLE);
+        }
+        requireSyncedUser(accessToken);
+
+        TokenResponse response = new TokenResponse();
+        response.setAccessToken(accessToken);
+        response.setRefreshToken(asString(token.get("refresh_token")));
+        response.setTokenType(asString(token.get("token_type")));
+        response.setScope(asString(token.get("scope")));
+        Object expiresIn = token.get("expires_in");
+        response.setExpiresIn(expiresIn instanceof Number ? ((Number) expiresIn).longValue() : null);
+        return response;
+    }
+
+    private void requireSyncedUser(String accessToken) {
+        Map<String, Object> info = tokenClient.checkToken(accessToken);
+        Object username = info == null ? null : info.get("user_name");
+        if (username == null) {
+            throw new BusinessException(ResultCode.OAUTH_UNAVAILABLE);
+        }
+        AuditUser user = userMapper.selectByUsername(username.toString());
+        if (user == null || user.getStatus() == null || user.getStatus() != 1) {
+            log.warn("账号已通过授权服务认证，但不在本系统的同步用户表中: username={}", username);
+            throw new BusinessException(ResultCode.USER_NOT_SYNCED);
+        }
+    }
+
+    private String asString(Object value) {
+        return value == null ? null : value.toString();
+    }
+}
