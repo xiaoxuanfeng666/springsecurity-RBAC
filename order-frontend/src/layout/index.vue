@@ -46,18 +46,25 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
 import SidebarItem from './components/SidebarItem.vue'
 import { useUserStore } from '@/store/user'
 import { usePermissionStore } from '@/store/permission'
 import { resetDynamicRoutes } from '@/router'
+import { ssoLogout } from '@/utils/sso'
+import { startSessionWatch, stopSessionWatch } from '@/utils/sessionWatch'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const permissionStore = usePermissionStore()
+
+// 本组件只在已登录时渲染，因此在这里挂上「切回标签页校验登录态」最合适：
+// 在别的子系统登出后，用户切回来的那一刻就会被踢到登录页，而不是等他点下一个按钮。
+onMounted(startSessionWatch)
+onUnmounted(stopSessionWatch)
 
 const activeMenu = computed(() => route.path)
 
@@ -83,10 +90,15 @@ async function handleCommand(command) {
   } catch (e) {
     return
   }
-  userStore.logout()
+  // 统一登出：先带令牌让授权服务删掉 SSO 会话（其他子系统的令牌立刻失效），
+  // 再整页跳过去销毁浏览器会话，最后回到登录页。跳转成功时不会返回，也不会执行下面的 router.push。
+  const navigated = await ssoLogout()
+  userStore.resetState()
   resetDynamicRoutes()
   permissionStore.reset()
-  router.push('/login')
+  if (!navigated) {
+    router.push('/login')
+  }
 }
 </script>
 

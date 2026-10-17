@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { login as loginApi, loginByCode as loginByCodeApi, getInfo as getInfoApi } from '@/api/auth'
+import { loginByCode as loginByCodeApi, getInfo as getInfoApi } from '@/api/auth'
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from '@/utils/auth'
 
 export const useUserStore = defineStore('user', {
@@ -12,14 +12,14 @@ export const useUserStore = defineStore('user', {
   }),
 
   actions: {
-    /** 密码模式登录 */
-    async login(form) {
-      const res = await loginApi(form)
-      this.applyTokens(res.data)
-      return res
-    },
-
-    /** 授权码模式登录 */
+    /**
+     * 授权码模式登录（本系统唯一的登录方式）
+     * <p>
+     * 登录入口在统一门户：未登录访问本系统会先跳到门户，由门户完成认证后把浏览器送回
+     * 本系统的授权地址，本系统回调页拿到 code 再调这里换令牌。之前那条「账号密码登录」
+     * （密码模式）已经去掉 —— 那种方式浏览器里不会留下授权服务的 SESSION，
+     * 会让统一登出多出一整类特例（详见 utils/sso.js 的说明）。
+     */
     async loginByCode(code) {
       const res = await loginByCodeApi(code)
       this.applyTokens(res.data)
@@ -46,10 +46,11 @@ export const useUserStore = defineStore('user', {
     },
 
     /**
-     * 登出
+     * 登出（仅清本地凭证）
      * <p>
-     * 本系统没有服务端会话可删：令牌由 rbac-oauth 签发，这里清掉本地凭证即可
-     * （令牌本身要等自然过期，或在 RBAC 里把用户停用/离职后由下一次同步拒掉）。
+     * 真正的「登出」在服务端：令牌由 rbac-oauth 签发、自包含，本系统删不掉它，
+     * 删除 SSO 会话才会让它立刻失效。因此登出按钮走的是 {@code utils/sso.js} 的整页跳转，
+     * 这里只负责把本地登录态抹掉 —— 也供路由守卫等「令牌已失效、需要安静地清掉」的场景使用。
      */
     logout() {
       this.resetState()

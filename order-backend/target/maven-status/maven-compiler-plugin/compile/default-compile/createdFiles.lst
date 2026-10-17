@@ -10,7 +10,6 @@ com\example\order\security\OAuth2TokenAuthenticationFilter.class
 com\example\order\service\OrderSyncService.class
 com\example\order\mapper\OrderUserMapper.class
 com\example\order\common\BusinessException.class
-com\example\order\security\OAuth2TokenAuthenticationFilter$1.class
 com\example\order\dto\LoginInfoResponse.class
 com\example\order\security\LoginUser.class
 com\example\order\dto\RefreshRequest.class
@@ -29,7 +28,6 @@ com\example\order\dto\OrderForm.class
 com\example\order\security\RestAuthenticationEntryPoint.class
 com\example\order\security\SuperAdmin.class
 com\example\order\common\ResultCode.class
-com\example\order\security\OAuth2TokenAuthenticationFilter$CachedUsername.class
 com\example\order\util\TreeNode.class
 com\example\order\config\MyMetaObjectHandler.class
 com\example\order\mapper\OrderRoleMenuMapper.class

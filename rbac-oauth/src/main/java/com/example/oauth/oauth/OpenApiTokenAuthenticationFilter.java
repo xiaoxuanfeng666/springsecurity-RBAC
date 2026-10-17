@@ -1,6 +1,7 @@
 package com.example.oauth.oauth;
 
 import com.example.oauth.security.JwtProperties;
+import com.example.oauth.security.SsoSessionStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -56,6 +57,7 @@ public class OpenApiTokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenStore jwtTokenStore;
     private final JwtProperties jwtProperties;
+    private final SsoSessionStore ssoSessionStore;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -90,6 +92,14 @@ public class OpenApiTokenAuthenticationFilter extends OncePerRequestFilter {
         // 用户类授权模式（授权码/密码）才有 user_name；客户端凭证模式没有用户，退化为客户端 id
         String userName = asString(claims.get(CLAIM_USER_NAME));
         String subject = StringUtils.hasText(userName) ? userName : clientId;
+
+        // 统一登出的一致性：用户类令牌同样要求其 SSO 会话还在，否则第三方拿着一张
+        // 「主人已经登出」的令牌照样能调 /openapi/** —— 那统一登出就只对子系统生效、对第三方不生效。
+        // 客户端凭证模式没有会话，不受此约束（也就是它不受统一登出影响，这是期望行为）。
+        if (userName != null && !ssoSessionStore.exists(userName)) {
+            log.debug("令牌校验未通过：SSO 会话不存在或已登出: username={}", userName);
+            return;
+        }
 
         Set<String> scopes = accessToken.getScope() == null
                 ? Collections.emptySet() : new LinkedHashSet<>(accessToken.getScope());

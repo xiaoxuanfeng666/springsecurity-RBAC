@@ -17,10 +17,12 @@ import com.example.order.util.TreeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * 登录授权
@@ -64,19 +66,30 @@ public class AuthService {
     }
 
     /**
-     * 授权码模式的跳转地址（前端直接 window.location.href 过去）
+     * 授权码模式的授权地址（由本系统**后端**拼装，并由后端直接发起跳转）
      * <p>
-     * 由后端拼装，避免 client_id / redirect_uri 在前端散落多处、改一处漏一处。
-     * 本项目定制的授权服务要求授权地址上带 client_secret 并会校验。
+     * 为什么不让前端拼、也不把地址返回给前端：授权地址上必须带 {@code client_secret}
+     * （本项目对授权端点的定制要求）。一旦把它作为接口数据交给前端，密钥就会出现在
+     * 前端代码、浏览器网络面板与前端日志里。现在前端只做一次「导航」到本系统的
+     * {@code /auth/sso-login}，URL 由后端拼、302 由后端发 —— 客户端标识与密钥全程只在服务端。
+     * <p>
+     * 浏览器访问的地址走 {@code oauth2.browser-authorize-base-url}（授权前端 5174，与登录页同源）；
+     * 后端自己调令牌端点仍用 {@code serverUrl}（7071），那条是服务端到服务端。
      */
     public String buildAuthorizeUrl(String state) {
-        return UriComponentsBuilder.fromHttpUrl(properties.getServerUrl() + "/oauth/authorize")
+        String base = StringUtils.hasText(properties.getBrowserAuthorizeBaseUrl())
+                ? properties.getBrowserAuthorizeBaseUrl()
+                : properties.getServerUrl();
+        String effectiveState = StringUtils.hasText(state)
+                ? state
+                : UUID.randomUUID().toString().replace("-", "");
+        return UriComponentsBuilder.fromHttpUrl(base + "/oauth/authorize")
                 .queryParam("response_type", "code")
                 .queryParam("client_id", properties.getClientId())
                 .queryParam("client_secret", properties.getClientSecret())
                 .queryParam("redirect_uri", properties.getRedirectUri())
                 .queryParam("scope", properties.getScope())
-                .queryParam("state", state == null ? "" : state)
+                .queryParam("state", effectiveState)
                 .build()
                 .toUriString();
     }

@@ -76,14 +76,12 @@
         </dependency>
 
         <!--
-            Spring Session（Redis 会话）：OAuth2 授权码/隐式流程的登录态存在 HTTP 会话里，
-            节点间不共享会话时，在 A 节点登录、跳回落到 B 节点会一直要求重新登录。
-            引入后 HttpSession 由 Redis 承载，任一节点都能读到。
+            这里刻意**不引入 Spring Session**：
+            授权码/隐式流程的登录态由 OauthAuthStore 直接写 Redis 的 oauth2:auth:{token}
+            （精简 JSON，只含认证信息），不再把 SecurityContext 序列化进会话。
+            HTTP 会话只剩 Spring MVC 暂存的「待授权的请求」（授权确认页要用），
+            多节点部署时若需要共享它，应给网关配置会话粘滞，或把那部分也搬进 Redis。
         -->
-        <dependency>
-            <groupId>org.springframework.session</groupId>
-            <artifactId>spring-session-data-redis</artifactId>
-        </dependency>
 
         <!-- MyBatis-Plus：读写共享同一个库（sys_user / clientdetails） -->
         <dependency>

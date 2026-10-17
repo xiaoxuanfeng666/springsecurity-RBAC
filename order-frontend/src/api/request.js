@@ -25,6 +25,7 @@ function redirectToLogin(message) {
   if (message) {
     ElMessage.error(message)
   }
+  // 跳到本系统的 /login（不是表单，是「送你去门户/授权服务登录页」的跳转页）
   if (window.location.pathname !== '/login') {
     window.location.href = '/login'
   }

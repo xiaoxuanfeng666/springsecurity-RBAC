@@ -127,15 +127,23 @@ VALUES (1091, 109, '子系统菜单查询', NULL, NULL, 'system:subsystem:menu:q
        (1093, 109, '子系统菜单修改', NULL, NULL, 'system:subsystem:menu:edit', 3, NULL, 3, 1, 1, NOW(), NOW()),
        (1094, 109, '子系统菜单删除', NULL, NULL, 'system:subsystem:menu:remove', 3, NULL, 4, 1, 1, NOW(), NOW());
 
+INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
+VALUES (110, 1, 'SSO 会话', 'sso-session', 'system/sso-session/index', 'system:sso:list', 2, 'Connection', 10, 1, 1, NOW(), NOW());
+
+INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
+VALUES (1095, 110, '会话查询', NULL, NULL, 'system:sso:query', 3, NULL, 1, 1, 1, NOW(), NOW()),
+       (1096, 110, '强制下线', NULL, NULL, 'system:sso:kick', 3, NULL, 2, 1, 1, NOW(), NOW());
+
 -- ---------- 角色-菜单：admin 刻意不插任何记录 ----------
 -- 超级管理员的权限由代码隐式授予（见 rbac-backend 的 security/SuperAdmin）：
 -- 权限判定用通配符 *:*:* 一律放行，菜单树直接返回全部启用菜单。
 -- 因此 role_id=1 在 sys_role_menu 里**没有行**，新增菜单后也无需给超级管理员补授权。
 -- 换句话说，admin 角色在这张表里的数据不代表它的真实权限（那张表只管普通角色）。
 
--- ---------- 角色-菜单：common 仅有仪表盘 + 用户查询 ----------
+-- ---------- 角色-菜单：common 仅有仪表盘 + 用户查询 + SSO 会话（只读）----------
+-- SSO 会话只给到「页面 + 查询」：能看到谁在线，但没有「强制下线」按钮（system:sso:kick）。
 INSERT INTO `sys_role_menu` (`role_id`, `menu_id`)
-VALUES (2, 2), (2, 1), (2, 100), (2, 1001);
+VALUES (2, 2), (2, 1), (2, 100), (2, 1001), (2, 110), (2, 1095);
 
 -- ---------- 示例 OAuth2 客户端（第三方系统接入，覆盖全部五种授权模式）----------
 -- appSecret 存的是明文 client123 经 AES 加密后的密文（密钥来自配置项 oauth2.client-secret-key）。
@@ -165,11 +173,13 @@ VALUES ('rbac-third-party', NULL, 'cnZXzMbXqybU6Pwk0x4XTbHWZOgE8o9GCrb4JKkrLIHxu
 -- 营销系统有自己的独立库（marketing）、独立前后端，没有自己的权限管理：
 -- 登录授权走本授权服务，权限数据由 RBAC 经 RocketMQ 下发。
 -- redirectUrl 里的 5175 是营销系统前端的回调页（授权码模式），换令牌时校验必须完全一致。
+-- autoApproveScopes='read'：放行子系统申请的 read 范围，授权时不再弹确认页 ——
+-- 统一门户的「一键登录所有子系统」在隐藏 iframe 里跑授权码流程，弹出确认页就会卡死。
 INSERT INTO `clientdetails` (`appId`, `resourceIds`, `appSecret`, `scope`, `grantTypes`, `redirectUrl`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additionalInformation`, `autoApproveScopes`)
 VALUES ('marketing', NULL, 'a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==',
         'read,write', 'authorization_code,password,refresh_token',
         'http://localhost:5175/oauth/callback',
-        'ROLE_CLIENT', 3600, 604800, NULL, NULL);
+        'ROLE_CLIENT', 3600, 604800, NULL, 'read');
 
 -- ---------- 订单中心（真实接入的独立子系统）----------
 -- 与营销系统同样的模式：独立库（order_center）、独立前后端，没有自己的权限管理。
@@ -178,7 +188,20 @@ INSERT INTO `clientdetails` (`appId`, `resourceIds`, `appSecret`, `scope`, `gran
 VALUES ('order-center', NULL, 'yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE',
         'read,write', 'authorization_code,password,refresh_token',
         'http://localhost:5176/oauth/callback',
-        'ROLE_CLIENT', 3600, 604800, NULL, NULL);
+        'ROLE_CLIENT', 3600, 604800, NULL, 'read');
+
+-- ---------- 统一门户（企业级 SSO 的入口，5177）----------
+-- 与子系统客户端的关键差别：
+--   * 不给 password 模式 —— 门户只走授权码，用户必须在授权服务的登录页认证，
+--     这样浏览器里才会有 SESSION（一键登录其余子系统正是靠这个 SESSION 免去二次登录）；
+--   * 不给 client_credentials —— 门户代表的是人，不是机器身份。
+-- appSecret 是 portal123 的 AES 密文。autoApproveScopes='read'：门户是入口页，
+-- 让用户在第一次进门户时先点一次「同意授权」纯属多余，这里直接放行。
+INSERT INTO `clientdetails` (`appId`, `resourceIds`, `appSecret`, `scope`, `grantTypes`, `redirectUrl`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additionalInformation`, `autoApproveScopes`)
+VALUES ('portal', NULL, 'Rxo21XV1MhryGGFp6DCuXtwIU2fEF3RVmNimrWfS53BrYqubCg==',
+        'read', 'authorization_code,refresh_token',
+        'http://localhost:5177/oauth/callback',
+        'ROLE_CLIENT', 3600, 604800, NULL, 'read');
 
 -- ---------- 子系统及其菜单 ----------
 -- sys_subsystem_menu 里的菜单只用于「下发给子系统」，与 RBAC 后台自己的 sys_menu 无关：

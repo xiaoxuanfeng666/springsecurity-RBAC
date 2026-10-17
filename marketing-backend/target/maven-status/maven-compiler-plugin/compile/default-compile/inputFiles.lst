@@ -31,6 +31,7 @@ D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\ex
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\mapper\LotteryActivityMapper.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\entity\MarketingRoleMenu.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\mq\SubsystemSyncConsumer.java
+D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\config\JacksonConfig.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\mapper\MarketingMenuMapper.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\dto\CodeLoginRequest.java
 D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\util\TreeNode.java

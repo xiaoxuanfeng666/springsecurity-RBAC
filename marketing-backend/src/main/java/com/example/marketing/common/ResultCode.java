@@ -15,6 +15,7 @@ public enum ResultCode {
     PARAM_ERROR(400, "参数错误"),
     UNAUTHORIZED(401, "登录已过期，请重新登录"),
     FORBIDDEN(403, "没有权限执行此操作"),
+    METHOD_NOT_ALLOWED(405, "请求方法不支持"),
 
     USERNAME_OR_PASSWORD_ERROR(2001, "用户名或密码错误"),
     ACCOUNT_DISABLED(2002, "账号已停用或已离职"),

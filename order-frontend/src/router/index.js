@@ -4,10 +4,12 @@ import { usePermissionStore } from '@/store/permission'
 
 const staticRoutes = [
   {
+    // 本系统没有登录页：这个路由是「去统一门户登录」的跳转页。
+    // 路由守卫、401 拦截器、登出回跳都指向 /login，保留这个路径它们就都不用改。
     path: '/login',
     name: 'Login',
     component: () => import('@/views/login/index.vue'),
-    meta: { title: '登录' }
+    meta: { title: '统一登录' }
   },
   {
     // 授权码模式的回调页：这一刻还没有令牌，必须放在免登录名单里

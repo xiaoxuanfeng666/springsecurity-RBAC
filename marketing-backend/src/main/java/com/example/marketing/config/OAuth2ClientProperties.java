@@ -12,8 +12,17 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "oauth2")
 public class OAuth2ClientProperties {
 
-    /** 授权服务地址，如 http://localhost:7071 */
+    /** 授权服务地址，如 http://localhost:7071（后端到后端调用用：换令牌、校验令牌） */
     private String serverUrl;
+
+    /**
+     * 浏览器访问授权端点用的地址，如 http://localhost:5174（授权前端，把 /oauth 代理到授权服务）。
+     * <p>
+     * 与 {@link #serverUrl} 分开，是因为两种调用的主体不同：令牌端点与 check_token 是**后端**在调，
+     * 直连 7071；而授权端点是**浏览器**跳过去的，走 5174 —— 它与登录页同源，
+     * 会话 Cookie 和会话里缓存的那次授权请求才对得上。没配时退回 {@link #serverUrl}。
+     */
+    private String browserAuthorizeBaseUrl;
 
     /** 本系统在 RBAC 里登记的客户端标识 */
     private String clientId;

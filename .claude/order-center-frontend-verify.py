@@ -2,7 +2,8 @@
 """订单中心：授权码模式全链路 + 前端路由/权限契约验证。
 
 后端接口的 CRUD 与 MQ 下发由 order-center-verify.py 覆盖，本脚本补两块：
-  ① 授权码模式：按浏览器的方式走完 302→登录→确认→303 code→换令牌
+  ① 授权码模式：按浏览器的方式走完 302→登录→（scope 已自动放行）302 code→换令牌，
+     并单独验证「没配 autoApproveScopes 的客户端仍会进确认页」这条老链路
   ② 前端契约：用真实的 /auth/info 载荷跑一遍 permission.js 的路由生成逻辑，
      确认每个 menu.component 都能解析到实际存在的 .vue，且按钮权限门与后端一致
 """
@@ -64,9 +65,11 @@ def go(url, method="GET", form=None, token=None):
     req = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
         with browser.open(req) as r:
-            return r.status, dict(r.headers), r.read().decode("utf-8", "replace")
+            # 响应头名统一转小写再返回：经 Vite 代理时（5174）头名会被规范成小写，
+            # 直连 Tomcat（7071/7073）时是 Location，两种都得读得到
+            return r.status, {k.lower(): v for k, v in r.headers.items()}, r.read().decode("utf-8", "replace")
     except urllib.error.HTTPError as e:
-        return e.code, dict(e.headers), e.read().decode("utf-8", "replace")
+        return e.code, {k.lower(): v for k, v in e.headers.items()}, e.read().decode("utf-8", "replace")
 
 
 def api(path, method="GET", body=None, token=None):
@@ -93,14 +96,18 @@ print("=" * 80)
 print("第 1 步：授权码模式全链路（等价于浏览器操作）")
 print("=" * 80)
 
-# 1.1 前端点「前往授权」时调的就是这个接口
-st, r = api("/auth/authorize-url?state=browser-e2e")
-check("GET /auth/authorize-url code", r["code"], 200)
-authorize_url = r["data"]
+# 1.1 子系统未登录时，前端导航到后端的 /auth/sso-login；由后端拼好授权地址并 302 出去。
+#     前端全程不接收 client_id / client_secret（密钥只存在于后端与这行 302 响应头里）。
+st, hdr, _ = go(ORDER + "/auth/sso-login?state=browser-e2e")
+check("GET /auth/sso-login 是 302", st, 302)
+authorize_url = hdr.get("location", "")
+check_true("302 指向 5174 的授权端点（与登录页同源）",
+           authorize_url.startswith("http://localhost:5174/oauth/authorize?"), authorize_url[:80])
+check_true("带 state=browser-e2e", "browser-e2e" in authorize_url)
 
 # 1.2 浏览器整页跳到授权端点（此时还没有 rbac-oauth 的会话 Cookie）
 st, hdr, _ = go(authorize_url)
-loc = hdr.get("Location", "")
+loc = hdr.get("location", "")
 check("未登录时授权端点 302", st, 302)
 check_true("跳到 rbac-oauth-web 登录页(5174)", "/login" in loc, loc[:70])
 
@@ -108,30 +115,45 @@ check_true("跳到 rbac-oauth-web 登录页(5174)", "/login" in loc, loc[:70])
 st, hdr, _ = go(OAUTH + "/oauth/login", "POST", {"username": "admin", "password": "admin123"})
 check("POST /oauth/login 后跳转", st in (302, 303), True)
 
-# 1.4 重新发起授权请求 → 应直接进确认页，不再要求登录
+# 1.4 重新发起授权请求 → 直接发码，不再要求登录
+# 【行为变更】order-center 客户端已配 autoApproveScopes='read'（见 upgrade-2026-10-16-sso.sql），
+# 而子系统申请的正是 read，因此跳过确认页直接回跳带 code。
+# 这是「统一门户一键登录所有子系统」的前提：那一步是在隐藏 iframe 里跑的，
+# 一旦弹出确认页，用户看不见也点不到，整条链路就卡在那里。
 st, hdr, _ = go(authorize_url)
-loc = hdr.get("Location", "")
-check_true("已登录：直接进确认页 /approve", "/approve" in loc, loc[:70])
+loc = hdr.get("location", "")
+check("已登录 + scope 已自动放行：直接发码（303，库的授权端点用 See Other）", st, 303)
+check_true("跳过确认页，直接回跳子系统回调",
+           "localhost:5176/oauth/callback" in loc and "code=" in loc, loc[:70])
 
-# 1.5 确认页渲染所需的数据
+query = urllib.parse.parse_qs(urllib.parse.urlparse(loc).query)
+code = query.get("code", [""])[0]
+check_true("回跳地址上带 code", bool(code), code[:18] + "..." if code else "(无)")
+check("state 原样带回", query.get("state", [""])[0], "browser-e2e")
+
+# 1.5 确认页对「没有配 autoApproveScopes」的客户端仍然有效（第三方接入走的就是这条路）
+# 用示例第三方客户端 rbac-third-party（autoApproveScopes 为空）验证这条链路没被改坏
+third_party = (OAUTH + "/oauth/authorize?response_type=code&client_id=rbac-third-party"
+               "&client_secret=client123&redirect_uri=http://localhost:7071/oauth/test-callback"
+               "&scope=read&state=approve-e2e")
+st, hdr, _ = go(third_party)
+loc = hdr.get("location", "")
+check_true("未配 autoApproveScopes 的客户端：仍进确认页 /approve", "/approve" in loc, loc[:70])
+
 st, _, body = go(OAUTH + "/oauth/approval-info")
 approval = json.loads(body) if body.strip().startswith("{") else {}
-check("授权确认页 clientId", approval.get("data", {}).get("clientId"), "order-center")
+check("授权确认页 clientId", approval.get("data", {}).get("clientId"), "rbac-third-party")
 check("授权确认页 redirectUri", approval.get("data", {}).get("redirectUri"),
-      "http://localhost:5176/oauth/callback")
+      "http://localhost:7071/oauth/test-callback")
 check_true("授权确认页带 state（回跳时用于校验同一次授权）",
-           approval.get("data", {}).get("state") == "browser-e2e",
+           approval.get("data", {}).get("state") == "approve-e2e",
            approval.get("data", {}).get("state"))
 
 # 1.6 点「同意授权」
 st, hdr, _ = go(OAUTH + "/oauth/authorize", "POST", {"user_oauth_approval": "true"})
-loc = hdr.get("Location", "")
+loc = hdr.get("location", "")
 check("同意授权后 303", st, 303)
-check_true("回跳订单中心前端 5176/oauth/callback", "localhost:5176/oauth/callback" in loc, loc[:90])
-
-query = urllib.parse.parse_qs(urllib.parse.urlparse(loc).query)
-code = query.get("code", [""])[0]
-check_true("回调地址上带 code", bool(code), code[:18] + "..." if code else "(无)")
+check_true("回跳第三方回调地址", "7071/oauth/test-callback" in loc, loc[:90])
 
 # 1.7 回调页把 code 交给后端换令牌（换令牌要带 client_secret，不能放前端做）
 st, r = api("/auth/code", "POST", {"code": code})
@@ -277,13 +299,16 @@ sources = ["/src/main.js", "/src/App.vue", "/src/router/index.js", "/src/store/u
            "/src/directive/permission.js", "/src/layout/index.vue",
            "/src/views/login/index.vue", "/src/views/oauth/callback.vue",
            "/src/views/dashboard/index.vue", "/src/views/error/404.vue",
-           "/src/views/order/list/index.vue", "/src/views/order/stat/index.vue"]
+           "/src/views/order/list/index.vue", "/src/views/order/stat/index.vue",
+           # 统一登出与「切回标签页校验登录态」两个模块：都不在页面里显式 import 得那么直接，
+           # 单靠人工看容易漏，这里一并让 vite 编译一遍兜住语法错误
+           "/src/utils/auth.js", "/src/utils/sso.js", "/src/utils/sessionWatch.js"]
 bad = []
 for src in sources:
     st, _h, body = go(ORDER_WEB + src)
     if st != 200 or "Internal server error" in body or "Transform failed" in body:
         bad.append("%s(HTTP %s)" % (src, st))
-check("16 个源模块经 vite 编译无错", bad, [])
+check("19 个源模块经 vite 编译无错", bad, [])
 
 # 页面通过代理调用的接口
 st, r = api("/auth/login", "POST", {"username": "admin", "password": "admin123"})

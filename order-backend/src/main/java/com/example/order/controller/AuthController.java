@@ -8,6 +8,7 @@ import com.example.order.dto.RefreshRequest;
 import com.example.order.dto.TokenResponse;
 import com.example.order.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
@@ -56,11 +58,18 @@ public class AuthController {
     }
 
     /**
-     * 授权码模式的跳转地址，前端拿到后直接整页跳转
+     * 发起授权：拼接授权地址并 302 跳过去（未登录时前端就导航到这里）
+     * <p>
+     * 为什么这条跳转由后端做，而不是「返回授权地址让前端自己跳」：授权地址上必须带
+     * {@code client_secret}（本项目对授权端点的定制要求）。作为接口数据返回，密钥就会落进
+     * 前端代码、浏览器网络面板和前端日志；这里让前端只做一次导航，URL 由后端拼、302 由后端发，
+     * 客户端标识与密钥全程只在服务端。
      */
-    @GetMapping("/authorize-url")
-    public Result<String> authorizeUrl(@RequestParam(required = false) String state) {
-        return Result.success(authService.buildAuthorizeUrl(state));
+    @GetMapping("/sso-login")
+    public void ssoLogin(@RequestParam(required = false) String state,
+                         HttpServletResponse response) {
+        response.setStatus(HttpServletResponse.SC_FOUND);
+        response.setHeader(HttpHeaders.LOCATION, authService.buildAuthorizeUrl(state));
     }
 
     /**

@@ -29,14 +29,10 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: Asia/Shanghai
     default-property-inclusion: non_null
-  # 会话存到 Redis，供多节点部署共享。
-  # 只影响 OAuth2 授权流程的登录态（授权码/隐式模式需要浏览器会话）；
-  # 管理接口链是无状态的 JWT，不使用会话。
-  session:
-    store-type: redis
-    timeout: 30m
-    redis:
-      namespace: rbac:session
+  # 【登录态不走 HTTP 会话，也不使用 Spring Session】
+  # 授权码/隐式模式的登录态由 OauthAuthStore 直接写 Redis 的 oauth2:auth:{token}
+  # （精简 JSON，只含 userId / username / nickname / loginTime），浏览器侧只存一个 HttpOnly Cookie。
+  # 这样 Redis 里是能看懂的认证信息，而不是序列化后的整团 SecurityContext。
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml

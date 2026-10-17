@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -37,8 +36,11 @@ import java.util.stream.Collectors;
  * </ol>
  * 权限点每次实时查库，因此 RBAC 改了授权、MQ 一同步，本系统立刻生效，无需重新登录。
  * <p>
- * {@code check_token} 的结果会短时缓存：它是纯远程调用，而令牌在有效期内身份不会变。
- * 缓存只存"令牌 → 用户名"，用户是否还有权限仍然每个请求查库。
+ * {@code check_token} <b>不做缓存</b>，每个请求都实时校验。这里曾经缓存 5 分钟
+ * （「令牌在有效期内身份不会变」），但那是在统一登出还不存在时的取舍 ——
+ * 现在授权服务会在 {@code check_token} 时校验 SSO 会话是否仍然存在，
+ * 缓存会让「用户已在别处登出」这件事最长滞后 5 分钟才生效，等于给统一登出开了个后门。
+ * 实时校验的代价可控：授权服务那边是本地验签 + 一次 Redis GET，不查库。
  */
 @Slf4j
 @Component
@@ -47,17 +49,9 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String BEARER_PREFIX = "Bearer ";
 
-    /** 缓存上限，超过就整体清空（简单粗暴，够用且不会无限涨） */
-    private static final int MAX_CACHE_ENTRIES = 2000;
-
-    /** 缓存时长上限：令牌自身有效期可能很长，这里最多缓存 5 分钟 */
-    private static final long MAX_CACHE_MILLIS = 5 * 60 * 1000L;
-
     private final OAuth2TokenClient tokenClient;
     private final MarketingUserMapper userMapper;
     private final MarketingMenuMapper menuMapper;
-
-    private final Map<String, CachedUsername> usernameCache = new ConcurrentHashMap<>();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -112,13 +106,8 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String resolveUsername(String token) {
-        CachedUsername cached = usernameCache.get(token);
-        if (cached != null && cached.expireAt > System.currentTimeMillis()) {
-            return cached.username;
-        }
         Map<String, Object> info = tokenClient.checkToken(token);
         if (info == null) {
-            usernameCache.remove(token);
             return null;
         }
         Object active = info.get("active");
@@ -130,21 +119,7 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
             log.warn("令牌校验结果里没有 user_name，无法识别身份: keys={}", info.keySet());
             return null;
         }
-        if (usernameCache.size() >= MAX_CACHE_ENTRIES) {
-            usernameCache.clear();
-        }
-        usernameCache.put(token, new CachedUsername(username.toString(), expireAt(info)));
         return username.toString();
-    }
-
-    private long expireAt(Map<String, Object> info) {
-        long now = System.currentTimeMillis();
-        Object exp = info.get("exp");
-        if (exp instanceof Number) {
-            long expMillis = ((Number) exp).longValue() * 1000L;
-            return Math.min(expMillis, now + MAX_CACHE_MILLIS);
-        }
-        return now + MAX_CACHE_MILLIS;
     }
 
     private String resolveToken(HttpServletRequest request) {
@@ -154,16 +129,5 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
             return token.isEmpty() ? null : token;
         }
         return null;
-    }
-
-    private static class CachedUsername {
-
-        private final String username;
-        private final long expireAt;
-
-        private CachedUsername(String username, long expireAt) {
-            this.username = username;
-            this.expireAt = expireAt;
-        }
     }
 }

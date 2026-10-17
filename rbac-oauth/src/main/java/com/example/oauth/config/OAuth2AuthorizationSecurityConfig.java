@@ -4,7 +4,11 @@ import com.example.oauth.oauth.AuthorizeClientSecretFilter;
 import com.example.oauth.oauth.ClientSecretCipher;
 import com.example.oauth.oauth.MybatisClientDetailsService;
 import com.example.oauth.oauth.OAuth2LoginEntryPoint;
+import com.example.oauth.oauth.OauthAuthCookieFilter;
+import com.example.oauth.oauth.SsoLoginSuccessHandler;
+import com.example.oauth.security.OauthAuthStore;
 import com.example.oauth.security.RedisRequestCache;
+import com.example.oauth.security.SsoSessionStore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +22,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.NullSecurityContextRepository;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -56,6 +61,9 @@ public class OAuth2AuthorizationSecurityConfig {
     private final MybatisClientDetailsService clientDetailsService;
     private final ClientSecretCipher clientSecretCipher;
     private final ObjectMapper objectMapper;
+    private final SsoSessionStore ssoSessionStore;
+    private final OauthAuthStore oauthAuthStore;
+    private final OauthAuthCookieFilter oauthAuthCookieFilter;
 
     @Bean
     @Order(2)
@@ -67,7 +75,7 @@ public class OAuth2AuthorizationSecurityConfig {
 
         // 登录成功后跳回此前被缓存的 /oauth/authorize
         SavedRequestAwareAuthenticationSuccessHandler successHandler =
-                new SavedRequestAwareAuthenticationSuccessHandler();
+                new SsoLoginSuccessHandler(oauthAuthStore, ssoSessionStore);
         successHandler.setRequestCache(requestCache);
         // 缓存里存的就是相对地址（路径 + 查询串），原样发出即可 —— 浏览器按当前源解析，
         // 因此不会把用户带离前端源。切勿在此再「绝对转相对」：地址的查询串里嵌套了
@@ -91,6 +99,9 @@ public class OAuth2AuthorizationSecurityConfig {
                 .addFilterBefore(
                         new AuthorizeClientSecretFilter(clientDetailsService, clientSecretCipher, objectMapper),
                         UsernamePasswordAuthenticationFilter.class)
+                // 登录态从 Redis 里的精简记录还原（Cookie: RBAC_OAUTH2_AUTH）。
+                // 不再依赖 HTTP 会话保存 SecurityContext —— 见 OauthAuthStore 的类注释。
+                .addFilterBefore(oauthAuthCookieFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
                     // 登录页是 rbac-oauth-web 的 /login（专门用于 OAuth2 授权登录，
                     // 不再与后台管理端的登录页共用）；表单以原生 POST 提交到 /oauth/login，
@@ -110,6 +121,11 @@ public class OAuth2AuthorizationSecurityConfig {
                 // 「登录后跳回授权页」的目标地址存 Redis，而非默认的会话 —— 多节点下不依赖节点亲和
                 .requestCache()
                     .requestCache(requestCache)
+                .and()
+                // 认证信息不进 HTTP 会话（会话只留给 Spring MVC 暂存「待授权的请求」）：
+                // 登录态由 OauthAuthStore 直接存 Redis 的 oauth2:auth:{token}，见该类注释
+                .securityContext()
+                    .securityContextRepository(new NullSecurityContextRepository())
                 .and()
                 // 与主链保持一致：本项目为前后端分离，跨域与 CSRF 由前端约定处理
                 .csrf().disable()

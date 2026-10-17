@@ -40,6 +40,25 @@ def call(base, path, method="GET", body=None, token=None):
         return status, raw
 
 
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    """不自动跟随 302 —— 要看的是后端返回的跳转地址本身"""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+_no_redirect = urllib.request.build_opener(_NoRedirect())
+
+
+def redirect_location(path):
+    """请求一个 302 端点，返回 (status, Location)"""
+    try:
+        with _no_redirect.open(ORDER + path) as r:
+            return r.status, r.headers.get("Location", "")
+    except urllib.error.HTTPError as e:
+        return e.code, e.headers.get("Location", "")
+
+
 def check(label, actual, expected):
     global PASS, FAIL
     ok = actual == expected
@@ -59,6 +78,37 @@ def check_true(label, cond, detail=""):
     else:
         FAIL += 1
         print("  [FAIL] %-58s %s" % (label, detail))
+
+
+def wait_for_perms(zs_token, expected, timeout=20):
+    """等 MQ 把新的授权下发到订单侧，返回最终看到的权限点列表。
+
+    原来这里是固定 time.sleep(4)，是这类测试的经典毛病：MQ 稍慢一点断言就假失败，
+    而且失败得很难看 —— 「撤销授权后 zhangsan 的越权写入被拒」这条会因为权限还没撤下来
+    而真的写进一条订单（脏数据），还要靠人工清理。改成轮询到预期出现为止。
+    """
+    deadline = time.time() + timeout
+    seen = None
+    while time.time() < deadline:
+        st, r = call(ORDER, "/auth/info", token=zs_token)
+        if isinstance(r, dict) and r.get("code") == 200:
+            seen = sorted(r["data"]["permissions"])
+            if seen == sorted(expected):
+                return seen
+        time.sleep(1)
+    return seen
+
+
+def wait_for_status(token, path, expected_status, timeout=20):
+    """等 MQ 把用户状态变更下发到订单侧（同样不靠固定 sleep，见上）"""
+    deadline = time.time() + timeout
+    seen = None
+    while time.time() < deadline:
+        seen = call(ORDER, path, token=token)[0]
+        if seen == expected_status:
+            return seen
+        time.sleep(1)
+    return seen
 
 
 print("=" * 78)
@@ -223,15 +273,18 @@ check("查不存在的订单 code", r.get("code"), 2008)
 
 print()
 print("=" * 78)
-print("第 7 步：授权码模式（/auth/authorize-url 由后端拼装）")
+print("第 7 步：授权码模式（/auth/sso-login 由后端拼装授权地址并 302）")
 print("=" * 78)
-st, r = call(ORDER, "/auth/authorize-url?state=verify123")
-check("GET /auth/authorize-url code", r.get("code"), 200)
-url = r["data"]
-check_true("指向 7071 授权端点", url.startswith("http://localhost:7071/oauth/authorize?"), url[:80])
+st, url = redirect_location("/auth/sso-login?state=verify123")
+check("GET /auth/sso-login 是 302", st, 302)
+check_true("指向 5174 的授权端点（授权前端，与登录页同源）",
+           url.startswith("http://localhost:5174/oauth/authorize?"), url[:80])
 check_true("client_id=order-center", "client_id=order-center" in url)
 check_true("redirect_uri 指向 5176", "5176%2Foauth%2Fcallback" in url or "5176/oauth/callback" in url)
 check_true("带 state", "verify123" in url)
+# 前端拿不到 client_secret：旧的「把授权地址返给前端」的接口已下线
+st_old, _ = call(ORDER, "/auth/authorize-url?state=x")
+check("旧的 /auth/authorize-url 已下线（不再把带密钥的地址交给前端）", st_old, 401)
 
 print()
 print("=" * 78)
@@ -241,10 +294,9 @@ print("=" * 78)
 st, r = call(RBAC, "/role/2/subsystem-menus", "PUT",
              {"subsystemId": 1, "menuIds": [1, 2, 3, 202]}, rbac_token)
 check("RBAC 侧追加授权 order:order:add", r.get("code"), 200)
-time.sleep(4)
 
-st, r = call(ORDER, "/auth/info", token=zs_token)
-check("zhangsan 权限点含新增", sorted(r["data"]["permissions"]),
+check("zhangsan 权限点含新增",
+      wait_for_perms(zs_token, ["order:order:add", "order:order:list", "order:stat:list"]),
       ["order:order:add", "order:order:list", "order:stat:list"])
 granted = {"orderNo": "ORD-E2E-GRANT", "customerName": "授权后可写", "orderAmount": 9.90,
            "status": 1, "orderTime": "2026-10-16 18:40:00"}
@@ -255,10 +307,9 @@ check("授权后 zhangsan POST /order 通过", r.get("code"), 200)
 st, r = call(RBAC, "/role/2/subsystem-menus", "PUT",
              {"subsystemId": 1, "menuIds": [1, 2]}, rbac_token)
 check("RBAC 侧撤销授权", r.get("code"), 200)
-time.sleep(4)
 
-st, r = call(ORDER, "/auth/info", token=zs_token)
-check("zhangsan 权限点只剩 list", r["data"]["permissions"], ["order:order:list"])
+check("zhangsan 权限点只剩 list", wait_for_perms(zs_token, ["order:order:list"]),
+      ["order:order:list"])
 st, r = call(ORDER, "/order/stat", token=zs_token)
 check("撤销后 zhangsan GET /order/stat 被拒", (st, r.get("code") if isinstance(r, dict) else r), (403, 403))
 st, r = call(ORDER, "/order", "POST", {
@@ -270,13 +321,14 @@ check("撤销后 zhangsan POST /order 被拒", (st, r.get("code") if isinstance(
 st, r = call(RBAC, "/role/2/subsystem-menus", "PUT",
              {"subsystemId": 1, "menuIds": [1, 2, 3]}, rbac_token)
 check("复原 common 的授权", r.get("code"), 200)
-time.sleep(4)
-st, r = call(ORDER, "/auth/info", token=zs_token)
-check("复原后权限点", r["data"]["permissions"], ["order:order:list", "order:stat:list"])
-st, r = call(ORDER, "/order/page?pageNum=1&pageSize=50&orderNo=ORD-E2E-GRANT", token=admin_token)
-if r["data"]["records"]:
-    call(ORDER, "/order/%d" % r["data"]["records"][0]["id"], "DELETE", token=admin_token)
-    print("  ... 已清理第 8 步产生的验证订单")
+check("复原后权限点", wait_for_perms(zs_token, ["order:order:list", "order:stat:list"]),
+      ["order:order:list", "order:stat:list"])
+for order_no in ("ORD-E2E-GRANT", "ORD-E2E-REVOKE"):
+    st, r = call(ORDER, "/order/page?pageNum=1&pageSize=50&orderNo=%s" % order_no,
+                 token=admin_token)
+    if r["data"]["records"]:
+        call(ORDER, "/order/%d" % r["data"]["records"][0]["id"], "DELETE", token=admin_token)
+        print("  ... 已清理验证订单 %s" % order_no)
 
 print()
 print("=" * 78)
@@ -284,10 +336,9 @@ print("第 9 步：MQ 下发的用户状态 —— 停用后立刻被拒，恢�
 print("=" * 78)
 st, r = call(RBAC, "/user/2/status?status=0", "PUT", None, rbac_token)
 check("RBAC 侧停用 zhangsan", r.get("code") if isinstance(r, dict) else r, 200)
-time.sleep(4)
 
-st, r = call(ORDER, "/order/page?pageNum=1&pageSize=5", token=zs_token)
-check("停用后订单侧立即 401", (st, r.get("code") if isinstance(r, dict) else r), (401, 401))
+check("停用后订单侧被拒（401，无需重新登录）",
+      wait_for_status(zs_token, "/order/page?pageNum=1&pageSize=5", 401), 401)
 
 st, r = call(ORDER, "/auth/login", "POST", {"username": "zhangsan", "password": "admin123"})
 check_true("停用后无法重新登录本系统", r.get("code") != 200 and r.get("code") in (2001, 2002, 2004),
@@ -295,10 +346,16 @@ check_true("停用后无法重新登录本系统", r.get("code") != 200 and r.ge
 
 st, r = call(RBAC, "/user/2/status?status=1", "PUT", None, rbac_token)
 check("RBAC 侧恢复 zhangsan", r.get("code") if isinstance(r, dict) else r, 200)
-time.sleep(4)
 
-st, zs2 = call(ORDER, "/auth/login", "POST", {"username": "zhangsan", "password": "admin123"})
-check("恢复后可登录", zs2.get("code") if isinstance(zs2, dict) else zs2, 200)
+# 同样不靠固定 sleep：轮询到「恢复能真的登录进去」为止
+zs2 = {"code": None}
+deadline = time.time() + 20
+while time.time() < deadline:
+    st, zs2 = call(ORDER, "/auth/login", "POST", {"username": "zhangsan", "password": "admin123"})
+    if zs2.get("code") == 200:
+        break
+    time.sleep(1)
+check("恢复后可登录", zs2.get("code"), 200)
 st, r = call(ORDER, "/order/page?pageNum=1&pageSize=5", token=zs2["data"]["accessToken"])
 check("恢复后接口可用", r.get("code"), 200)
 

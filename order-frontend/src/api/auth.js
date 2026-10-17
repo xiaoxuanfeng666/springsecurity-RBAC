@@ -1,29 +1,16 @@
 import request from './request'
 
-/** 密码模式登录：账号密码由订单中心后端转给 rbac-oauth 校验 */
-export function login(data) {
-  return request({
-    url: '/auth/login',
-    method: 'post',
-    data
-  })
-}
-
-/** 授权码模式登录：把 rbac-oauth 回调带回来的 code 换成令牌 */
+/**
+ * 授权码模式登录：把 rbac-oauth 回调带回来的 code 换成令牌
+ * <p>
+ * 本系统没有账号密码登录接口了 —— 用户凭据只在 rbac-oauth 的登录页输入。
+ * 后端 {@code /auth/login}（密码模式）仍然保留，供第三方接入与联调使用，只是本前端不再调它。
+ */
 export function loginByCode(code) {
   return request({
     url: '/auth/code',
     method: 'post',
     data: { code }
-  })
-}
-
-/** 授权码模式的跳转地址（由后端拼装，避免 client_id / redirect_uri 在前端散落） */
-export function getAuthorizeUrl(state) {
-  return request({
-    url: '/auth/authorize-url',
-    method: 'get',
-    params: { state }
   })
 }
 

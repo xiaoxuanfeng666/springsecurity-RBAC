@@ -28,7 +28,6 @@ com\example\marketing\mq\SubsystemSyncMessage$UserRole.class
 com\example\marketing\dto\PointsTaskForm.class
 com\example\marketing\util\TreeUtils.class
 com\example\marketing\entity\MarketingMenu.class
-com\example\marketing\security\OAuth2TokenAuthenticationFilter$1.class
 com\example\marketing\config\RestTemplateConfig.class
 com\example\marketing\controller\LotteryPrizeController.class
 com\example\marketing\mapper\PointsFlowMapper.class
@@ -42,7 +41,6 @@ com\example\marketing\dto\CodeLoginRequest.class
 com\example\marketing\entity\MarketingUser.class
 com\example\marketing\mapper\LotteryPrizeMapper.class
 com\example\marketing\util\UniqueKeyUtils.class
-com\example\marketing\security\OAuth2TokenAuthenticationFilter$CachedUsername.class
 com\example\marketing\dto\PasswordLoginRequest.class
 com\example\marketing\MarketingApplication.class
 com\example\marketing\security\LoginUser.class

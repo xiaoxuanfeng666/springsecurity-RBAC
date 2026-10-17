@@ -1,6 +1,7 @@
 package com.example.oauth.config;
 
 import com.example.oauth.oauth.MybatisClientDetailsService;
+import com.example.oauth.oauth.SsoTokenServices;
 import com.example.oauth.security.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -11,13 +12,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerEndpointsConfiguration;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * OAuth2 授权服务器：供第三方系统接入本系统的登录（五种模式全部支持）
@@ -51,22 +48,20 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private final UserDetailsServiceImpl userDetailsService;
     private final TokenStore jwtTokenStore;
     private final JwtAccessTokenConverter jwtAccessTokenConverter;
-    private final Oauth2TokenEnhancer oauth2TokenEnhancer;
+    private final TokenEnhancerChain tokenEnhancerChain;
+    private final SsoTokenServices ssoTokenServices;
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
 
-        //配置JWT的内容增强器
-        TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
-        List<TokenEnhancer> delegates = new ArrayList<>();
-        delegates.add(oauth2TokenEnhancer);
-        delegates.add(jwtAccessTokenConverter);
-        enhancerChain.setTokenEnhancers(delegates);
-
         endpoints
                 .tokenStore(jwtTokenStore)
                 .accessTokenConverter(jwtAccessTokenConverter)
-                .tokenEnhancer(enhancerChain) //配置tokenEnhancer
+                .tokenEnhancer(tokenEnhancerChain) //配置tokenEnhancer
+                // 用带 SSO 会话校验的令牌服务替换库的默认实现：/oauth/check_token 会额外要求
+                // 该用户的 SSO 会话仍然存在，令牌签发/刷新时维护这个会话 —— 统一登出的实现基础。
+                // 装配细节见 SsoTokenConfig（一旦自行提供 tokenServices，库就不再代劳装配）。
+                .tokenServices(ssoTokenServices)
                 // 密码模式：用本系统的用户体系校验 username/password（同一个 sys_user 表）
                 .authenticationManager(authenticationManager)
                 // 刷新令牌模式需要

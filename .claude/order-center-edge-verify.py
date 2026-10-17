@@ -54,6 +54,22 @@ def api(path, method="GET", body=None, token=None):
             return e.code, raw
 
 
+def post_raw(raw):
+    """直接发原始请求体，用于构造 JSON 层就解析不了的输入"""
+    req = urllib.request.Request(ORDER + "/order", data=raw.encode("utf-8"),
+                                 headers={"Content-Type": "application/json",
+                                          "Authorization": "Bearer " + T}, method="POST")
+    try:
+        with urllib.request.urlopen(req) as r:
+            return r.status, json.loads(r.read().decode("utf-8"))
+    except urllib.error.HTTPError as e:
+        body = e.read().decode("utf-8", "replace")
+        try:
+            return e.code, json.loads(body)
+        except ValueError:
+            return e.code, body
+
+
 def code_of(resp):
     return resp.get("code") if isinstance(resp, dict) else resp
 
@@ -116,28 +132,65 @@ check("orderNo 重复 -> 2007",
 
 print()
 print("=" * 80)
-print("第 2 步：金额精度与字段长度")
+print("第 2 步：金额精度、字段长度、取值范围必须被校验层挡住（都是 400，不是 500）")
 print("=" * 80)
+
+# ---- 合法边界：必须放行 ----
 check("两位小数 0.01 -> 200",
       code_of(create(make("E-EDGE-02", orderAmount=0.01))[1]), 200)
 check("DECIMAL(10,2) 上限 99999999.99 -> 200",
       code_of(create(make("E-EDGE-03", orderAmount=99999999.99))[1]), 200)
-
 st, r = api("/order/page?pageNum=1&pageSize=10&orderNo=E-EDGE-03", token=T)
 check("上限金额往返精度", str(r["data"]["records"][0]["orderAmount"]), "99999999.99")
-
 st, r = api("/order/page?pageNum=1&pageSize=10&orderNo=E-EDGE-02", token=T)
 check("0.01 往返精度", str(r["data"]["records"][0]["orderAmount"]), "0.01")
-
-# 超出列精度：要么被参数校验挡住，要么落库时报错，两种都不该悄悄改数
-oversize = create(make("E-EDGE-04", orderAmount=1234567890.12))[1]
-check_true("超出 DECIMAL(10,2) 不打 200", code_of(oversize) != 200, "code=%s" % code_of(oversize))
-
-# order_no 列长 64
-long65 = api("/order", "POST", make("E" * 65), T)[1]
-check_true("orderNo 65 字符（列长 64）不打 200", code_of(long65) != 200, "code=%s" % code_of(long65))
-
 check("orderNo 恰好 64 字符 -> 200", code_of(create(make("E" * 64))[1]), 200)
+check("customerName 恰好 64 字符 -> 200",
+      code_of(create(make("E-EDGE-07", customerName="客" * 64))[1]), 200)
+check("remark 恰好 255 字符 -> 200",
+      code_of(create(make("E-EDGE-08", remark="备" * 255))[1]), 200)
+check("status=1 -> 200", code_of(create(make("E-EDGE-09", status=1))[1]), 200)
+check("status=5 -> 200", code_of(create(make("E-EDGE-10", status=5))[1]), 200)
+
+# ---- 越界：必须 400（此前一律 500「系统异常」）----
+check("orderNo 65 字符 -> 400",
+      code_of(api("/order", "POST", make("E" * 65), T)[1]), 400)
+check("customerName 65 字符 -> 400",
+      code_of(api("/order", "POST", make("E-EDGE-11", customerName="客" * 65), T)[1]), 400)
+check("remark 256 字符 -> 400",
+      code_of(api("/order", "POST", make("E-EDGE-11", remark="备" * 256), T)[1]), 400)
+check("金额超出 DECIMAL(10,2) -> 400",
+      code_of(api("/order", "POST", make("E-EDGE-11", orderAmount=1234567890.12), T)[1]), 400)
+check("金额 3 位小数 -> 400",
+      code_of(api("/order", "POST", make("E-EDGE-11", orderAmount=1.005), T)[1]), 400)
+check("status=0（低于 1） -> 400",
+      code_of(api("/order", "POST", make("E-EDGE-11", status=0), T)[1]), 400)
+check("status=6（高于 5） -> 400",
+      code_of(api("/order", "POST", make("E-EDGE-11", status=6), T)[1]), 400)
+check("status=300（TINYINT 溢出） -> 400",
+      code_of(api("/order", "POST", make("E-EDGE-11", status=300), T)[1]), 400)
+
+# ---- 请求体在 JSON 层就解析不了：同样必须 400 ----
+check("status 传字符串 abc -> 400",
+      code_of(post_raw('{"orderNo":"E-EDGE-11","customerName":"x","orderAmount":1,"status":"abc"}')[1]),
+      400)
+check("orderTime 格式非法 -> 400",
+      code_of(post_raw('{"orderNo":"E-EDGE-11","customerName":"x","orderAmount":1,'
+                       '"orderTime":"not-a-date"}')[1]), 400)
+check("orderAmount 超出可解析范围 -> 400",
+      code_of(post_raw('{"orderNo":"E-EDGE-11","customerName":"x",'
+                       '"orderAmount":99999999999999999999}')[1]), 400)
+check("请求体 JSON 语法错误 -> 400", code_of(post_raw('{"orderNo":')[1]), 400)
+
+# ---- 方法不对：框架语义是 405，也不能被兜底吞成 500 ----
+check("GET 调只有 POST 的 /order -> 405",
+      code_of(api("/order", "GET", token=T)[1]), 405)
+check("GET 调只有 POST 的 /auth/login -> 405",
+      code_of(api("/auth/login", "GET")[1]), 405)
+
+# ---- 边界越界时不能留下脏数据 ----
+st, r = api("/order/page?pageNum=1&pageSize=5&orderNo=E-EDGE-11", token=T)
+check("越界请求没有落库", (code_of(r), len(r["data"]["records"])), (200, 0))
 
 print()
 print("=" * 80)

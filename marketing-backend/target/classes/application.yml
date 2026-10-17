@@ -34,7 +34,11 @@ mybatis-plus:
 #   请求鉴权   -> 取 Bearer 令牌调 /oauth/check_token 换回用户名
 # client-id / client-secret 必须与 RBAC 库 clientdetails 里的 marketing 客户端一致。
 oauth2:
+  # 后端到后端调用用（换令牌、check_token）
   server-url: http://localhost:7071
+  # 浏览器跳转到授权端点用的地址：走授权前端（5174）的 /oauth 代理，与登录页同源。
+  # 分工的原因见 OAuth2ClientProperties#browserAuthorizeBaseUrl。
+  browser-authorize-base-url: http://localhost:5174
   client-id: marketing
   client-secret: marketing123
   # 授权码模式的回调地址，必须与 clientdetails.redirectUrl 里登记的一模一样，否则换令牌会被拒
