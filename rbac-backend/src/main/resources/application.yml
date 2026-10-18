@@ -77,6 +77,24 @@ rbac:
   sso:
     kick-topic: RBAC_OAUTH_SESSION
 
+# 外部通讯录 / 部门同步
+# 默认关闭；provider=mock + mock-enabled=true 可用于本地联调。
+idp:
+  directory-sync:
+    enabled: ${IDP_DIRECTORY_SYNC_ENABLED:false}
+    provider: ${IDP_DIRECTORY_SYNC_PROVIDER:mock}
+    mock-enabled: ${IDP_DIRECTORY_SYNC_MOCK_ENABLED:false}
+    cron: ${IDP_DIRECTORY_SYNC_CRON:0 0 3 * * ?}
+    root-dept-id: ${IDP_DIRECTORY_SYNC_ROOT_DEPT_ID:1}
+    create-users: ${IDP_DIRECTORY_SYNC_CREATE_USERS:true}
+    default-role-keys: ${IDP_DIRECTORY_SYNC_ROLE_KEYS:common}
+    username-prefix: ${IDP_DIRECTORY_SYNC_USERNAME_PREFIX:idp_}
+    corp-id: ${IDP_DIRECTORY_SYNC_CORP_ID:mock-corp}
+    # 企业微信通讯录（provider=wecom 时使用）
+    wecom-corp-id: ${WECOM_CORP_ID:}
+    wecom-secret: ${WECOM_SECRET:}
+    wecom-api-base-url: https://qyapi.weixin.qq.com
+
 logging:
   level:
     com.example.rbac: debug

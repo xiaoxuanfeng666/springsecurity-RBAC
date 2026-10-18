@@ -43,6 +43,19 @@ public class SsoSessionRecordService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void recordLogin(LoginUser loginUser, String ip, String userAgent) {
+        recordLogin(loginUser, ip, userAgent, "PASSWORD");
+    }
+
+    /**
+     * 表单登录成功时落一行
+     * <p>
+     * 单会话模型：同一用户之前仍在线的记录会被置为「被新登录顶替」，
+     * 保证列表里一个人最多只有一条「在线」——这与 {@code OauthAuthStore} 只保留一个登录态一致。
+     *
+     * @param loginType 登录方式：PASSWORD / WECOM
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void recordLogin(LoginUser loginUser, String ip, String userAgent, String loginType) {
         LocalDateTime now = LocalDateTime.now();
         closeOnlineRows(loginUser.getUsername(), SsoSessionRecord.STATUS_OFFLINE, "被新登录顶替");
 
@@ -53,6 +66,7 @@ public class SsoSessionRecordService {
         record.setLoginIp(ip);
         record.setUserAgent(userAgent);
         record.setDevice(DeviceInfoUtils.describe(userAgent));
+        record.setLoginType(loginType);
         record.setLoginTime(now);
         record.setStatus(SsoSessionRecord.STATUS_ONLINE);
         record.setCreateTime(now);

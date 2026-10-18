@@ -105,6 +105,42 @@ rbac:
     # 库里 sso 会话「在线」记录与 Redis 实际会话的对齐周期（毫秒）
     reconcile-interval-ms: 60000
 
+# 企业微信扫码登录（MVP）
+# enabled 置为 true 并填好 CorpID / AgentId / Secret / Callback 后，登录页会出现「企业微信扫码登录」。
+# 生产环境请通过环境变量或密钥管理服务注入 secret（也支持 ENC(...) 密文）。
+wecom:
+  enabled: ${WECOM_ENABLED:false}
+  corp-id: ${WECOM_CORP_ID:}
+  agent-id: ${WECOM_AGENT_ID:}
+  secret: ${WECOM_SECRET:}
+  # 必须与企业微信后台登记的回调地址完全一致，且公网可达
+  callback-url: ${WECOM_CALLBACK_URL:http://localhost:7071/oauth/wecom/callback}
+  qr-connect-url: https://open.work.weixin.qq.com/wwopen/sso/qrConnect
+  api-base-url: https://qyapi.weixin.qq.com
+
+# 多 IdP 登录策略
+idp:
+  # 外部身份未绑定时，允许用户输入本地账号密码自助绑定
+  self-bind-enabled: ${IDP_SELF_BIND_ENABLED:true}
+  # rbac-oauth-web 的自助绑定页
+  bind-page-url: ${IDP_BIND_PAGE_URL:http://localhost:5174/bind}
+  # mock 身份提供方，仅开发/测试使用；生产必须保持 false
+  mock-enabled: ${IDP_MOCK_ENABLED:false}
+  mock:
+    provider: mock
+    corp-id: mock-corp
+    external-user-id: ${IDP_MOCK_USER_ID:mock-user-001}
+    display-name: Mock User
+    mobile: "13800000000"
+    email: mock@example.com
+    department-ids: "10"
+  # JIT 自动建号；默认关闭，启用前请确认外部通讯录可信
+  jit:
+    enabled: ${IDP_JIT_ENABLED:false}
+    default-dept-id: ${IDP_JIT_DEPT_ID:1}
+    default-role-keys: ${IDP_JIT_ROLE_KEYS:common}
+    username-prefix: ${IDP_JIT_USERNAME_PREFIX:idp_}
+
 logging:
   level:
     com.example.oauth: debug

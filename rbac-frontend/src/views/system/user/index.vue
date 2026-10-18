@@ -56,7 +56,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" min-width="170" />
-        <el-table-column label="操作" width="340" fixed="right" align="center">
+        <el-table-column label="操作" width="410" fixed="right" align="center">
           <template #default="{ row }">
             <el-button v-permission="'system:user:edit'" link type="primary" @click="openEdit(row)">
               修改
@@ -80,6 +80,9 @@
             </el-button>
             <el-button v-permission="'system:user:resetPwd'" link type="info" @click="openResetPwd(row)">
               重置密码
+            </el-button>
+            <el-button v-permission="'system:user:edit'" link type="success" @click="openIdentity(row)">
+              身份绑定
             </el-button>
             <el-button v-permission="'system:user:remove'" link type="danger" @click="handleDelete(row)">
               删除
@@ -177,6 +180,67 @@
         <el-button type="primary" :loading="submitting" @click="handleResetPwd">确定</el-button>
       </template>
     </el-dialog>
+
+    <!-- 外部身份绑定（企业微信 / 钉钉 / OIDC ...） -->
+    <el-dialog
+      v-model="identityDialogVisible"
+      :title="`外部身份绑定 - ${identityUser.username || ''}`"
+      width="680px"
+    >
+      <el-alert
+        type="info"
+        :closable="false"
+        show-icon
+        title="绑定外部账号后，该用户可以使用对应的外部身份登录。不同平台分别绑定，互不影响。"
+        style="margin-bottom: 12px"
+      />
+      <el-table :data="identities" border size="small" style="margin-bottom: 14px">
+        <el-table-column label="提供方" width="110">
+          <template #default="{ row }">{{ providerLabel(row.provider) }}</template>
+        </el-table-column>
+        <el-table-column prop="corpId" label="企业/租户" min-width="140" show-overflow-tooltip />
+        <el-table-column prop="externalUserId" label="外部用户ID" min-width="140" show-overflow-tooltip />
+        <el-table-column prop="bindTime" label="绑定时间" width="165" />
+        <el-table-column label="最近登录" width="165">
+          <template #default="{ row }">{{ row.lastLoginTime || '-' }}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="80" align="center">
+          <template #default="{ row }">
+            <el-button link type="danger" @click="handleUnbindIdentity(row)">解绑</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-form :model="identityForm" label-width="125px" size="small">
+        <el-form-item label="身份提供方">
+          <el-select v-model="identityForm.provider" style="width: 100%">
+            <el-option
+              v-for="p in providerOptions"
+              :key="p.code"
+              :label="p.label"
+              :value="p.code"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="corpLabel()">
+          <el-input v-model="identityForm.corpId" :placeholder="corpLabel()" />
+        </el-form-item>
+        <el-form-item :label="userLabel()">
+          <el-input v-model="identityForm.externalUserId" :placeholder="userLabel()" />
+        </el-form-item>
+        <el-form-item label="UnionID（可选）">
+          <el-input v-model="identityForm.unionId" placeholder="可选" />
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="identityForm.remark" placeholder="可选" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="identityDialogVisible = false">关闭</el-button>
+        <el-button type="primary" :loading="identitySubmitting" @click="handleBindIdentity">
+          绑定
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -196,6 +260,12 @@ import {
 import { listAllRoles } from '@/api/role'
 import { getDeptTree } from '@/api/dept'
 import { listAllPosts } from '@/api/post'
+import {
+  listIdentityProviders,
+  listUserIdentities,
+  createUserIdentity,
+  deleteUserIdentity
+} from '@/api/userIdentity'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -206,6 +276,54 @@ const deptOptions = ref([])
 const deptMap = ref({})
 const postOptions = ref([])
 const postMap = ref({})
+
+/** 外部身份绑定 */
+const identityDialogVisible = ref(false)
+const identityUser = ref({})
+const identities = ref([])
+const identitySubmitting = ref(false)
+const providerOptions = ref([])
+const identityForm = reactive({
+  provider: 'wecom',
+  corpId: '',
+  externalUserId: '',
+  unionId: '',
+  remark: ''
+})
+
+const CORP_LABELS = {
+  wecom: '企业ID (CorpID)',
+  dingtalk: '企业ID (CorpId)',
+  oidc: 'Issuer',
+  mock: '企业ID'
+}
+const USER_LABELS = {
+  wecom: '成员 UserID',
+  dingtalk: '用户ID',
+  oidc: 'Subject',
+  mock: '外部用户ID'
+}
+
+function providerLabel(code) {
+  const found = providerOptions.value.find((p) => p.code === code)
+  return found ? found.label : code || '-'
+}
+
+function corpLabel() {
+  return CORP_LABELS[identityForm.provider] || '企业ID'
+}
+
+function userLabel() {
+  return USER_LABELS[identityForm.provider] || '外部用户ID'
+}
+
+async function loadProviderOptions() {
+  if (providerOptions.value.length > 0) {
+    return
+  }
+  const res = await listIdentityProviders()
+  providerOptions.value = res.data || []
+}
 
 /** 用户状态：1 在职 / 0 停用 / 2 离职 */
 const STATUS_META = {
@@ -454,6 +572,60 @@ async function handleDelete(row) {
   await deleteUser(row.id)
   ElMessage.success('删除成功')
   loadData()
+}
+
+function resetIdentityForm() {
+  Object.assign(identityForm, {
+    provider: 'wecom',
+    corpId: '',
+    externalUserId: '',
+    unionId: '',
+    remark: ''
+  })
+}
+
+async function openIdentity(row) {
+  identityUser.value = row
+  identityDialogVisible.value = true
+  resetIdentityForm()
+  await loadProviderOptions()
+  await loadIdentities()
+}
+
+async function loadIdentities() {
+  const res = await listUserIdentities(identityUser.value.id)
+  identities.value = res.data || []
+}
+
+async function handleBindIdentity() {
+  if (!identityForm.corpId || !identityForm.externalUserId) {
+    ElMessage.warning(`请填写${corpLabel()}和${userLabel()}`)
+    return
+  }
+  identitySubmitting.value = true
+  try {
+    await createUserIdentity(identityUser.value.id, { ...identityForm })
+    ElMessage.success('绑定成功')
+    resetIdentityForm()
+    await loadIdentities()
+  } finally {
+    identitySubmitting.value = false
+  }
+}
+
+async function handleUnbindIdentity(row) {
+  try {
+    await ElMessageBox.confirm(
+      `确定解绑企业微信账号「${row.externalUserId}」吗？`,
+      '提示',
+      { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
+    )
+  } catch (e) {
+    return
+  }
+  await deleteUserIdentity(row.id)
+  ElMessage.success('已解绑')
+  await loadIdentities()
 }
 
 onMounted(() => {

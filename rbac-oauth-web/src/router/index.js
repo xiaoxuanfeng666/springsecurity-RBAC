@@ -21,6 +21,13 @@ const routes = [
     meta: { title: 'OAuth2 授权登录' }
   },
   {
+    // 外部身份（企业微信等）未绑定时，用本地账号密码自助绑定
+    path: '/bind',
+    name: 'OAuthBind',
+    component: () => import('@/views/bind/index.vue'),
+    meta: { title: '绑定系统账号' }
+  },
+  {
     // 授权确认页：由授权端点 302 跳转过来（见配置项 oauth2.approval-page-url），
     // 此时用户已经在授权服务器上登录过（会话里带着待授权的请求）。
     path: '/approve',

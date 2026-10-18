@@ -14,6 +14,7 @@
 | **超级管理员免配置** | `admin` 的权限**不落库**：代码里直接给通配符 `*:*:*` 与全部启用菜单。新增菜单或接口后不需要再手动给它补授权，`sys_role_menu` 里也不会有它的记录。 |
 | **操作日志与审计日志** | **账号/会话类动作**（登录、登出、强制下线、停用/启用/离职、重置密码、自助改密）留在 RBAC 库的 `sys_operation_log`；**各系统的接口增删改**（新增、修改、删除、授权）统一上报到独立的**审计日志系统**（独立库 `audit_log`），记录来源系统、模块、动作、操作人、请求方法路径、**已脱敏的请求参数**、成败、耗时、来源 IP。登录/登出**不进入**审计日志。各系统经 RocketMQ topic `RBAC_AUDIT_LOG` 上报，审计系统只做接收与查询。 |
 | **统一登出** | 各子系统共享授权服务上的登录态：任一子系统登出即删掉该用户的 SSO 会话，**所有子系统**手里的旧令牌下一个请求就失效，刷新令牌也换不出新的（自包含 JWT 本身删不掉，靠这层服务端会话把生死收回来）。已经登录过的人再进另一个子系统**不弹登录页**（凭会话直接发码）。见「SSO 会话与统一登出」一节。 |
+| **多 IdP 登录（企业微信 / Mock）** | 登录页在账号密码之外动态展示已启用的外部身份提供方（企业微信、Mock）。统一走 `/oauth/idp/{provider}/**`：认证成功后查绑定、按策略自助绑定或 JIT 自动建号，再建立与密码登录**完全相同**的 SSO 登录态，回到最初的 `/oauth/authorize` 继续发授权码。第三方授权码流程不变。rbac-backend 另提供通讯录/部门同步（Mock 可测）。 |
 
 ## 服务划分
 
@@ -21,10 +22,10 @@
 
 | 服务 | 端口 | 类型 | 职责 |
 |---|---|---|---|
-| **rbac-backend** | 7070 | 中枢 | RBAC 业务：登录/续期、用户、角色、菜单、部门、岗位、客户端管理、子系统与子系统菜单、操作日志 |
-| **rbac-oauth** | 7071 | 中枢 | OAuth2 授权服务器：五种授权模式的端点、**统一登出 `/oauth/sso-logout`**、第三方开放接口 `/openapi/**` |
+| **rbac-backend** | 7070 | 中枢 | RBAC 业务：登录/续期、用户、角色、菜单、部门、岗位、客户端管理、子系统与子系统菜单、操作日志、**用户企业微信身份绑定** |
+| **rbac-oauth** | 7071 | 中枢 | OAuth2 授权服务器：五种授权模式的端点、**统一登出 `/oauth/sso-logout`**、**企业微信扫码登录 `/oauth/wecom/**`**、第三方开放接口 `/openapi/**` |
 | **rbac-frontend** | 5173 | 中枢 | RBAC 管理后台界面 |
-| **rbac-oauth-web** | 5174 | 中枢 | OAuth2 授权流程页面：授权登录页、授权确认页。它要与授权端点同源（靠 `/oauth → 7071` 代理），因为登录页是用原生表单 POST 到 `/oauth/login` |
+| **rbac-oauth-web** | 5174 | 中枢 | OAuth2 授权流程页面：授权登录页（账号密码 + **企业微信扫码入口**）、授权确认页。它要与授权端点同源（靠 `/oauth → 7071` 代理），因为登录页是用原生表单 POST 到 `/oauth/login` |
 | **order-backend** | 7073 | 子系统 | 订单中心后端：订单增删改查 + 统计汇总。独立库 `order_center`，无登录、无用户表 |
 | **order-frontend** | 5176 | 子系统 | 订单中心界面：未登录时直接去授权服务的登录页（无自己的登录页）、动态路由、按钮级权限 |
 | **marketing-backend** | 7072 | 子系统 | 营销系统后端：抽奖活动、奖品、积分任务、流水与记录。独立库 `marketing` |
@@ -148,6 +149,8 @@ springsecurity-RBAC/
     ├── upgrade-2026-10-17-remove-subsystem-menus.sql    # 移除子系统管理/子系统菜单管理/子系统用户授权三个菜单入口
     ├── upgrade-2026-10-17-subsystem-create-permission.sql # 「菜单管理」里新增子系统的权限点
     ├── upgrade-2026-10-18-remove-subsystem-admin.sql    # 移除子系统内授权：删除管理员权限点与 subsystem_admin 标记
+    ├── upgrade-2026-10-18-wecom-sso.sql                 # 企业微信扫码登录：身份绑定表 + 会话登录方式
+    ├── upgrade-2026-10-18-idp-directory-sync.sql        # 外部部门与本地组织节点映射表
     ├── order-schema.sql                       # 订单中心独立库 order_center（同步表 + order_info + 演示数据）
     ├── marketing-schema.sql                   # 营销系统独立库 marketing
     ├── audit-schema.sql                       # 审计日志系统独立库 audit_log（同步表 + audit_log）
@@ -171,6 +174,8 @@ mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-audit.s
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-remove-subsystem-menus.sql    # 收敛菜单入口
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-subsystem-create-permission.sql # 新增子系统权限点
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-remove-subsystem-admin.sql    # 移除子系统内授权
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-wecom-sso.sql                # 企业微信扫码登录
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-idp-directory-sync.sql       # 通讯录/部门同步
 ```
 
 已有的旧库按文件名顺序执行增量脚本升级（脚本一次性执行，重复执行会因 `ALTER` / 主键冲突而报错）：
@@ -193,6 +198,8 @@ mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-remove-
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-audit.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-subsystem-create-permission.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-remove-subsystem-admin.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-wecom-sso.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-idp-directory-sync.sql
 ```
 
 > 前几个脚本是迭代过程留下的：先是独立部门表，再加独立分公司模块，最后把分公司并入部门树、换成岗位模块。中途的 `company` 脚本只挂载了一次独立分公司模块，随后被最后一个脚本合并回组织树并删除。**全新安装只需执行 `schema.sql` + `data.sql` + 三个子系统的 schema + `upgrade-2026-10-17-audit.sql`（把审计系统注册到中枢）。**
@@ -236,6 +243,9 @@ topic `RBAC_SUBSYSTEM_SYNC` 与 `RBAC_AUDIT_LOG` 都由生产者自动创建，�
 | 前端 `.env.development` | 三个子系统前端（订单中心 / 营销系统 / 审计系统）各要配 `VITE_OAUTH_SERVER_URL`（授权服务 7071）：子系统未登录时跳它去登录、统一登出也整页跳向它。改端口/换授权服务地址时改这一项即可 |
 | `rocketmq.name-server` | 子系统必填（`localhost:9876`）。中枢的 rbac-backend 也用它做**生产者** |
 | `rocketmq.producer.group` | **需要上报审计日志的系统必须配置**（`rbac-backend-producer` / `marketing-backend-producer` / `order-backend-producer`）。不配时 starter 不创建 `RocketMQTemplate`，审计上报会被静默跳过；audit-backend 只消费，不需要生产者组 |
+| `wecom.*`（rbac-oauth） | 企业微信扫码登录配置：`enabled`、`corp-id`、`agent-id`、`secret`（支持 `ENC(...)` 密文，建议用环境变量/Vault）、`callback-url`（必须与企业微信后台登记一致且公网可达）。详见「多 IdP 登录」一节 |
+| `idp.*`（rbac-oauth） | 多 IdP 策略：`self-bind-enabled`（未绑定时自助绑定）、`bind-page-url`、`mock-enabled`（仅测试）、`jit.*`（自动建号开关、默认部门/角色/用户名前缀）。生产必须保持 `mock-enabled=false`、按需开启 JIT |
+| `idp.directory-sync.*`（rbac-backend） | 通讯录/部门同步：`enabled`、`provider`（mock/wecom）、`mock-enabled`、`cron`、`root-dept-id`、`create-users`、`default-role-keys`、`username-prefix`，以及企业微信 `wecom-corp-id/wecom-secret` |
 
 `jwt.secret` 生产环境务必更换，长度 ≥ 32 字节。
 
@@ -296,6 +306,11 @@ cd audit-frontend     && npm install && npm run dev    # 审计日志系统：ht
 | 用户 | PUT | `/user/{id}/status` | 设置状态：1 在职 / 0 停用 / 2 离职（停用与离职都立即失效登录凭证） |
 | 用户 | PUT | `/user/{id}/roles` | 分配角色 |
 | 用户 | PUT | `/user/{id}/resetPassword` | 管理员重置他人密码（**强制该用户下线**，需用新密码重新登录） |
+| 用户 | GET | `/user/identities/providers` | 支持绑定的外部身份提供方（wecom / dingtalk / oidc / mock） |
+| 用户 | GET | `/user/{userId}/identities` | 用户的外部身份绑定列表（`system:user:query`） |
+| 用户 | POST | `/user/{userId}/identities` | 绑定外部身份（`system:user:edit`，写操作日志） |
+| 用户 | DELETE | `/user/identity/{id}` | 解绑企业微信（`system:user:edit`，写操作日志） |
+| 通讯录 | POST | `/idp/directory/sync` | 手动触发一次外部通讯录/部门同步（`system:user:edit`） |
 | 角色 | GET | `/role/page`、`/role/all` | 分页 / 全部启用角色 |
 | 角色 | PUT | `/role/{id}/menus` | **动态修改角色权限**（超级管理员角色返回 1028：其权限由代码隐式授予） |
 | 部门 | GET | `/dept/tree` | 组织架构树：公司 / 分公司 / 部门（type 1/2/3），管理页与用户表单共用 |
@@ -328,11 +343,80 @@ cd audit-frontend     && npm install && npm run dev    # 审计日志系统：ht
 | `/oauth/approval-info` | GET | 待授权请求的信息（clientId / scopes / state），供确认页渲染 |
 | `/oauth/sso-logout` | GET/POST | **统一登出**：删 SSO 会话（各子系统令牌即刻失效）+ 删登录态并让浏览器丢掉 Cookie。GET 版供整页跳转，302 回 `redirect_uri`（仅限已登记客户端的来源）；POST 版返回 JSON |
 | `/oauth/test-callback` | GET | 授权码回调联调端点，**仅测试用**（`oauth2.test-callback.enabled=false` 可关闭） |
+| `/oauth/wecom/authorize` | GET | 企业微信兼容入口（等价于 `/oauth/idp/wecom/authorize`） |
+| `/oauth/wecom/callback` | GET | 企业微信兼容入口（等价于 `/oauth/idp/wecom/callback`） |
+| `/oauth/idp/{provider}/authorize` | GET | 通用外部身份登录入口（provider = wecom / mock ...） |
+| `/oauth/idp/{provider}/callback` | GET | 通用回调：code → 外部身份 → 绑定/JIT/自助绑定 → SSO 会话 |
+| `/oauth/idp/bind` | POST | 自助绑定：`ticket + username + password`，验证本地密码后建立绑定并登录 |
+| `/oauth/providers` | GET | 登录页可用的认证方式及启用状态 |
 | `/openapi/userinfo` | GET | 令牌自检：返回该令牌的 subject / clientId / scopes |
 | `/openapi/users` | GET | 用户列表，需要 scope `read` |
 | `/openapi/users/{id}/status` | PUT | 修改用户状态，需要 scope `write` |
 
 除了 `/openapi/**` 按 OAuth2 令牌的 scope 判权，本服务其余端点或对外开放（`/oauth/token_key`、`/oauth/check_token`），或走浏览器会话（授权流程）。**客户端管理不在这里**——它是后台管理功能，跑在 rbac-backend 上，按 `system:client:*` 权限点判权。
+
+### 多 IdP 登录（企业微信 / Mock）
+
+外部身份是**登录认证方式**，不是新的授权模式：授权码/令牌契约完全不变。多 IdP 通过 SPI 接入（`IdentityProvider`），新增钉钉/OIDC 只需实现接口。
+
+```
+第三方系统 → /oauth/authorize → 未登录 → 5174/login
+  ├─ 账号密码 → /oauth/login ────────────────────────────┐
+  └─ 企业微信 / Mock                                    │
+       → /oauth/idp/{provider}/authorize（一次性 state）  │
+       → 外部扫码页 / Mock 回调                          │
+       → /oauth/idp/{provider}/callback                  │
+       → 已绑定？ → 登录                                 │
+         未绑定？ → JIT 自动建号 → 登录                  │
+                  → 自助绑定页 /bind → 密码确认 → 登录   │
+       → 建立 SSO 登录态 ───────────────────────────────┤
+                                                         ↓
+                         回到 /oauth/authorize → 发 code → 第三方换 token
+```
+
+**三种账号策略**
+
+1. **管理员预先绑定**：「用户管理 → 行内『身份绑定』」选择提供方（企业微信/钉钉/OIDC/Mock），填写企业/租户 ID 与外部用户 ID；同一个用户可为多个平台分别绑定；
+2. **自助绑定**（`idp.self-bind-enabled=true`，默认开启）：未绑定时跳 `/bind?ticket=...`，用户输入本地账号密码确认身份后建立绑定；ticket 5 分钟、最多尝试 5 次；
+3. **JIT 自动建号**（`idp.jit.enabled=true`，默认关闭）：按配置自动创建本地用户，分配默认角色（`default-role-keys`）并绑定外部身份。
+
+> 当前 rbac-oauth 已实现 `wecom` 与 `mock` 的登录适配；`dingtalk` / `oidc` 已作为可绑定提供方预留，接入时实现 `IdentityProvider` 即可，用户绑定数据无需迁移。
+
+**通讯录 / 部门同步（rbac-backend）**
+
+- 部门映射表 `sys_dept_identity`，首次同步在配置的 `root-dept-id` 下创建部门，后续按外部部门 ID 更新；
+- 成员已绑定则更新昵称/部门/状态；未绑定且 `create-users=true` 时自动建号（默认角色可配）；
+- 手动触发：`POST /idp/directory/sync`（`system:user:edit`）；`idp.directory-sync.enabled=true` 时还会按 `cron` 定时同步；
+- 提供 `mock` 通讯录（3 个部门、2 个成员）用于本地联调。
+
+**Mock 测试方式**
+
+```bash
+# rbac-oauth：启用 mock 身份提供方
+IDP_MOCK_ENABLED=true mvn -f rbac-oauth/pom.xml spring-boot:run
+
+# rbac-backend：启用 mock 通讯录
+IDP_DIRECTORY_SYNC_PROVIDER=mock IDP_DIRECTORY_SYNC_MOCK_ENABLED=true \
+  mvn -f rbac-backend/pom.xml spring-boot:run
+```
+
+- `/oauth/providers` 会返回 `mock.enabled=true`；
+- 访问 `/oauth/idp/mock/authorize?returnTo=/oauth/authorize?...` 可走完整登录链路；
+- 未绑定时进入 `/bind`，用 admin/admin123 完成绑定；
+- 开启 `IDP_JIT_ENABLED=true` 时，未绑定会自动建号；
+- `POST /idp/directory/sync` 用 admin 令牌触发通讯录同步。
+
+> **生产要求**：`idp.mock-enabled` 与 `idp.directory-sync.mock-enabled` 必须保持 `false`；JIT 默认关闭，启用前确认企业通讯录可信。
+
+**安全与审计**
+
+- state 一次性存 Redis（5 分钟），原子取出删除，防重放/CSRF；
+- 只接受 `/oauth/...` 相对地址作为回跳目标，防开放重定向；
+- Secret 不写日志、不下发前端；支持 AES-GCM 密文（`ENC(...)`）；
+- 企业微信 access_token 缓存在 Redis，多实例用短锁避免并发刷新；
+- 自助绑定必须验证本地密码，ticket 一次性、限次数；
+- `sys_sso_session.login_type` 记录 `PASSWORD` / `WECOM` / `MOCK`，便于审计；
+- 统一登出、强制下线、单会话模型对所有登录方式同样生效。
 
 > **授权码存储**：授权码不再放内存，改为 Redis 键 `oauth2:code:{code}`（值为 `OAuth2Authentication` 的 JDK 序列化结果），默认 5 分钟 TTL，可用 `oauth2.authorization-code-ttl-seconds` 调整。兑换令牌时用 Lua 脚本原子 `GET + DEL`，保证一次性消费；多实例部署与授权服务重启都不会丢未兑换的授权码。
 

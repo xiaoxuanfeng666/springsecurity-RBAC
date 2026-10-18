@@ -48,6 +48,9 @@ public class SsoSessionRecord implements Serializable {
     /** 解析后的设备与浏览器，如 "Chrome / Windows" */
     private String device;
 
+    /** 登录方式：PASSWORD / WECOM */
+    private String loginType;
+
     private LocalDateTime loginTime;
 
     private LocalDateTime logoutTime;

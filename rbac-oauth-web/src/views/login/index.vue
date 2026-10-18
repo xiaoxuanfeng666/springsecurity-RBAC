@@ -12,6 +12,15 @@
         title="用户名或密码错误"
       />
 
+      <el-alert
+        v-if="idpError"
+        type="warning"
+        :closable="false"
+        show-icon
+        class="oauth-alert"
+        :title="idpError"
+      />
+
       <p class="oauth-desc">第三方应用请求访问你的账号，请先登录本系统。</p>
 
       <el-form ref="formRef" :model="form" :rules="rules" size="large" @keyup.enter="handleLogin">
@@ -25,12 +34,24 @@
           <el-button type="primary" class="oauth-submit" @click="handleLogin">登 录</el-button>
         </el-form-item>
       </el-form>
+
+      <template v-if="enabledProviders.length > 0">
+        <el-divider class="oauth-divider">或</el-divider>
+        <el-button
+          v-for="p in enabledProviders"
+          :key="p.name"
+          class="provider-submit"
+          @click="loginByProvider(p.name)"
+        >
+          {{ p.label }}
+        </el-button>
+      </template>
     </el-card>
   </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
@@ -38,6 +59,48 @@ const route = useRoute()
 /** 授权请求缓存（30 分钟）过期后，靠它恢复「登录后跳回授权页」 */
 const RETURN_TO_KEY = 'oauth_return_to'
 const returnTo = ref('')
+
+/** 可用的外部身份提供方 + 回调错误提示 */
+const providers = ref([])
+const enabledProviders = computed(() => providers.value.filter((p) => p.enabled))
+const IDP_ERRORS = {
+  idp_disabled: '该登录方式未启用，请使用账号密码登录',
+  idp_no_return: '登录请求缺少授权上下文，请从业务系统重新发起登录',
+  idp_state: '登录请求已过期或已使用，请重新发起登录',
+  idp_unbound: '该外部账号尚未绑定系统账号，请联系管理员',
+  idp_user_disabled: '账号已停用或离职，无法登录',
+  idp_failed: '外部账号登录失败，请重试或使用账号密码登录',
+  // 兼容旧的企业微信错误码
+  wecom_disabled: '企业微信登录未启用，请使用账号密码登录',
+  wecom_no_return: '登录请求缺少授权上下文，请从业务系统重新发起登录',
+  wecom_state: '登录请求已过期或已使用，请重新扫码',
+  wecom_unbound: '该企业微信账号尚未绑定系统账号，请联系管理员',
+  wecom_user_disabled: '账号已停用或离职，无法登录',
+  wecom_failed: '企业微信登录失败，请重试或使用账号密码登录'
+}
+const idpError = computed(() => {
+  const code = route.query.error
+  return typeof code === 'string' ? IDP_ERRORS[code] || '' : ''
+})
+
+async function loadProviders() {
+  try {
+    const res = await fetch('/oauth/providers')
+    const data = await res.json()
+    providers.value = Object.entries(data || {}).map(([name, item]) => ({
+      name,
+      enabled: !!(item && item.enabled),
+      label: (item && item.label) || name
+    }))
+  } catch (e) {
+    providers.value = []
+  }
+}
+
+function loginByProvider(provider) {
+  const target = returnTo.value || sessionStorage.getItem(RETURN_TO_KEY) || ''
+  window.location.href = `/oauth/idp/${provider}/authorize?returnTo=${encodeURIComponent(target)}`
+}
 
 onMounted(() => {
   const fromQuery = route.query.returnTo
@@ -48,6 +111,7 @@ onMounted(() => {
   } else {
     returnTo.value = sessionStorage.getItem(RETURN_TO_KEY) || ''
   }
+  loadProviders()
 })
 
 /** 授权端点登录失败时会带 error=1 跳回这里（见 OAuth2AuthorizationSecurityConfig 的 failureUrl） */
@@ -116,5 +180,23 @@ function submitLogin() {
 
 .oauth-submit {
   width: 100%;
+}
+
+.oauth-divider {
+  margin: 8px 0 16px;
+  color: #909399;
+}
+
+.provider-submit {
+  width: 100%;
+  margin-bottom: 10px;
+  color: #07c160;
+  border-color: #07c160;
+}
+
+.provider-submit:hover {
+  color: #ffffff;
+  background-color: #07c160;
+  border-color: #07c160;
 }
 </style>
