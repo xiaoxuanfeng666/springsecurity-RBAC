@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -100,6 +101,17 @@ public class SysRoleService {
         role.setStatus(form.getStatus());
         role.setRemark(form.getRemark());
         roleMapper.updateById(role);
+        // 角色标识或启停状态会进入子系统同步快照（role_keys / 用户角色），变更后需要重新下发。
+        // 超管角色影响所有子系统；普通角色只发给其授权覆盖的子系统。
+        if (!exist.getRoleKey().equals(form.getRoleKey())
+                || (form.getStatus() != null && !form.getStatus().equals(exist.getStatus()))) {
+            if (SuperAdmin.ROLE_KEY.equals(exist.getRoleKey())
+                    || SuperAdmin.ROLE_KEY.equals(form.getRoleKey())) {
+                subsystemSyncService.syncAll();
+            } else {
+                subsystemSyncService.syncForRoles(Collections.singletonList(form.getId()));
+            }
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -116,6 +128,8 @@ public class SysRoleService {
         releaseRoleKey(role);
         roleMapper.deleteById(id);
         roleMenuMapper.delete(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getRoleId, id));
+        // 删除后该角色不再参与同步快照，只通知它曾经有授权的子系统重建
+        subsystemSyncService.syncForRoles(Collections.singletonList(id));
     }
 
     /**

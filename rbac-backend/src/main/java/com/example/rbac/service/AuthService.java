@@ -11,6 +11,7 @@ import com.example.rbac.entity.SysMenu;
 import com.example.rbac.entity.SysUser;
 import com.example.rbac.mapper.SysMenuMapper;
 import com.example.rbac.mapper.SysUserMapper;
+import com.example.rbac.mq.SsoKickPublisher;
 import com.example.rbac.security.*;
 import com.example.rbac.util.TreeUtils;
 import io.jsonwebtoken.Claims;
@@ -47,6 +48,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final SysUserMapper userMapper;
     private final SysMenuMapper menuMapper;
+    private final SsoKickPublisher ssoKickPublisher;
 
     /**
      * 登录：签发 Access + Refresh Token，并写入 Redis 会话
@@ -211,6 +213,9 @@ public class AuthService {
             throw new BusinessException(ResultCode.USER_NOT_EXIST);
         }
         tokenStore.removeSession(userId);
+        // 通知授权服务删除 SSO 会话：该用户在各子系统的令牌立即失效
+        ssoKickPublisher.publish(SsoKickPublisher.TYPE_KICK, null, userId,
+                target.getUsername(), "被管理员强制下线");
         logService.record(MODULE_AUTH, AuditAction.KICK, userId, target.getUsername(), "强制下线");
         log.info("强制下线用户: {}", target.getUsername());
     }

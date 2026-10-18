@@ -7,15 +7,11 @@ import com.example.rbac.common.BusinessException;
 import com.example.rbac.common.ResultCode;
 import com.example.rbac.entity.SsoSessionRecord;
 import com.example.rbac.mapper.SsoSessionRecordMapper;
-import com.example.rbac.mq.SsoKickMessage;
+import com.example.rbac.mq.SsoKickPublisher;
 import com.example.rbac.security.LoginUser;
 import com.example.rbac.security.SecurityUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -40,16 +36,7 @@ public class SsoSessionService {
 
     private final SsoSessionRecordMapper recordMapper;
     private final SysOperationLogService logService;
-    private final ObjectMapper objectMapper;
-
-    /**
-     * 用 ObjectProvider 而不是直接注入：未配 rocketmq.name-server 时 starter 不会创建该 Bean，
-     * 直接注入会导致整个应用起不来。
-     */
-    private final ObjectProvider<RocketMQTemplate> rocketMQTemplateProvider;
-
-    @Value("${rbac.sso.kick-topic:RBAC_OAUTH_SESSION}")
-    private String kickTopic;
+    private final SsoKickPublisher ssoKickPublisher;
 
     public Page<SsoSessionRecord> page(long pageNum, long pageSize, String username, Integer status) {
         LambdaQueryWrapper<SsoSessionRecord> wrapper = new LambdaQueryWrapper<SsoSessionRecord>()
@@ -87,31 +74,10 @@ public class SsoSessionService {
             recordMapper.updateById(update);
         }
 
-        sendKick(record);
+        ssoKickPublisher.publish(SsoKickPublisher.TYPE_KICK, record.getId(),
+                record.getUserId(), record.getUsername(), REASON_KICKED);
         logService.record(MODULE_SSO, AuditAction.KICK, record.getUserId(),
                 record.getUsername(), "强制下线 SSO 会话");
         log.info("已强制下线 SSO 会话: username={}, sessionId={}", record.getUsername(), sessionId);
-    }
-
-    private void sendKick(SsoSessionRecord record) {
-        RocketMQTemplate template = rocketMQTemplateProvider.getIfAvailable();
-        if (template == null) {
-            log.warn("RocketMQ 未配置（rocketmq.name-server 为空），跳过强制下线通知: username={}",
-                    record.getUsername());
-            return;
-        }
-        SsoKickMessage message = new SsoKickMessage();
-        message.setType(SsoKickMessage.TYPE_KICK);
-        message.setSessionId(record.getId());
-        message.setUserId(record.getUserId());
-        message.setUsername(record.getUsername());
-        message.setReason(REASON_KICKED);
-        message.setTimestamp(System.currentTimeMillis());
-        try {
-            template.syncSend(kickTopic, objectMapper.writeValueAsString(message));
-        } catch (Exception e) {
-            // 发消息失败不回滚本地状态：消费者会兜底关行，但 Redis 会话这次没删掉，下次强制下线或重启可补
-            log.error("发送强制下线消息失败: topic={}, username={}", kickTopic, record.getUsername(), e);
-        }
     }
 }

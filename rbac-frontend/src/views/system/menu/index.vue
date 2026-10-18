@@ -3,13 +3,42 @@
     <el-card shadow="never">
       <div class="table-toolbar">
         <span class="toolbar-title">菜单与权限</span>
-        <div>
+        <div class="toolbar-actions">
+          <el-button
+            v-permission="'system:subsystem:add'"
+            :icon="FolderAdd"
+            @click="openCreateSubsystem"
+          >
+            新增子系统
+          </el-button>
+          <el-select
+            v-model="scope"
+            style="width: 200px; margin: 0 10px"
+            @change="handleScopeChange"
+          >
+            <el-option label="RBAC 本系统" value="rbac" />
+            <el-option
+              v-for="s in visibleSubsystems"
+              :key="s.id"
+              :label="`${s.subsystemName}（${s.subsystemCode}）`"
+              :value="String(s.id)"
+            />
+          </el-select>
           <el-button :icon="Refresh" @click="loadData">刷新</el-button>
           <el-button v-permission="'system:menu:add'" type="primary" :icon="Plus" @click="openCreate(null)">
             新增根菜单
           </el-button>
         </div>
       </div>
+
+      <el-alert
+        v-if="isSubsystemScope"
+        type="info"
+        :closable="false"
+        show-icon
+        :title="`当前维护「${currentScopeName}」的菜单与按钮。保存后经 MQ 只下发给该子系统（唯一编码：${currentSubsystemCode}）。`"
+        style="margin-bottom: 12px"
+      />
 
       <el-table
         v-loading="loading"
@@ -108,24 +137,91 @@
         <el-button type="primary" :loading="submitting" @click="handleSubmit">确定</el-button>
       </template>
     </el-dialog>
+
+    <!-- 新增子系统：名称 + 唯一编码 -->
+    <el-dialog v-model="subsystemDialogVisible" title="新增子系统" width="480px">
+      <el-alert
+        type="info"
+        :closable="false"
+        show-icon
+        title="编码是子系统的唯一标识，同时用作 MQ tag，只能包含字母、数字、下划线和短横线。"
+        style="margin-bottom: 12px"
+      />
+      <el-form ref="subsystemFormRef" :model="subsystemForm" :rules="subsystemRules" label-width="100px">
+        <el-form-item label="子系统名称" prop="subsystemName">
+          <el-input v-model="subsystemForm.subsystemName" placeholder="如 营销系统" />
+        </el-form-item>
+        <el-form-item label="子系统编码" prop="subsystemCode">
+          <el-input v-model="subsystemForm.subsystemCode" placeholder="如 marketing，创建后不可轻易变更" />
+        </el-form-item>
+        <el-form-item label="排序">
+          <el-input-number v-model="subsystemForm.sort" :min="0" />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-radio-group v-model="subsystemForm.status">
+            <el-radio :label="1">启用</el-radio>
+            <el-radio :label="0">禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input v-model="subsystemForm.remark" type="textarea" :rows="2" placeholder="可选" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="subsystemDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="subsystemSubmitting" @click="handleCreateSubsystem">
+          确定
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Refresh, Plus } from '@element-plus/icons-vue'
+import { Refresh, Plus, FolderAdd } from '@element-plus/icons-vue'
 import { getMenuTree, createMenu, updateMenu, deleteMenu } from '@/api/menu'
+import {
+  getSubsystemMenuTree,
+  createSubsystemMenu,
+  updateSubsystemMenu,
+  deleteSubsystemMenu
+} from '@/api/subsystemMenu'
+import { listSubsystems, createSubsystem } from '@/api/subsystem'
+import { useUserStore } from '@/store/user'
+
+const userStore = useUserStore()
 
 const loading = ref(false)
 const submitting = ref(false)
 const tableData = ref([])
+
+/** rbac = 维护本系统菜单；其他值 = 子系统 ID */
+const scope = ref('rbac')
+const subsystems = ref([])
+
+const isSubsystemScope = computed(() => scope.value !== 'rbac')
+const currentSubsystem = computed(
+  () => subsystems.value.find((s) => String(s.id) === String(scope.value)) || null
+)
+const currentScopeName = computed(() =>
+  currentSubsystem.value ? currentSubsystem.value.subsystemName : 'RBAC 本系统'
+)
+const currentSubsystemCode = computed(() =>
+  currentSubsystem.value ? currentSubsystem.value.subsystemCode : '-'
+)
+/** 只有拥有子系统菜单管理权限的用户才显示子系统选项（超管隐式拥有） */
+const visibleSubsystems = computed(() =>
+  userStore.hasPerm('system:subsystem:menu:list') ? subsystems.value : []
+)
 
 const dialogVisible = ref(false)
 const isEdit = ref(false)
 const formRef = ref()
 const defaultForm = () => ({
   id: null,
+  subsystemId: null,
   parentId: 0,
   menuName: '',
   path: '',
@@ -142,6 +238,28 @@ const form = reactive(defaultForm())
 const formRules = {
   menuName: [{ required: true, message: '请输入菜单名称', trigger: 'blur' }],
   type: [{ required: true, message: '请选择菜单类型', trigger: 'change' }]
+}
+
+const subsystemDialogVisible = ref(false)
+const subsystemFormRef = ref()
+const subsystemSubmitting = ref(false)
+const subsystemForm = reactive({
+  subsystemName: '',
+  subsystemCode: '',
+  sort: 0,
+  status: 1,
+  remark: ''
+})
+const subsystemRules = {
+  subsystemName: [{ required: true, message: '请输入子系统名称', trigger: 'blur' }],
+  subsystemCode: [
+    { required: true, message: '请输入子系统编码', trigger: 'blur' },
+    {
+      pattern: /^[A-Za-z0-9_-]+$/,
+      message: '只能包含字母、数字、下划线和短横线',
+      trigger: 'blur'
+    }
+  ]
 }
 
 // 上级菜单选项：顶级 + 全部目录/菜单
@@ -161,16 +279,65 @@ function typeTag(type) {
 async function loadData() {
   loading.value = true
   try {
-    const res = await getMenuTree()
+    const res = isSubsystemScope.value
+      ? await getSubsystemMenuTree(Number(scope.value))
+      : await getMenuTree()
     tableData.value = res.data
   } finally {
     loading.value = false
   }
 }
 
+async function loadSubsystems() {
+  const res = await listSubsystems()
+  subsystems.value = res.data || []
+}
+
+function handleScopeChange() {
+  tableData.value = []
+  loadData()
+}
+
+function openCreateSubsystem() {
+  Object.assign(subsystemForm, {
+    subsystemName: '',
+    subsystemCode: '',
+    sort: 0,
+    status: 1,
+    remark: ''
+  })
+  subsystemDialogVisible.value = true
+}
+
+async function handleCreateSubsystem() {
+  try {
+    await subsystemFormRef.value.validate()
+  } catch (e) {
+    return
+  }
+  subsystemSubmitting.value = true
+  try {
+    await createSubsystem({ ...subsystemForm })
+    ElMessage.success('子系统已新增')
+    subsystemDialogVisible.value = false
+    await loadSubsystems()
+    const created = subsystems.value.find(
+      (s) => s.subsystemCode === subsystemForm.subsystemCode
+    )
+    if (created) {
+      // 直接切换到新子系统，方便继续维护它的菜单
+      scope.value = String(created.id)
+      await loadData()
+    }
+  } finally {
+    subsystemSubmitting.value = false
+  }
+}
+
 function openCreate(parent) {
   isEdit.value = false
   Object.assign(form, defaultForm())
+  form.subsystemId = isSubsystemScope.value ? Number(scope.value) : null
   form.parentId = parent ? parent.id : 0
   // 在目录下新增时默认类型为菜单
   form.type = parent && parent.type === 1 ? 2 : 1
@@ -181,6 +348,7 @@ function openEdit(row) {
   isEdit.value = true
   Object.assign(form, {
     id: row.id,
+    subsystemId: isSubsystemScope.value ? Number(scope.value) : null,
     parentId: row.parentId,
     menuName: row.menuName,
     path: row.path,
@@ -203,11 +371,17 @@ async function handleSubmit() {
   }
   submitting.value = true
   try {
+    const payload = { ...form }
+    if (isSubsystemScope.value) {
+      payload.subsystemId = Number(scope.value)
+    } else {
+      delete payload.subsystemId
+    }
     if (isEdit.value) {
-      await updateMenu({ ...form })
+      await (isSubsystemScope.value ? updateSubsystemMenu(payload) : updateMenu(payload))
       ElMessage.success('修改成功')
     } else {
-      await createMenu({ ...form })
+      await (isSubsystemScope.value ? createSubsystemMenu(payload) : createMenu(payload))
       ElMessage.success('新增成功')
     }
     dialogVisible.value = false
@@ -227,12 +401,15 @@ async function handleDelete(row) {
   } catch (e) {
     return
   }
-  await deleteMenu(row.id)
+  await (isSubsystemScope.value ? deleteSubsystemMenu(row.id) : deleteMenu(row.id))
   ElMessage.success('删除成功')
   loadData()
 }
 
-onMounted(loadData)
+onMounted(async () => {
+  await loadSubsystems()
+  await loadData()
+})
 </script>
 
 <style scoped>

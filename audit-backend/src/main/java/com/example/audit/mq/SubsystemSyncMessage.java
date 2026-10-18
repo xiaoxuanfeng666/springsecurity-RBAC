@@ -102,6 +102,7 @@ public class SubsystemSyncMessage implements Serializable {
 
         private Integer status;
 
+
         /** 角色标识；含 admin 即为超级管理员（RBAC 侧超管授权不落库，只能这么识别） */
         private List<String> roleKeys = new ArrayList<>();
     }

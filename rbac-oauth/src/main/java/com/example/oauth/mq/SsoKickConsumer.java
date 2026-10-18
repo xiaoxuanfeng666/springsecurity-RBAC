@@ -55,10 +55,34 @@ public class SsoKickConsumer implements RocketMQListener<String> {
             oauthAuthStore.delete(authToken);
         }
         ssoSessionStore.delete(username);
-        recordService.closeOnlineRows(username, SsoSessionRecord.STATUS_KICKED, "被强制下线");
+        recordService.closeOnlineRows(username, SsoSessionRecord.STATUS_KICKED, reasonOf(message));
 
-        log.info("已按强制下线通知清除会话: username={}, reason={}, sessionId={}",
-                username, message.getReason(), message.getSessionId());
+        log.info("已按强制下线通知清除会话: username={}, type={}, reason={}, sessionId={}",
+                username, message.getType(), reasonOf(message), message.getSessionId());
+    }
+
+    /**
+     * 下线原因优先用发送方给的文案；没给时按动作类型兜底。
+     * 库里 status 统一记 2（被管理员强制下线），具体是停用、离职还是重置密码看 logout_reason。
+     */
+    private String reasonOf(SsoKickMessage message) {
+        if (StringUtils.hasText(message.getReason())) {
+            return message.getReason();
+        }
+        String type = message.getType();
+        if (SsoKickMessage.TYPE_DISABLED.equals(type)) {
+            return "账号已停用";
+        }
+        if (SsoKickMessage.TYPE_RESIGNED.equals(type)) {
+            return "账号已离职";
+        }
+        if (SsoKickMessage.TYPE_DELETE.equals(type)) {
+            return "账号已删除";
+        }
+        if (SsoKickMessage.TYPE_RESET_PWD.equals(type)) {
+            return "密码已重置";
+        }
+        return "被强制下线";
     }
 
     private SsoKickMessage parse(String body) {

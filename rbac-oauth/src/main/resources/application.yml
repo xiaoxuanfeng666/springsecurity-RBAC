@@ -60,6 +60,9 @@ jwt:
 # 【重要】此值一旦变更，库中已有的客户端密钥将无法解密，需要在「客户端管理」页面重新设置密钥。
 oauth2:
   client-secret-key: rbac-client-secret-key-please-change-in-production-0123456789
+  # 授权码在 Redis 中的存活时间（秒）。授权码是一次性的，兑换时原子取出并删除；
+  # TTL 只是兜底，避免用户放弃授权后键一直留着。
+  authorization-code-ttl-seconds: 300
   # 授权码/隐式模式的登录页地址。授权端点发现未登录时会 302 到这里。
   # 页面由 rbac-oauth-web（独立前端工程，开发环境 5174）提供，因此默认给绝对地址 ——
   # 用户从授权服务源（7071）发起授权时，相对路径 /login 会被解析到授权服务自己身上（那里没有页面）。

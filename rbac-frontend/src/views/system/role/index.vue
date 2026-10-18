@@ -30,7 +30,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="备注" min-width="160" show-overflow-tooltip />
-        <el-table-column label="操作" width="360" fixed="right" align="center">
+        <el-table-column label="操作" width="260" fixed="right" align="center">
           <template #default="{ row }">
             <el-button v-permission="'system:role:edit'" link type="primary" @click="openEdit(row)">
               修改
@@ -49,23 +49,6 @@
                   @click="openAssign(row)"
                 >
                   分配权限
-                </el-button>
-              </span>
-            </el-tooltip>
-            <el-tooltip
-              :disabled="!isSuperAdmin(row)"
-              content="超级管理员隐式拥有全部权限，无需分配"
-              placement="top"
-            >
-              <span>
-                <el-button
-                  v-permission="'system:role:menu'"
-                  link
-                  type="warning"
-                  :disabled="isSuperAdmin(row)"
-                  @click="openAssignSubsystem(row)"
-                >
-                  分配子系统菜单
                 </el-button>
               </span>
             </el-tooltip>
@@ -117,88 +100,65 @@
       </template>
     </el-dialog>
 
-    <!-- 分配权限 -->
-    <el-dialog v-model="assignVisible" :title="`分配权限 - ${assignRole.roleName}`" width="520px">
+    <!-- 分配权限：系统权限 + 各子系统菜单 -->
+    <el-dialog v-model="assignVisible" :title="`分配权限 - ${assignRole.roleName}`" width="640px">
       <el-alert
         type="info"
         :closable="false"
         show-icon
-        title="保存后立即对该角色的用户生效，用户无需重新登录。"
+        title="按页签分别配置本系统权限与各子系统的菜单/按钮；保存后立即生效，用户无需重新登录。"
         style="margin-bottom: 12px"
       />
-      <div class="tree-wrapper">
-        <el-tree
-          ref="treeRef"
-          :data="menuTree"
-          :props="treeProps"
-          node-key="id"
-          show-checkbox
-          default-expand-all
-          :check-strictly="false"
+      <el-tabs v-model="activeTab">
+        <el-tab-pane label="系统权限" name="rbac">
+          <div class="tree-wrapper">
+            <el-tree
+              ref="treeRef"
+              :data="menuTree"
+              :props="treeProps"
+              node-key="id"
+              show-checkbox
+              default-expand-all
+              :check-strictly="false"
+            >
+              <template #default="{ data }">
+                <span>
+                  {{ data.menuName }}
+                  <el-tag v-if="data.type === 3" size="small" type="info" style="margin-left: 6px">按钮</el-tag>
+                </span>
+              </template>
+            </el-tree>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane
+          v-for="s in subsystemTabs"
+          :key="s.id"
+          :label="s.subsystemName"
+          :name="String(s.id)"
         >
-          <template #default="{ data }">
-            <span>
-              {{ data.menuName }}
-              <el-tag v-if="data.type === 3" size="small" type="info" style="margin-left: 6px">按钮</el-tag>
-            </span>
-          </template>
-        </el-tree>
-      </div>
+          <div class="tree-wrapper">
+            <el-tree
+              :ref="(el) => setSubTreeRef(el, s.id)"
+              :data="s.tree"
+              :props="treeProps"
+              node-key="id"
+              show-checkbox
+              default-expand-all
+              :check-strictly="false"
+            >
+              <template #default="{ data }">
+                <span>
+                  {{ data.menuName }}
+                  <el-tag v-if="data.type === 3" size="small" type="info" style="margin-left: 6px">按钮</el-tag>
+                </span>
+              </template>
+            </el-tree>
+          </div>
+        </el-tab-pane>
+      </el-tabs>
       <template #footer>
         <el-button @click="assignVisible = false">取消</el-button>
         <el-button type="primary" :loading="submitting" @click="handleAssign">保存</el-button>
-      </template>
-    </el-dialog>
-
-    <!-- 分配子系统菜单 -->
-    <el-dialog
-      v-model="subAssignVisible"
-      :title="`分配子系统菜单 - ${assignRole.roleName}`"
-      width="520px"
-    >
-      <el-alert
-        type="info"
-        :closable="false"
-        show-icon
-        title="这里配的是下发给子系统的导航菜单，不影响本系统的权限判定；按子系统分别保存，互不影响。"
-        style="margin-bottom: 12px"
-      />
-      <el-select
-        v-model="subAssignSubsystemId"
-        placeholder="请选择子系统"
-        style="width: 100%; margin-bottom: 12px"
-        @change="loadSubsystemAssign"
-      >
-        <el-option
-          v-for="s in subsystemOptions"
-          :key="s.id"
-          :label="s.subsystemName"
-          :value="s.id"
-        />
-      </el-select>
-      <el-empty v-if="!subAssignSubsystemId" description="请先选择子系统" :image-size="60" />
-      <div v-else class="tree-wrapper">
-        <el-tree
-          ref="subTreeRef"
-          :key="subAssignSubsystemId"
-          :data="subMenuTree"
-          :props="treeProps"
-          node-key="id"
-          show-checkbox
-          default-expand-all
-          :check-strictly="false"
-        />
-      </div>
-      <template #footer>
-        <el-button @click="subAssignVisible = false">取消</el-button>
-        <el-button
-          type="primary"
-          :loading="submitting"
-          :disabled="!subAssignSubsystemId"
-          @click="handleAssignSubsystem"
-        >
-          保存
-        </el-button>
       </template>
     </el-dialog>
   </div>
@@ -257,11 +217,19 @@ const menuTree = ref([])
 const treeRef = ref()
 const treeProps = { label: 'menuName', children: 'children' }
 
-const subAssignVisible = ref(false)
-const subAssignSubsystemId = ref(null)
 const subsystemOptions = ref([])
-const subMenuTree = ref([])
-const subTreeRef = ref()
+const subsystemTabs = ref([])
+const activeTab = ref('rbac')
+/** 每个子系统页签的 el-tree 实例，key = 子系统 ID */
+let subTreeRefs = {}
+
+function setSubTreeRef(el, subsystemId) {
+  if (el) {
+    subTreeRefs[subsystemId] = el
+  } else {
+    delete subTreeRefs[subsystemId]
+  }
+}
 
 async function loadData() {
   loading.value = true
@@ -364,18 +332,55 @@ function collectLeafIds(nodes, set = new Set()) {
 
 async function openAssign(row) {
   assignRole.value = row
-  if (menuTree.value.length === 0) {
-    const res = await getMenuTree()
-    menuTree.value = res.data
-  }
+  activeTab.value = 'rbac'
+  subTreeRefs = {}
   assignVisible.value = true
-  const res = await getRoleMenuIds(row.id)
-  const ownedIds = res.data || []
-  const leafIds = collectLeafIds(menuTree.value)
-  // 只设置叶子节点，父节点由 el-tree 自动推导勾选/半选状态
-  const checkedLeafIds = ownedIds.filter((id) => leafIds.has(id))
-  await nextTick()
-  treeRef.value.setCheckedKeys(checkedLeafIds)
+  submitting.value = true
+  try {
+    if (menuTree.value.length === 0) {
+      const res = await getMenuTree()
+      menuTree.value = res.data
+    }
+    if (subsystemOptions.value.length === 0) {
+      const res = await listSubsystems()
+      subsystemOptions.value = res.data || []
+    }
+
+    // 并行拉取：本系统菜单 + 每个子系统的菜单树与该角色的已授权项
+    const [ownedRes, ...tabs] = await Promise.all([
+      getRoleMenuIds(row.id),
+      ...subsystemOptions.value.map(async (s) => {
+        const [treeRes, owned] = await Promise.all([
+          getSubsystemMenuTree(s.id),
+          getRoleSubsystemMenuIds(row.id, s.id)
+        ])
+        return {
+          id: s.id,
+          subsystemName: s.subsystemName,
+          tree: treeRes.data || [],
+          ownedIds: owned.data || []
+        }
+      })
+    ])
+    subsystemTabs.value = tabs
+
+    // 等弹窗与所有页签的树渲染完，再回显勾选
+    await nextTick()
+    const ownedIds = ownedRes.data || []
+    const menuLeafIds = collectLeafIds(menuTree.value)
+    // 只设置叶子节点，父节点由 el-tree 自动推导勾选/半选状态
+    treeRef.value?.setCheckedKeys(ownedIds.filter((id) => menuLeafIds.has(id)))
+    for (const tab of subsystemTabs.value) {
+      const tree = subTreeRefs[tab.id]
+      if (!tree) {
+        continue
+      }
+      const leafIds = collectLeafIds(tab.tree)
+      tree.setCheckedKeys(tab.ownedIds.filter((id) => leafIds.has(id)))
+    }
+  } finally {
+    submitting.value = false
+  }
 }
 
 async function handleAssign() {
@@ -387,54 +392,21 @@ async function handleAssign() {
       ...treeRef.value.getHalfCheckedKeys()
     ]
     await updateRoleMenus(assignRole.value.id, menuIds)
+
+    // 各子系统页签分别保存（后端按子系统局部替换，互不影响）
+    for (const tab of subsystemTabs.value) {
+      const tree = subTreeRefs[tab.id]
+      if (!tree) {
+        continue
+      }
+      const ids = [...tree.getCheckedKeys(), ...tree.getHalfCheckedKeys()]
+      await updateRoleSubsystemMenus(assignRole.value.id, {
+        subsystemId: tab.id,
+        menuIds: ids
+      })
+    }
     ElMessage.success('权限已更新，立即对该角色用户生效')
     assignVisible.value = false
-  } finally {
-    submitting.value = false
-  }
-}
-
-/** 打开「分配子系统菜单」弹窗 */
-async function openAssignSubsystem(row) {
-  assignRole.value = row
-  if (subsystemOptions.value.length === 0) {
-    const res = await listSubsystems()
-    subsystemOptions.value = res.data || []
-  }
-  subAssignSubsystemId.value = subsystemOptions.value.length > 0 ? subsystemOptions.value[0].id : null
-  subAssignVisible.value = true
-  await loadSubsystemAssign()
-}
-
-/** 拉取所选子系统的菜单树 + 该角色在此子系统的勾选，用于回显 */
-async function loadSubsystemAssign() {
-  if (!subAssignSubsystemId.value) {
-    subMenuTree.value = []
-    return
-  }
-  const res = await getSubsystemMenuTree(subAssignSubsystemId.value)
-  subMenuTree.value = res.data
-  const owned = await getRoleSubsystemMenuIds(assignRole.value.id, subAssignSubsystemId.value)
-  const ownedIds = owned.data || []
-  const leafIds = collectLeafIds(subMenuTree.value)
-  // 树带 :key，切换子系统会重建；等它渲染完再回显
-  await nextTick()
-  subTreeRef.value?.setCheckedKeys(ownedIds.filter((id) => leafIds.has(id)))
-}
-
-async function handleAssignSubsystem() {
-  submitting.value = true
-  try {
-    const menuIds = [
-      ...subTreeRef.value.getCheckedKeys(),
-      ...subTreeRef.value.getHalfCheckedKeys()
-    ]
-    await updateRoleSubsystemMenus(assignRole.value.id, {
-      subsystemId: subAssignSubsystemId.value,
-      menuIds
-    })
-    ElMessage.success('子系统菜单已更新')
-    subAssignVisible.value = false
   } finally {
     submitting.value = false
   }

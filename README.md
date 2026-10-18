@@ -7,10 +7,10 @@
 | 需求 | 实现方式 |
 |---|---|
 | **无感知续期** | Access Token 短有效期（默认 15 分钟），过期后前端拦截 401，用 Refresh Token 自动调用 `POST /auth/refresh` 换取新的 Access Token 并重放原请求（并发 401 只刷新一次）。用户全程无感知，不需要重新登录。 |
-| **离职立刻失效凭证** | 用户状态三值：**1 在职 / 0 停用 / 2 离职**。会话保存在 Redis（`login:session:{userId}` + `login:refresh:{sessionId}`）。标记停用或离职时删除会话键，配合认证过滤器的会话校验，存量 Access Token 在下一次请求即被拒绝，旧 Refresh Token 也无法再续期，无需等待自然过期。 |
+| **离职立刻失效凭证** | 用户状态三值：**1 在职 / 0 停用 / 2 离职**。会话保存在 Redis（`login:session:{userId}` + `login:refresh:{sessionId}`）。标记停用或离职时删除会话键，配合认证过滤器的会话校验，存量 Access Token 在下一次请求即被拒绝，旧 Refresh Token 也无法再续期，无需等待自然过期。**同时经 MQ（`RBAC_OAUTH_SESSION`）通知 rbac-oauth 删除该用户的 SSO 会话**（`sso:session:{username}` + `oauth2:auth:{token}`），订单中心、营销系统等子系统手里的令牌也立即失效。 |
 | **登录快照（用户 + 权限 + 角色）** | 用户信息、权限、角色在**登录时**查库一次，整体序列化写入 Redis（`login:perm:{sessionId}`）。之后每个请求都由快照重建认证主体，**不再访问数据库** —— 省掉「用户-角色-菜单」的多表联查与逐请求的用户行查询。 |
 | **动态修改角色权限** | 管理员在角色授权页调整「角色-菜单」映射后，服务端立即**失效该角色下所有用户的权限快照**，用户下一次请求重建快照并拿到新权限，无需重新登录。 |
-| **子系统菜单统一配置** | RBAC 作为中枢登记各子系统，并维护每个子系统自己的菜单树（目录 / 菜单 / 按钮三级，三者都带 `perms` 权限标识）；角色在「角色管理」里按子系统分配可见菜单。数据落在 `sys_role_subsystem_menu`，并**经 RocketMQ 实时下发给对应子系统** —— 已在运行的子系统无需重启、重新登录即可生效，见「子系统接入」一节。 |
+| **子系统菜单统一配置** | RBAC 作为中枢登记各子系统（每个子系统有**唯一编码**，如 `order-center` / `marketing` / `audit`），并在「菜单管理」页顶部按「所属系统」切换：选 RBAC 本系统维护 `sys_menu`，选某个子系统直接维护该子系统的 `sys_subsystem_menu`（目录 / 菜单 / 按钮三级，均带 `perms`）。顶部「新增子系统」可直接登记**子系统名称 + 唯一编码**，保存后自动切换到该子系统继续维护菜单。角色的子系统授权仍按子系统单独保存，并**经 RocketMQ 实时下发给对应子系统**。 |
 | **超级管理员免配置** | `admin` 的权限**不落库**：代码里直接给通配符 `*:*:*` 与全部启用菜单。新增菜单或接口后不需要再手动给它补授权，`sys_role_menu` 里也不会有它的记录。 |
 | **操作日志与审计日志** | **账号/会话类动作**（登录、登出、强制下线、停用/启用/离职、重置密码、自助改密）留在 RBAC 库的 `sys_operation_log`；**各系统的接口增删改**（新增、修改、删除、授权）统一上报到独立的**审计日志系统**（独立库 `audit_log`），记录来源系统、模块、动作、操作人、请求方法路径、**已脱敏的请求参数**、成败、耗时、来源 IP。登录/登出**不进入**审计日志。各系统经 RocketMQ topic `RBAC_AUDIT_LOG` 上报，审计系统只做接收与查询。 |
 | **统一登出** | 各子系统共享授权服务上的登录态：任一子系统登出即删掉该用户的 SSO 会话，**所有子系统**手里的旧令牌下一个请求就失效，刷新令牌也换不出新的（自包含 JWT 本身删不掉，靠这层服务端会话把生死收回来）。已经登录过的人再进另一个子系统**不弹登录页**（凭会话直接发码）。见「SSO 会话与统一登出」一节。 |
@@ -145,6 +145,9 @@ springsecurity-RBAC/
     ├── upgrade-2026-10-16-sso.sql             # SSO 客户端配置：portal 客户端 + 子系统客户端免确认页
     ├── upgrade-2026-10-17-remove-sso-menu.sql # 移除「SSO 会话」菜单（rbac-backend 已不提供该接口）
     ├── upgrade-2026-10-17-audit.sql           # 审计日志系统接入中枢：客户端 audit + 子系统 + 菜单权限
+    ├── upgrade-2026-10-17-remove-subsystem-menus.sql    # 移除子系统管理/子系统菜单管理/子系统用户授权三个菜单入口
+    ├── upgrade-2026-10-17-subsystem-create-permission.sql # 「菜单管理」里新增子系统的权限点
+    ├── upgrade-2026-10-18-remove-subsystem-admin.sql    # 移除子系统内授权：删除管理员权限点与 subsystem_admin 标记
     ├── order-schema.sql                       # 订单中心独立库 order_center（同步表 + order_info + 演示数据）
     ├── marketing-schema.sql                   # 营销系统独立库 marketing
     ├── audit-schema.sql                       # 审计日志系统独立库 audit_log（同步表 + audit_log）
@@ -165,6 +168,9 @@ mysql -uroot -p --default-character-set=utf8mb4 < sql/order-schema.sql    # 订�
 mysql -uroot -p --default-character-set=utf8mb4 < sql/marketing-schema.sql # 营销系统库 marketing
 mysql -uroot -p --default-character-set=utf8mb4 < sql/audit-schema.sql     # 审计日志系统库 audit_log
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-audit.sql # 审计系统接入中枢（只动 rbac 库）
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-remove-subsystem-menus.sql    # 收敛菜单入口
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-subsystem-create-permission.sql # 新增子系统权限点
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-remove-subsystem-admin.sql    # 移除子系统内授权
 ```
 
 已有的旧库按文件名顺序执行增量脚本升级（脚本一次性执行，重复执行会因 `ALTER` / 主键冲突而报错）：
@@ -185,6 +191,8 @@ mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-16-order-c
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-16-sso.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-remove-sso-menu.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-audit.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-subsystem-create-permission.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-remove-subsystem-admin.sql
 ```
 
 > 前几个脚本是迭代过程留下的：先是独立部门表，再加独立分公司模块，最后把分公司并入部门树、换成岗位模块。中途的 `company` 脚本只挂载了一次独立分公司模块，随后被最后一个脚本合并回组织树并删除。**全新安装只需执行 `schema.sql` + `data.sql` + 三个子系统的 schema + `upgrade-2026-10-17-audit.sql`（把审计系统注册到中枢）。**
@@ -242,7 +250,7 @@ cd marketing-backend && mvn spring-boot:run     # 营销系统：http://localhos
 cd audit-backend     && mvn spring-boot:run     # 审计日志系统：http://localhost:7074
 ```
 
-中枢两个无启动顺序要求（各自独立连库与 Redis）。**子系统要先等中枢起来、并且 RBAC 推过一次权限数据**，否则同步表为空、登录会提示账号未同步（2004）—— 让 RBAC 推一次最简单的办法是重启 rbac-backend（启动时全量下发一次），或在「子系统菜单管理」页面点一下保存。
+中枢两个无启动顺序要求（各自独立连库与 Redis）。**子系统要先等中枢起来、并且 RBAC 推过一次权限数据**，否则同步表为空、登录会提示账号未同步（2004）—— 让 RBAC 推一次最简单的办法是重启 rbac-backend（启动时全量下发一次），或在「菜单管理」页切换到对应子系统后保存一次菜单。
 
 > 审计日志系统的消费者应先于各系统上报动作启动，避免 topic 首次创建时的位点问题（见「准备 RocketMQ」）。
 
@@ -325,6 +333,8 @@ cd audit-frontend     && npm install && npm run dev    # 审计日志系统：ht
 | `/openapi/users/{id}/status` | PUT | 修改用户状态，需要 scope `write` |
 
 除了 `/openapi/**` 按 OAuth2 令牌的 scope 判权，本服务其余端点或对外开放（`/oauth/token_key`、`/oauth/check_token`），或走浏览器会话（授权流程）。**客户端管理不在这里**——它是后台管理功能，跑在 rbac-backend 上，按 `system:client:*` 权限点判权。
+
+> **授权码存储**：授权码不再放内存，改为 Redis 键 `oauth2:code:{code}`（值为 `OAuth2Authentication` 的 JDK 序列化结果），默认 5 分钟 TTL，可用 `oauth2.authorization-code-ttl-seconds` 调整。兑换令牌时用 Lua 脚本原子 `GET + DEL`，保证一次性消费；多实例部署与授权服务重启都不会丢未兑换的授权码。
 
 已登记的三个子系统客户端（密钥在库里是 AES 密文，这里是明文）：
 
@@ -423,7 +433,7 @@ Access Token 有效期短（默认 15 分钟），过期后前端拦截 401，�
 **子系统菜单（RBAC 统一给子系统配菜单）**
 
 1. 用 admin 打开「系统管理 → 子系统管理」，能看到「订单中心」与「营销系统」，也可新增子系统（编码唯一，重复报 1025）。
-2. 打开「系统管理 → 子系统菜单管理」，顶部下拉选一个子系统，即可给它维护**目录 / 菜单 / 按钮**三级菜单树（切换子系统会重新拉取该子系统的树）。三个层级的 `perms` 都会参与子系统侧的接口鉴权；按钮节点只作权限点、`visible=0` 不在导航里显示。
+2. 打开「系统管理 → 菜单管理」，顶部「所属系统」下拉默认是 RBAC 本系统；切到某个子系统后，表格会加载该子系统的菜单树，新增/修改/删除都直接作用于 `sys_subsystem_menu`。每个子系统都有**唯一编码**（`order-center` / `marketing` / `audit`），菜单保存后经 MQ 只下发给这个编码对应的子系统。三个层级的 `perms` 都参与子系统侧的接口鉴权；按钮节点只作权限点、`visible=0` 不在导航里显示。
 3. 在「角色管理」里给普通角色点「分配子系统菜单」：选子系统 → 勾选菜单 → 保存。保存是**按子系统局部替换**的，改 A 子系统的勾选不会动 B 子系统。
 4. 删除有子菜单的菜单、或删除还有菜单的子系统，都会被拒绝（1011 / 1027），避免留下孤儿数据。
 
@@ -644,6 +654,7 @@ sso:session:{username}   SSO 会话 JSON，存在 = 令牌可用                
 sso:browser:{username}   该用户浏览器登录态的 token                     TTL 7 天
 sso:uid:{userId}         userId → username 反查索引                    TTL 7 天
 oauth2:auth:{token}      授权服务的登录态（精简认证信息，见下）           TTL 30 分钟
+oauth2:code:{code}       未兑换的授权码（OAuth2Authentication 序列化）   TTL 默认 300 秒（oauth2.authorization-code-ttl-seconds）
 ```
 
 **授权服务自己的登录态也不用 Spring Session**：用户在这台浏览器上认证过这件事，直接存成一条 JSON ——
@@ -726,6 +737,23 @@ oauth2:auth:{token}      授权服务的登录态（精简认证信息，见下�
 | GET | `rbac-oauth:7071/oauth/sso-logout?redirect_uri=` | 统一登出（整页跳转），清 SSO 会话 + 登录态后 302 回 `redirect_uri`（只接受已登记客户端的来源，否则回授权服务登录页） |
 | POST | `rbac-oauth:7071/oauth/sso-logout` | 同上，XHR 版，返回 JSON |
 
+### 管理员动作触发的 SSO 强制下线
+
+管理员在 RBAC 后台的以下动作会在本地事务提交后发一条 MQ 消息到 `RBAC_OAUTH_SESSION`，由 rbac-oauth 的 `SsoKickConsumer` 删除 `sso:session:{username}`、`oauth2:auth:{token}`，并关闭 `sys_sso_session` 里的在线记录：
+
+| 管理员动作 | 接口 | 消息 `type` | 下线原因 |
+|---|---|---|---|
+| 停用账号 | `PUT /user/{id}/status?status=0` | `DISABLED` | 账号已停用 |
+| 标记离职 | `PUT /user/{id}/status?status=2`（或编辑用户时改状态） | `RESIGNED` | 账号已离职 |
+| 强制下线 | `DELETE /auth/kick/{userId}` | `KICK` | 被管理员强制下线 |
+| SSO 会话页强制下线 | `POST /sso/session/kick/{sessionId}` | `KICK` | 被强制下线 |
+| 删除用户 | `DELETE /user/{id}` | `DELETE` | 账号已删除 |
+| 重置密码 | `PUT /user/{id}/resetPassword` | `RESET_PWD` | 密码已重置 |
+
+- 消息体：`type / sessionId / userId / username / reason / timestamp`，消费方按 `username` 定位会话（与浏览器无关，一次踢掉该用户所有终端）。
+- 发送在事务 **提交之后**（`SsoKickPublisher` 的 `afterCommit`），避免业务回滚却把人踢下线；MQ 未启动或发送失败只记 error 日志，不影响管理操作本身。
+- 若本地 `sys_sso_session` 没有在线记录（例如用户从未通过授权页登录），消费方仍然会删 Redis 会话，`closeOnlineRows` 幂等返回 0。
+
 ## 子系统接入
 
 「子系统」= 一个独立库 + 独立后端 + 独立前端的业务系统，**自己不做登录、不做权限管理**，把这两件事整体交给 RBAC。订单中心、营销系统与审计日志系统都是按这套模式接入的，接入步骤可直接照抄。
@@ -773,7 +801,12 @@ RBAC (rbac-backend)                               子系统 (order-backend)
 ```
 
 - **topic** `RBAC_SUBSYSTEM_SYNC`，**tag = 子系统编码**（`order-center` / `marketing`）。子系统用 `selectorExpression` 只订阅自己那一条，消费组各自独立（`order-sync-consumer` / `marketing-sync-consumer`），互不抢消息。
-- **消息体**：`subsystemCode` + `menus` + `roleMenus` + `users` + `userRoles` 四份**全量**列表（不是增量）。
+- **消息体**：`subsystemCode` + `menus` + `roleMenus` + `userRoles` + `users` 五份**全量**列表（不是增量）。其中「全量」是指**该子系统范围内的全量**：
+  - `menus` / `roleMenus` 只包含本子系统的菜单与角色授权；
+  - `users` 只包含「拥有本子系统授权角色的用户」+ 超级管理员（超管授权不落库，靠 `role_keys` 识别，且需要能进入每个子系统）；
+  - `userRoles` 只包含上述用户与本子系统授权角色的关联。
+  没有在本子系统配置任何角色的用户不会下发，也无法登录该子系统（2004 账号未同步）。
+- **触发范围**：用户增删改、用户角色变更时，按**旧角色 ∪ 新角色**反查这些角色在哪些子系统有菜单授权，只给这些子系统发消息；角色启停/标识变更/删除同理（超管角色变化则发全部）。rbac-backend 启动时仍会向所有启用子系统各发一次，用于首次接入与兜底。
 - **触发时机**：用户增删改与角色变更、角色-子系统菜单授权变更、子系统菜单增删改，以及 rbac-backend **应用启动时全量下发一次**。发送在事务提交之后，避免「消息发了但事务回滚了」。
 - **消费语义**：子系统收到后在一个事务里**清空重建** 4 张同步表（`order_user` / `order_menu` / `order_role_menu` / `order_user_role`）。全量快照 + 清空重建比逐条 diff 简单可靠，也不会因漏处理某条删除而留下过期授权。
 - **超管不落库**：`admin` 的授权在中枢与子系统都不落表。子系统靠同步下来的 `role_keys` 里是否含 `admin` 来识别，识别到就直接给通配符 `*:*:*` 与全部启用菜单。
@@ -788,12 +821,35 @@ Bearer 令牌 → /oauth/check_token → user_name → order_user
 
 同步表就是权限的唯一事实来源，所以中枢改一次授权，子系统**下一个请求**就生效 —— 不需要重新登录，也不需要重启。
 
+**角色权限变更经 MQ 实时下发**：
+
+| 中枢操作 | 下发的 MQ 消息 | 已登录子系统用户的效果 |
+|---|---|---|
+| 角色管理 → **分配子系统菜单**（`PUT /role/{id}/subsystem-menus`） | `RBAC_SUBSYSTEM_SYNC`，只发对应子系统 | 子系统重建菜单/授权表，下一个请求即按新权限判定，**无需重新登录** |
+| 用户角色变更、用户增删改 | `RBAC_SUBSYSTEM_SYNC`，**只发受影响子系统** | 按旧角色 ∪ 新角色的授权反查子系统；消息内只带该子系统相关的用户与角色 |
+| 角色启停、角色标识修改或删除 | `RBAC_SUBSYSTEM_SYNC`，只发该角色授权覆盖的子系统（超管角色变化发全部） | 各子系统重新识别有效期角色与 `role_keys`（含超管识别） |
+| RBAC 后台自身的「分配权限」（`PUT /role/{id}/menus`） | 不发 MQ | 只影响 RBAC 管理后台的 `@PreAuthorize` 判定：失效该角色用户的本地权限快照，下一次请求重建。子系统不使用这套菜单 |
+
+> 说明：SSO 用户在各子系统的权限**不保存在 rbac-oauth 里**，令牌也不携带权限。权限的事实来源是子系统本地由 MQ 重建的同步表，因此「角色权限动态生效」靠的是上面的 `RBAC_SUBSYSTEM_SYNC`，而不是给授权服务发下线消息。
+
+### 在 RBAC 后台新增子系统
+
+1. 用拥有 `system:subsystem:add` 的账号（超管默认拥有）打开「系统管理 → 菜单管理」；
+2. 点顶部「新增子系统」，填写：
+   - **子系统名称**：展示用，如「营销系统」；
+   - **子系统编码**：唯一标识，只能包含字母、数字、下划线和短横线（如 `marketing`）。该编码同时用作 MQ tag，创建后不要随意修改；
+   - 排序、状态、备注可选。
+3. 保存后会出现在「所属系统」下拉中，并自动切换过去；接着就能按目录 / 菜单 / 按钮维护它的菜单树。
+4. 该入口只登记 RBAC 侧的子系统与菜单。要让新服务真正可用，还需要：
+   - 在 `clientdetails` 登记对应的 OAuth2 客户端（appId 建议与编码一致）；
+   - 部署按「接入一个新子系统」改造的新后端与前端。
+
 ### 接入一个新子系统要改哪些地方
 
 1. 中枢库里建子系统与菜单树：`sys_subsystem` 一行 + `sys_subsystem_menu` 若干行（目录/菜单/按钮，带 `perms`）+ `sys_role_subsystem_menu` 给角色授权。
 2. 中枢库里登记 OAuth2 客户端：`clientdetails` 一行（appId、AES 密文密钥、grantTypes、**redirectUrl 必须与前端回调页完全一致**）。
 3. 新库：`*-schema.sql` 建 4 张同步表（结构照抄 `order-schema.sql`，表名前缀换掉）+ 自己的业务表。
-4. 新后端：照抄 `order-backend` —— 改包名、库名、端口、`oauth2.client-id/client-secret/redirect-uri`、`SUBSYSTEM_CODE`、消费组名，以及权限点前缀。
+4. 新后端：照抄 `order-backend` —— 改包名、库名、端口、`oauth2.client-id/client-secret/redirect-uri`、`SUBSYSTEM_CODE`、消费组名，以及权限点前缀；同步消费需要重建 4 张同步表，权限查询使用「用户角色 ⋈ 角色菜单」。
 5. 新前端：照抄 `order-frontend` —— 改端口、`/api` 代理目标、`localStorage` 键名、`VITE_OAUTH_SERVER_URL`、品牌文案；业务页的目录路径必须与 `sys_subsystem_menu.component` 一一对应。登录相关三块照抄即可，不用自己实现：
    - `views/login/index.vue` —— 不是表单，是「导航到后端 `/auth/sso-login`（由它 302 到授权服务登录页）」的页面；
    - `views/oauth/callback.vue` —— 用 code 换令牌；
@@ -806,11 +862,12 @@ Bearer 令牌 → /oauth/check_token → user_name → order_user
 
 - **客户端密钥**：`clientdetails.appSecret` 在库里是 AES 密文，中枢两服务都用 `oauth2.client-secret-key` 加解密 —— rbac-backend 写入时加密、回显时解密（页面要展示明文给第三方），rbac-oauth 解密以校验客户端身份。**两处配置必须一致**，否则客户端会全部认证失败。子系统不需要这个配置项（它们只持有自己的明文密钥）。
 - **Redis 键**：`login:session:{userId}`（当前会话）、`login:refresh:{sessionId}`、`login:perm:{sessionId}`（权限快照）由 rbac-backend 维护。rbac-oauth 只读 `login:session:*`，并在第三方经 `/openapi` 停用/离职用户时删除这三个键（立即下线）。键名变更需两边同步。子系统不使用 Redis —— 它的「会话」就是授权服务器签发的令牌。
-- **SSO 会话键（全部由 rbac-oauth 自己维护）**：`sso:session:{username}`（会话本体，存在=令牌可用）、`sso:browser:{username}`（该用户浏览器登录态的 token）、`sso:uid:{userId}`（userId → username 反查）、`oauth2:auth:{token}`（登录态本体，精简 JSON）。rbac-backend 不读写这批键 —— 统一登出只由授权服务负责，细节见「SSO 会话与统一登出」一节。
+- **SSO 会话键（全部由 rbac-oauth 自己维护）**：`sso:session:{username}`（会话本体，存在=令牌可用）、`sso:browser:{username}`（该用户浏览器登录态的 token）、`sso:uid:{userId}`（userId → username 反查）、`oauth2:auth:{token}`（登录态本体，精简 JSON）、`oauth2:code:{code}`（未兑换的授权码，默认 5 分钟 TTL）。rbac-backend 不读写这批键 —— 统一登出只由授权服务负责，细节见「SSO 会话与统一登出」一节。
 - **库表**：`clientdetails` 由 rbac-backend 读写（客户端管理），rbac-oauth 只读（加载客户端做认证）；`sys_user` 两边都读 —— rbac-oauth 用它做密码模式的身份校验与开放接口的用户访问。子系统**不读中枢的任何表**。
 - **MQ 下发契约**：topic `RBAC_SUBSYSTEM_SYNC`、tag = 子系统编码、消息体字段名（`subsystemCode` / `menus` / `roleMenus` / `users` / `userRoles`）。中枢的生产者（`SubsystemSyncService`）与子系统的消费者（`SubsystemSyncConsumer` + `*-SyncService`）是**两份各自独立的代码**，字段名或语义变更必须两边同步改 —— 这里没有共享库或共享 DTO 来兜住。见「子系统接入」。
 - **授权服务里没有 RBAC**：rbac-oauth 不解析后台的登录令牌，也没有权限快照与 `@PreAuthorize`。要改客户端配置只能走 rbac-backend 的「客户端管理」页（`system:client:*` 权限 + 操作日志）。
 - **操作日志与审计日志**：`sys_operation_log` 由 rbac-backend 独占写入，**只保留账号/会话类动作**（登录、登出、踢下线、停用/启用/离职、重置密码、自助改密）；接口增删改不再写这张表。客户端配置的增删改也不再写它，改为上报审计日志系统。**唯一不再留痕的是**第三方经 `/openapi/users/{id}/status` 停用/离职用户（原本会记一条 `DISABLED`/`RESIGNED`，**强制下线本身仍然生效**）。不把日志表与切面复制到授权服务，是为了避免两处实现漂移；若要审计第三方的动作，应在授权服务侧补一个精简写入。
+- **MQ 强制下线契约**：topic `RBAC_OAUTH_SESSION`，消息字段 `type / sessionId / userId / username / reason / timestamp`。生产者是 rbac-backend（`SsoKickPublisher`），消费者是 rbac-oauth（`SsoKickConsumer`，消费组 `rbac-oauth-session-consumer`）。两边各持一份 `SsoKickMessage`，`type` 取值 `KICK / DISABLED / RESIGNED / DELETE / RESET_PWD` 需同步维护。
 - **MQ 审计上报契约**：topic `RBAC_AUDIT_LOG`（不分 tag），消息体字段名见「审计日志系统端到端」。生产者分布在 rbac-backend / marketing-backend / order-backend（各自一份 `AuditLogMessage` + `AuditLogPublisher` + `AuditParamUtils` + 切面），消费者在 audit-backend（`AuditLogConsumer` + `AuditLogService`）。同样没有共享 DTO，字段名变更需各服务同步。生产端发送在业务事务提交之后，失败只记日志不影响业务；消费端解析失败丢弃、落库失败抛出让容器重试。
 
 ## 说明与注意事项

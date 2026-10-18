@@ -35,5 +35,6 @@ public class OrderUser implements Serializable {
     /** 角色标识，逗号分隔，如 "admin" 或 "common,auditor" */
     private String roleKeys;
 
+
     private LocalDateTime syncTime;
 }

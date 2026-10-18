@@ -13,6 +13,7 @@ import com.example.rbac.mapper.SysSubsystemMapper;
 import com.example.rbac.mapper.SysSubsystemMenuMapper;
 import com.example.rbac.mapper.SysUserMapper;
 import com.example.rbac.mapper.SysUserRoleMapper;
+import com.example.rbac.security.SuperAdmin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +27,10 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -116,6 +119,67 @@ public class SubsystemSyncService {
         afterCommit(() -> doSyncById(subsystemId));
     }
 
+    /**
+     * 只向「受这些角色影响」的子系统下发
+     * <p>
+     * 用于用户-角色变更、用户增删改、角色启停等场景：消息没必要发给所有子系统。
+     * <ul>
+     *   <li>角色包含超级管理员（role_key=admin）→ 所有子系统都要刷新，
+     *       因为超管的权限不落库，各子系统靠 role_keys 识别它；</li>
+     *   <li>否则按这些角色在 {@code sys_role_subsystem_menu} 里的授权，
+     *       反查出它们分布在哪些子系统，只发这些。</li>
+     * </ul>
+     * 角色没有任何子系统授权时什么都不发。
+     */
+    public void syncForRoles(Collection<Long> roleIds) {
+        if (!enabled || roleIds == null || roleIds.isEmpty()) {
+            return;
+        }
+        if (containsAdminRole(roleIds)) {
+            afterCommit(this::doSyncAll);
+            return;
+        }
+        Set<Long> subsystemIds = findSubsystemIdsByRoles(roleIds);
+        if (subsystemIds.isEmpty()) {
+            return;
+        }
+        afterCommit(() -> subsystemIds.forEach(this::doSyncById));
+    }
+
+    /** 角色里是否含超级管理员（启用状态的角色才算，与快照口径一致） */
+    private boolean containsAdminRole(Collection<Long> roleIds) {
+        return roleMapper.selectList(new LambdaQueryWrapper<SysRole>()
+                        .in(SysRole::getId, roleIds)
+                        .eq(SysRole::getStatus, STATUS_ENABLED))
+                .stream().anyMatch(role -> SuperAdmin.ROLE_KEY.equals(role.getRoleKey()));
+    }
+
+    /**
+     * 这些角色的菜单授权分布在哪些子系统
+     */
+    private Set<Long> findSubsystemIdsByRoles(Collection<Long> roleIds) {
+        List<Long> menuIds = roleSubsystemMenuMapper.selectList(
+                        new LambdaQueryWrapper<SysRoleSubsystemMenu>()
+                                .in(SysRoleSubsystemMenu::getRoleId, roleIds))
+                .stream()
+                .map(SysRoleSubsystemMenu::getSubsystemMenuId)
+                .distinct()
+                .collect(Collectors.toList());
+        return findSubsystemIdsByMenuIds(menuIds);
+    }
+
+    private Set<Long> findSubsystemIdsByMenuIds(Collection<Long> menuIds) {
+        if (menuIds == null || menuIds.isEmpty()) {
+            return Collections.emptySet();
+        }
+        return subsystemMenuMapper.selectList(
+                        new LambdaQueryWrapper<SysSubsystemMenu>()
+                                .in(SysSubsystemMenu::getId, menuIds))
+                .stream()
+                .map(SysSubsystemMenu::getSubsystemId)
+                .collect(Collectors.toSet());
+    }
+
     private void doSyncById(Long subsystemId) {
         SysSubsystem subsystem = subsystemMapper.selectById(subsystemId);
         if (subsystem == null || !Integer.valueOf(STATUS_ENABLED).equals(subsystem.getStatus())) {
@@ -188,8 +252,28 @@ public class SubsystemSyncService {
                     }).collect(Collectors.toList()));
         }
 
-        message.setUsers(buildUsers(roleKeysById));
-        message.setUserRoles(buildUserRoles(roleKeysById.keySet()));
+        // 只带与本子系统相关的用户：
+        //   ① 在该子系统有菜单授权的角色下的用户；
+        //   ② 超级管理员（role_key=admin）—— 它的授权不落库，必须靠角色标识识别，
+        //      并且需要能进入每一个子系统。
+        // 其余用户不下发 —— 他们在本子系统既没有权限，也没有登录的必要。
+        Set<Long> grantedRoleIds = message.getRoleMenus().stream()
+                .map(SubsystemSyncMessage.RoleMenu::getRoleId)
+                .collect(Collectors.toSet());
+        Set<Long> adminRoleIds = roleKeysById.entrySet().stream()
+                .filter(entry -> SuperAdmin.ROLE_KEY.equals(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
+
+        Set<Long> relevantRoleIds = new HashSet<>(grantedRoleIds);
+        relevantRoleIds.addAll(adminRoleIds);
+
+        message.setUsers(buildUsers(roleKeysById, relevantRoleIds));
+        Set<Long> includedUserIds = message.getUsers().stream()
+                .map(SubsystemSyncMessage.User::getId)
+                .collect(Collectors.toSet());
+        // 注意：这里传的是「已包含在消息里的用户 ID」，不是角色 ID
+        message.setUserRoles(buildUserRoles(includedUserIds, grantedRoleIds));
         return message;
     }
 
@@ -210,11 +294,13 @@ public class SubsystemSyncService {
     }
 
     /**
-     * 用户及其角色标识。只下发在职用户 —— 停用/离职用户不该能在子系统登录。
+     * 用户及其角色标识。只下发「与本子系统相关」的在职用户：
+     * 拥有该子系统授权角色的用户，以及超级管理员。
      * <p>
      * roleKeys 必须带上：超级管理员的授权不落库，子系统靠它识别超管身份。
      */
-    private List<SubsystemSyncMessage.User> buildUsers(Map<Long, String> roleKeysById) {
+    private List<SubsystemSyncMessage.User> buildUsers(Map<Long, String> roleKeysById,
+                                                       Set<Long> relevantRoleIds) {
         List<SysUser> users = userMapper.selectList(
                 new LambdaQueryWrapper<SysUser>().eq(SysUser::getStatus, STATUS_ENABLED));
         if (users.isEmpty()) {
@@ -222,17 +308,35 @@ public class SubsystemSyncService {
         }
 
         List<Long> userIds = users.stream().map(SysUser::getId).collect(Collectors.toList());
+        // 在本子系统有相关角色的用户
+        Set<Long> includedUserIds = relevantRoleIds.isEmpty()
+                ? new HashSet<>()
+                : new HashSet<>(userRoleMapper.selectList(
+                        new LambdaQueryWrapper<SysUserRole>()
+                                .in(SysUserRole::getUserId, userIds)
+                                .in(SysUserRole::getRoleId, relevantRoleIds))
+                .stream().map(SysUserRole::getUserId).collect(Collectors.toSet()));
+        // 停用/离职用户不下发
+        includedUserIds.retainAll(userIds);
+        if (includedUserIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // 角色标识（超管识别）
         Map<Long, List<String>> roleKeysByUser = new HashMap<>();
         for (SysUserRole userRole : userRoleMapper.selectList(
-                new LambdaQueryWrapper<SysUserRole>().in(SysUserRole::getUserId, userIds))) {
+                new LambdaQueryWrapper<SysUserRole>().in(SysUserRole::getUserId, includedUserIds))) {
             String roleKey = roleKeysById.get(userRole.getRoleId());
             if (roleKey != null) {
                 roleKeysByUser.computeIfAbsent(userRole.getUserId(), k -> new ArrayList<>()).add(roleKey);
             }
         }
 
-        List<SubsystemSyncMessage.User> result = new ArrayList<>(users.size());
+        List<SubsystemSyncMessage.User> result = new ArrayList<>(includedUserIds.size());
         for (SysUser user : users) {
+            if (!includedUserIds.contains(user.getId())) {
+                continue;
+            }
             SubsystemSyncMessage.User item = new SubsystemSyncMessage.User();
             item.setId(user.getId());
             item.setUsername(user.getUsername());
@@ -244,9 +348,20 @@ public class SubsystemSyncService {
         return result;
     }
 
-    private List<SubsystemSyncMessage.UserRole> buildUserRoles(Set<Long> enabledRoleIds) {
-        return userRoleMapper.selectList(null).stream()
-                .filter(row -> enabledRoleIds.contains(row.getRoleId()))
+    /**
+     * 用户-角色关联。只保留本子系统相关用户、且角色在本子系统有菜单授权的行 ——
+     * 超管角色没有菜单授权，也不需要这些行（子系统靠 roleKeys 识别超管）。
+     */
+    private List<SubsystemSyncMessage.UserRole> buildUserRoles(Set<Long> relevantUserIds,
+                                                               Set<Long> grantedRoleIds) {
+        if (relevantUserIds.isEmpty() || grantedRoleIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return userRoleMapper.selectList(
+                        new LambdaQueryWrapper<SysUserRole>()
+                                .in(SysUserRole::getUserId, relevantUserIds)
+                                .in(SysUserRole::getRoleId, grantedRoleIds))
+                .stream()
                 .map(row -> {
                     SubsystemSyncMessage.UserRole item = new SubsystemSyncMessage.UserRole();
                     item.setUserId(row.getUserId());

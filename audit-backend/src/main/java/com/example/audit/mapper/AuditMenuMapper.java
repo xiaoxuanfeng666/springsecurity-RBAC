@@ -12,7 +12,7 @@ import java.util.List;
 public interface AuditMenuMapper extends BaseMapper<AuditMenu> {
 
     /**
-     * 用户拥有的权限标识（本系统鉴权的唯一来源，由 RBAC 经 MQ 下发的三张表联查得到）
+     * 用户拥有的权限标识（本系统鉴权的唯一来源，用户所属角色在本子系统的授权）
      */
     @Select("SELECT DISTINCT m.perms FROM audit_menu m " +
             "JOIN audit_role_menu rm ON m.id = rm.menu_id " +
@@ -42,4 +42,5 @@ public interface AuditMenuMapper extends BaseMapper<AuditMenu> {
             "FROM audit_menu WHERE status = 1 AND type IN (1, 2) " +
             "ORDER BY parent_id, sort")
     List<AuditMenu> selectAllEnabledMenus();
+
 }

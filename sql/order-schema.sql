@@ -37,6 +37,7 @@ CREATE TABLE `order_user` (
     `nickname`   VARCHAR(64)  DEFAULT NULL COMMENT '昵称',
     `status`     TINYINT      NOT NULL DEFAULT 1 COMMENT '状态：1在职 0停用 2离职',
     `role_keys`  VARCHAR(255) DEFAULT NULL COMMENT '角色标识，逗号分隔',
+    `subsystem_admin` TINYINT NOT NULL DEFAULT 0 COMMENT '是否本子系统管理员：1是 0否',
     `sync_time`  DATETIME     DEFAULT NULL COMMENT '最近一次同步时间',
     PRIMARY KEY (`id`),
     KEY `idx_username` (`username`)

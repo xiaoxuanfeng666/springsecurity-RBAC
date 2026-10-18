@@ -12,6 +12,7 @@ import com.example.rbac.entity.SysUserRole;
 import com.example.rbac.mapper.SysUserMapper;
 import com.example.rbac.mapper.SysUserPostMapper;
 import com.example.rbac.mapper.SysUserRoleMapper;
+import com.example.rbac.mq.SsoKickPublisher;
 import com.example.rbac.mq.SubsystemSyncService;
 import com.example.rbac.security.PermissionSnapshotStore;
 import com.example.rbac.security.TokenStore;
@@ -51,6 +52,7 @@ public class SysUserService {
     private final PermissionSnapshotStore snapshotStore;
     private final SysOperationLogService logService;
     private final SubsystemSyncService subsystemSyncService;
+    private final SsoKickPublisher ssoKickPublisher;
 
     public Page<SysUser> page(long pageNum, long pageSize, String username, Integer status) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<SysUser>()
@@ -120,12 +122,19 @@ public class SysUserService {
         userMapper.insert(user);
         saveUserRoles(user.getId(), form.getRoleIds());
         saveUserPosts(user.getId(), form.getPostIds());
-        syncSubsystems();
+        // 只把该用户同步到其角色有授权的子系统
+        subsystemSyncService.syncForRoles(form.getRoleIds());
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void update(UserForm form) {
         SysUser exist = getById(form.getId());
+        // 受影响子系统 = 旧角色 ∪ 新角色：旧角色所在的子系统要把用户移除，
+        // 新角色所在的子系统要把用户加进去
+        List<Long> affectedRoleIds = new ArrayList<>(getRoleIds(form.getId()));
+        if (form.getRoleIds() != null) {
+            affectedRoleIds.addAll(form.getRoleIds());
+        }
         SysUser user = new SysUser();
         user.setId(form.getId());
         user.setNickname(form.getNickname());
@@ -161,7 +170,7 @@ public class SysUserService {
 
         // 用户资料与角色都在登录快照里，改完必须失效，否则昵称/部门等要等重新登录才更新
         snapshotStore.invalidateUser(form.getId());
-        syncSubsystems();
+        subsystemSyncService.syncForRoles(affectedRoleIds);
     }
 
     /**
@@ -181,7 +190,8 @@ public class SysUserService {
             logService.record(MODULE_USER, AuditAction.ENABLED, exist.getId(),
                     exist.getUsername(), "启用账号");
         }
-        syncSubsystems();
+        // 状态变化只影响该用户所属角色对应的子系统
+        subsystemSyncService.syncForRoles(getRoleIds(id));
     }
 
     /** 停用(0)与离职(2)都会让用户立即下线 */
@@ -190,11 +200,18 @@ public class SysUserService {
     }
 
     /**
-     * 停用/离职导致的下线：删除会话（下一次请求即 401）并写入审计
+     * 停用/离职导致的下线：删除本系统会话、通知授权服务删除 SSO 会话，并写入审计
+     * <p>
+     * 只删本系统的 Redis 会话不够 —— 用户在订单中心、营销系统等子系统手里的令牌仍会有效，
+     * 必须由 rbac-oauth 删掉 SSO 会话，各子系统的下一次 check_token 才会失败。
      */
     private void offlineUser(SysUser user, int status) {
         boolean resigned = status == STATUS_RESIGNED;
         tokenStore.removeSession(user.getId());
+        ssoKickPublisher.publish(
+                resigned ? SsoKickPublisher.TYPE_RESIGNED : SsoKickPublisher.TYPE_DISABLED,
+                null, user.getId(), user.getUsername(),
+                resigned ? "账号已离职" : "账号已停用");
         logService.record(MODULE_USER, resigned ? AuditAction.RESIGNED : AuditAction.DISABLED,
                 user.getId(), user.getUsername(),
                 resigned ? "标记离职，强制下线" : "停用，强制下线");
@@ -207,13 +224,16 @@ public class SysUserService {
         if ("admin".equals(exist.getUsername())) {
             throw new BusinessException("内置管理员账号不允许删除");
         }
+        // 删除前先记下角色：之后要靠它们决定通知哪些子系统
+        List<Long> roleIds = getRoleIds(id);
         // 先失效登录凭证，再删除数据
         tokenStore.removeSession(id);
+        ssoKickPublisher.publish(SsoKickPublisher.TYPE_DELETE, null, id, exist.getUsername(), "账号已删除");
         releaseUsername(exist);
         userMapper.deleteById(id);
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, id));
         log.info("用户已删除并失效登录凭证: {}", exist.getUsername());
-        syncSubsystems();
+        subsystemSyncService.syncForRoles(roleIds);
     }
 
     /**
@@ -230,18 +250,16 @@ public class SysUserService {
     @Transactional(rollbackFor = Exception.class)
     public void updateRoles(Long userId, List<Long> roleIds) {
         getById(userId);
+        // 旧角色所在的子系统要移除该用户，新角色所在的子系统要加入
+        List<Long> affectedRoleIds = new ArrayList<>(getRoleIds(userId));
+        if (roleIds != null) {
+            affectedRoleIds.addAll(roleIds);
+        }
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, userId));
         saveUserRoles(userId, roleIds);
         // 角色变了，权限快照立即失效，下一次请求重建
         snapshotStore.invalidateUser(userId);
-        syncSubsystems();
-    }
-
-    /**
-     * 用户表与用户角色表是全子系统共用的，任何用户变更都要给所有子系统重新下发
-     */
-    private void syncSubsystems() {
-        subsystemSyncService.syncAll();
+        subsystemSyncService.syncForRoles(affectedRoleIds);
     }
 
     /**
@@ -255,8 +273,9 @@ public class SysUserService {
         update.setId(userId);
         update.setPassword(passwordEncoder.encode(password));
         userMapper.updateById(update);
-        // 重置密码后强制重新登录
+        // 重置密码后强制重新登录（本系统会话 + 所有子系统的 SSO 会话）
         tokenStore.removeSession(userId);
+        ssoKickPublisher.publish(SsoKickPublisher.TYPE_RESET_PWD, null, userId, user.getUsername(), "密码已重置");
         logService.record(MODULE_USER, AuditAction.RESET_PWD, userId, user.getUsername(), "重置密码，强制下线");
     }
 

@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 「强制下线用户」的 MQ 消息
  * <p>
- * 由本服务在管理员点「强制下线」时发出，rbac-oauth 消费后删掉该用户的 Redis 会话。
+ * 由本服务在管理员停用/离职/删除/重置密码/强制下线时发出，rbac-oauth 消费后删掉该用户的 Redis 会话。
  * 两个服务是两个独立工程，没有共享模块，所以这个类在两边各有一份 —— 字段名即契约，
  * 改动时需与 {@code com.example.oauth.mq.SsoKickMessage} 同步。
  */
@@ -16,8 +16,16 @@ public class SsoKickMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /** 目前只有 KICK，留着便于以后扩展（例如 EXPIRE） */
+    /** 管理员手动「强制下线」 */
     public static final String TYPE_KICK = "KICK";
+    /** 账号被停用 */
+    public static final String TYPE_DISABLED = "DISABLED";
+    /** 账号被标记离职 */
+    public static final String TYPE_RESIGNED = "RESIGNED";
+    /** 账号被删除 */
+    public static final String TYPE_DELETE = "DELETE";
+    /** 管理员重置密码 */
+    public static final String TYPE_RESET_PWD = "RESET_PWD";
 
     private String type;
 

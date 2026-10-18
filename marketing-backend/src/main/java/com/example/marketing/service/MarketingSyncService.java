@@ -42,9 +42,9 @@ public class MarketingSyncService {
 
     @Transactional(rollbackFor = Exception.class)
     public void rebuild(SubsystemSyncMessage message) {
-        // 用户为空只可能是异常情况（RBAC 侧总是下发全部在职用户）：
-        // 直接按这份快照重建会让所有人都登不进来，宁可保留上一次的数据
-        if (message.getUsers() == null || message.getUsers().isEmpty()) {
+        // users 字段缺失只可能是异常（老版本生产者），宁可保留上一次的数据；
+        // 按子系统定向同步后 users 为空是合法的（该子系统可能一个用户都没有）。
+        if (message.getUsers() == null) {
             log.warn("收到的同步消息里没有任何用户，跳过重建以免清空现有授权: subsystemCode={}",
                     message.getSubsystemCode());
             return;

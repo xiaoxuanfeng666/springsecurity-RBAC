@@ -60,3 +60,4 @@ rocketmq:
   producer:
     group: marketing-backend-producer
     send-message-timeout: 3000
+

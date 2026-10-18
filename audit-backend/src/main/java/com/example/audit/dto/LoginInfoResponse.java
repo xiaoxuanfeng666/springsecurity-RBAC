@@ -23,6 +23,7 @@ public class LoginInfoResponse implements Serializable {
 
     private String nickname;
 
+
     private Set<String> roles;
 
     private Set<String> permissions;

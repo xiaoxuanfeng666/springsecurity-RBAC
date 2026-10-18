@@ -11,7 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerEndpointsConfiguration;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -50,6 +50,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private final JwtAccessTokenConverter jwtAccessTokenConverter;
     private final TokenEnhancerChain tokenEnhancerChain;
     private final SsoTokenServices ssoTokenServices;
+    private final AuthorizationCodeServices authorizationCodeServices;
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
@@ -66,8 +67,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authenticationManager(authenticationManager)
                 // 刷新令牌模式需要
                 .userDetailsService(userDetailsService)
-                // 授权码用内存存储；单实例足够，重启会丢失尚未兑换的授权码
-                .authorizationCodeServices(new InMemoryAuthorizationCodeServices())
+                // 授权码存 Redis（oauth2:code:*，默认 5 分钟 TTL）：
+                // 多节点共享、服务重启不丢，且换令牌时原子取出删除，天然一次性。
+                // 装配见 RedisAuthorizationCodeConfig。
+                .authorizationCodeServices(authorizationCodeServices)
                 .reuseRefreshTokens(true)
                  .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST); //支持GET,POST请求
     }
