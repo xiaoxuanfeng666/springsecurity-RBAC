@@ -1285,3 +1285,4 @@ JDBC Connection [HikariProxyConnection@391751338 wrapping com.mysql.cj.jdbc.Conn
 ==> Parameters: 1(Integer)
 <==      Total: 0
 Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21f62825]
+2026-10-19 09:01:02.429  INFO 43908 --- [nio-7071-exec-1] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=N-slQPcXj6qH, expireAt=2026-10-19T09:06:02.428
