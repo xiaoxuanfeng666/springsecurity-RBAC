@@ -150,7 +150,11 @@ springsecurity-RBAC/
     ├── upgrade-2026-10-17-subsystem-create-permission.sql # 「菜单管理」里新增子系统的权限点
     ├── upgrade-2026-10-18-remove-subsystem-admin.sql    # 移除子系统内授权：删除管理员权限点与 subsystem_admin 标记
     ├── upgrade-2026-10-18-wecom-sso.sql                 # 企业微信扫码登录：身份绑定表 + 会话登录方式
+    ├── upgrade-2026-10-18-wecom-qr-login.sql            # 企业微信扫码登录短链票据（DB + Redis）
     ├── upgrade-2026-10-18-idp-directory-sync.sql        # 外部部门与本地组织节点映射表
+    ├── upgrade-2026-10-18-idp-directory-push.sql        # 外部通讯录推送事件（幂等）
+    ├── upgrade-2026-10-18-idp-outbound-outbox.sql       # RBAC 反向推送企业微信/钉钉通讯录的 Outbox
+    ├── upgrade-2026-10-18-user-profile.sql              # 用户宽表字段（工号/职务/性别等）+ 多部门关联表
     ├── order-schema.sql                       # 订单中心独立库 order_center（同步表 + order_info + 演示数据）
     ├── marketing-schema.sql                   # 营销系统独立库 marketing
     ├── audit-schema.sql                       # 审计日志系统独立库 audit_log（同步表 + audit_log）
@@ -176,6 +180,10 @@ mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-subsyst
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-remove-subsystem-admin.sql    # 移除子系统内授权
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-wecom-sso.sql                # 企业微信扫码登录
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-idp-directory-sync.sql       # 通讯录/部门同步
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-idp-directory-push.sql       # 通讯录推送事件
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-idp-outbound-outbox.sql      # 出站推送 Outbox
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-user-profile.sql             # 用户宽表字段 + 多部门
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-wecom-qr-login.sql           # 企业微信扫码登录短链票据
 ```
 
 已有的旧库按文件名顺序执行增量脚本升级（脚本一次性执行，重复执行会因 `ALTER` / 主键冲突而报错）：
@@ -200,6 +208,10 @@ mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-17-subsyst
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-remove-subsystem-admin.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-wecom-sso.sql
 mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-idp-directory-sync.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-idp-directory-push.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-idp-outbound-outbox.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-user-profile.sql
+mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-wecom-qr-login.sql
 ```
 
 > 前几个脚本是迭代过程留下的：先是独立部门表，再加独立分公司模块，最后把分公司并入部门树、换成岗位模块。中途的 `company` 脚本只挂载了一次独立分公司模块，随后被最后一个脚本合并回组织树并删除。**全新安装只需执行 `schema.sql` + `data.sql` + 三个子系统的 schema + `upgrade-2026-10-17-audit.sql`（把审计系统注册到中枢）。**
@@ -244,8 +256,11 @@ topic `RBAC_SUBSYSTEM_SYNC` 与 `RBAC_AUDIT_LOG` 都由生产者自动创建，�
 | `rocketmq.name-server` | 子系统必填（`localhost:9876`）。中枢的 rbac-backend 也用它做**生产者** |
 | `rocketmq.producer.group` | **需要上报审计日志的系统必须配置**（`rbac-backend-producer` / `marketing-backend-producer` / `order-backend-producer`）。不配时 starter 不创建 `RocketMQTemplate`，审计上报会被静默跳过；audit-backend 只消费，不需要生产者组 |
 | `wecom.*`（rbac-oauth） | 企业微信扫码登录配置：`enabled`、`corp-id`、`agent-id`、`secret`（支持 `ENC(...)` 密文，建议用环境变量/Vault）、`callback-url`（必须与企业微信后台登记一致且公网可达）。详见「多 IdP 登录」一节 |
+| `wecom.qr.*`（rbac-oauth） | 扫码登录短链：`enabled`、`ttl-seconds`（二维码有效期）、`confirm-ttl-seconds`（手机确认后电脑端等待时间）、`public-base-url`（手机可访问的短链域名）、`short-path`（默认 `/q`）。票据同时写 MySQL `sys_qr_login_ticket` 与 Redis `oauth2:qr:login:{code}` |
+| `wecom.oauth2-authorize-url`（rbac-oauth） | 手机扫码后的企业微信网页授权地址，默认 `https://open.weixin.qq.com/connect/oauth2/authorize`，使用 `snsapi_base` 授权码流程 |
 | `idp.*`（rbac-oauth） | 多 IdP 策略：`self-bind-enabled`（未绑定时自助绑定）、`bind-page-url`、`mock-enabled`（仅测试）、`jit.*`（自动建号开关、默认部门/角色/用户名前缀）。生产必须保持 `mock-enabled=false`、按需开启 JIT |
-| `idp.directory-sync.*`（rbac-backend） | 通讯录/部门同步：`enabled`、`provider`（mock/wecom）、`mock-enabled`、`cron`、`root-dept-id`、`create-users`、`default-role-keys`、`username-prefix`，以及企业微信 `wecom-corp-id/wecom-secret` |
+| `idp.directory-sync.*`（rbac-backend） | 通讯录/部门同步：`enabled`、`providers`（wecom,dingtalk,mock，可多个）、`push-token`（推送共享密钥）、`mock-enabled`、`cron`、`root-dept-id`、`create-users`、`default-role-keys`、`username-prefix`，以及企业微信/钉钉的企业 ID 与 Secret |
+| `idp.outbound.*`（rbac-backend） | **RBAC → 企业微信/钉钉** 反向推送：`enabled` 总开关、`providers`（`wecom`/`dingtalk`/`mock`，可多个）、`max-retries`、`process-interval-ms`；`wecom-corp-id` + `wecom-secret`、`dingtalk-app-key` + `dingtalk-app-secret`、`dingtalk-corp-id`（身份映射用企业 ID）。也可用环境变量 `IDP_OUTBOUND_ENABLED`、`IDP_OUTBOUND_PROVIDERS`、`WECOM_*`、`DINGTALK_*` 配置 |
 
 `jwt.secret` 生产环境务必更换，长度 ≥ 32 字节。
 
@@ -310,7 +325,8 @@ cd audit-frontend     && npm install && npm run dev    # 审计日志系统：ht
 | 用户 | GET | `/user/{userId}/identities` | 用户的外部身份绑定列表（`system:user:query`） |
 | 用户 | POST | `/user/{userId}/identities` | 绑定外部身份（`system:user:edit`，写操作日志） |
 | 用户 | DELETE | `/user/identity/{id}` | 解绑企业微信（`system:user:edit`，写操作日志） |
-| 通讯录 | POST | `/idp/directory/sync` | 手动触发一次外部通讯录/部门同步（`system:user:edit`） |
+| 通讯录 | POST | `/idp/directory/sync` | 手动触发一次多来源拉取对账（`system:user:edit`） |
+| 通讯录 | POST | `/idp/directory/events/{provider}` | 外部系统推送用户/部门变更（`X-Directory-Token`，幂等） |
 | 角色 | GET | `/role/page`、`/role/all` | 分页 / 全部启用角色 |
 | 角色 | PUT | `/role/{id}/menus` | **动态修改角色权限**（超级管理员角色返回 1028：其权限由代码隐式授予） |
 | 部门 | GET | `/dept/tree` | 组织架构树：公司 / 分公司 / 部门（type 1/2/3），管理页与用户表单共用 |
@@ -357,6 +373,8 @@ cd audit-frontend     && npm install && npm run dev    # 审计日志系统：ht
 
 ### 多 IdP 登录（企业微信 / Mock）
 
+> 用户同步的完整设计（认证、Pull/Push、JIT、自助绑定、离职处理、数据模型与运维排查）见独立文档：[docs/user-sync.md](docs/user-sync.md)。
+
 外部身份是**登录认证方式**，不是新的授权模式：授权码/令牌契约完全不变。多 IdP 通过 SPI 接入（`IdentityProvider`），新增钉钉/OIDC 只需实现接口。
 
 ```
@@ -382,12 +400,47 @@ cd audit-frontend     && npm install && npm run dev    # 审计日志系统：ht
 
 > 当前 rbac-oauth 已实现 `wecom` 与 `mock` 的登录适配；`dingtalk` / `oidc` 已作为可绑定提供方预留，接入时实现 `IdentityProvider` 即可，用户绑定数据无需迁移。
 
-**通讯录 / 部门同步（rbac-backend）**
+**通讯录 / 部门同步（rbac-backend，Push + Pull）**
 
-- 部门映射表 `sys_dept_identity`，首次同步在配置的 `root-dept-id` 下创建部门，后续按外部部门 ID 更新；
-- 成员已绑定则更新昵称/部门/状态；未绑定且 `create-users=true` 时自动建号（默认角色可配）；
-- 手动触发：`POST /idp/directory/sync`（`system:user:edit`）；`idp.directory-sync.enabled=true` 时还会按 `cron` 定时同步；
-- 提供 `mock` 通讯录（3 个部门、2 个成员）用于本地联调。
+- **Pull 对账**：`providers` 配置多个来源（`wecom,dingtalk,mock`），手动 `POST /idp/directory/sync` 或按 `cron` 定时执行；全量快照幂等 upsert，用于首次基线与丢事件补偿；
+- **Push 增量**：`POST /idp/directory/events/{provider}`，请求头 `X-Directory-Token` 必须与 `idp.directory-sync.push-token` 一致；事件统一格式：
+  ```json
+  {
+    "eventId": "evt-001",
+    "eventType": "USER_CREATED",
+    "externalUserId": "ding-user-003",
+    "name": "Ding Three",
+    "departmentIds": ["101"],
+    "active": true
+  }
+  ```
+  支持 `USER_CREATED/USER_UPDATED/USER_DELETED`、`DEPT_CREATED/DEPT_UPDATED/DEPT_DELETED`；
+- **幂等**：`provider + event_id` 唯一（`sys_directory_event`），重复投递返回 `duplicate=true`；失败事件记录状态与原因；
+- **删除语义**：外部成员删除/停用 → 本地用户置停用、解绑身份、踢下线并失效令牌；部门删除 → 本地部门置禁用，不物理删除；
+- **多来源**：每个来源独立 `provider + corp_id + external_user_id` 映射，避免跨企业串号；部门映射存 `sys_dept_identity`；
+- **企业微信/钉钉真实推送**：网关/适配层完成签名校验与解密后，转换成上面的 `DirectoryEvent` 再调用本接口；定时 Pull 继续保留作为对账兜底；
+- 提供 `mock` 与 `mock dingtalk` 两套通讯录用于本地联调。
+
+**反向推送：RBAC → 企业微信/钉钉（出站 Outbox）**
+
+- 本地用户/部门新增、修改、删除时，在业务事务内写入 `sys_idp_outbox`，由 `IdpOutboxProcessor` 异步调用外部通讯录 API，失败按指数退避重试（默认最多 5 次）；
+- 目标提供方由 `idp.outbound.providers` 决定，**企业微信** 使用 `wecom-corp-id` + `wecom-secret`，**钉钉** 使用 `dingtalk-app-key` + `dingtalk-app-secret`（企业内部应用，需通讯录管理权限）；
+- 管理端可手动触发：`GET /idp/outbound/providers`、`POST /idp/outbound/sync-all?provider=wecom`（全量，先部门后用户）、`POST /idp/outbound/user/{userId}?provider=wecom|dingtalk`、`POST /idp/outbound/dept/{deptId}?provider=...`；用户管理页也提供「推送全部到企业微信」和行内「推送企微」按钮；
+- 全量推送会把本地根部门映射到企业微信/钉钉根部门 1；企业微信已存在同 userid 自动转更新，同名同父部门自动复用；本地用户名不合法时依次使用工号、用户名，仍不合法则生成 `u{userId}`；
+- **企业微信前置条件**：自建应用需开通通讯录管理权限，并把后端出口 IP 加入「应用管理 → 自建应用 → 企业可信IP」，否则会报 `60020 not allow to access from your ip`；
+- 首次推送成功后自动写入 `sys_user_identity` / `sys_dept_identity`，后续按外部 ID 更新；
+- 本地角色、权限、菜单、数据范围**永远不写回外部**；
+- 出站与入站事件互不干扰：入站 `POST /idp/directory/events/{provider}` 仍是外部系统通知 RBAC 的入口。
+
+```bash
+# 启用反向推送（企业微信 + 钉钉）
+IDP_OUTBOUND_ENABLED=true \
+IDP_OUTBOUND_PROVIDERS=wecom,dingtalk \
+WECOM_CORP_ID=ww...  WECOM_SECRET=... \
+DINGTALK_APP_KEY=ding... DINGTALK_APP_SECRET=... \
+IDP_OUTBOUND_DINGTALK_CORP_ID=ding... \
+  mvn -f rbac-backend/pom.xml spring-boot:run
+```
 
 **Mock 测试方式**
 
@@ -395,8 +448,10 @@ cd audit-frontend     && npm install && npm run dev    # 审计日志系统：ht
 # rbac-oauth：启用 mock 身份提供方
 IDP_MOCK_ENABLED=true mvn -f rbac-oauth/pom.xml spring-boot:run
 
-# rbac-backend：启用 mock 通讯录
-IDP_DIRECTORY_SYNC_PROVIDER=mock IDP_DIRECTORY_SYNC_MOCK_ENABLED=true \
+# rbac-backend：启用 mock + mock 钉钉通讯录（多来源）
+IDP_DIRECTORY_SYNC_PROVIDERS=mock,dingtalk \
+IDP_DIRECTORY_SYNC_MOCK_ENABLED=true \
+IDP_DIRECTORY_SYNC_PUSH_TOKEN=test-token \
   mvn -f rbac-backend/pom.xml spring-boot:run
 ```
 
@@ -404,7 +459,8 @@ IDP_DIRECTORY_SYNC_PROVIDER=mock IDP_DIRECTORY_SYNC_MOCK_ENABLED=true \
 - 访问 `/oauth/idp/mock/authorize?returnTo=/oauth/authorize?...` 可走完整登录链路；
 - 未绑定时进入 `/bind`，用 admin/admin123 完成绑定；
 - 开启 `IDP_JIT_ENABLED=true` 时，未绑定会自动建号；
-- `POST /idp/directory/sync` 用 admin 令牌触发通讯录同步。
+- `POST /idp/directory/sync` 用 admin 令牌触发多来源对账；
+- `POST /idp/directory/events/mock`（或 `dingtalk`）加 `X-Directory-Token: test-token` 可测试推送。
 
 > **生产要求**：`idp.mock-enabled` 与 `idp.directory-sync.mock-enabled` 必须保持 `false`；JIT 默认关闭，启用前确认企业通讯录可信。
 

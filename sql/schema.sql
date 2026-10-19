@@ -13,9 +13,20 @@ CREATE TABLE `sys_user` (
     `username`    VARCHAR(64)  NOT NULL COMMENT '登录账号',
     `password`    VARCHAR(128) NOT NULL COMMENT '密码（BCrypt）',
     `nickname`    VARCHAR(64)  DEFAULT NULL COMMENT '昵称',
-    `dept_id`     BIGINT       DEFAULT NULL COMMENT '所属组织节点ID（公司/分公司/部门）',
+    `employee_no` VARCHAR(64)  DEFAULT NULL COMMENT '工号',
+    `alias`       VARCHAR(64)  DEFAULT NULL COMMENT '别名',
+    `position`    VARCHAR(128) DEFAULT NULL COMMENT '职务',
+    `gender`      TINYINT      NOT NULL DEFAULT 0 COMMENT '性别：0未知 1男 2女',
+    `dept_id`     BIGINT       DEFAULT NULL COMMENT '主部门ID（公司/分公司/部门）',
     `email`       VARCHAR(128) DEFAULT NULL COMMENT '邮箱',
+    `biz_mail`    VARCHAR(128) DEFAULT NULL COMMENT '企业邮箱',
     `phone`       VARCHAR(20)  DEFAULT NULL COMMENT '手机号',
+    `telephone`   VARCHAR(32)  DEFAULT NULL COMMENT '座机',
+    `direct_leader` VARCHAR(255) DEFAULT NULL COMMENT '直属上级（外部userid/用户名，多个逗号分隔）',
+    `external_position` VARCHAR(128) DEFAULT NULL COMMENT '对外职务',
+    `external_nickname` VARCHAR(64) DEFAULT NULL COMMENT '对外昵称',
+    `address`     VARCHAR(128) DEFAULT NULL COMMENT '地址',
+    `ext_attr`    TEXT         COMMENT '扩展属性（JSON）',
     `avatar`      VARCHAR(255) DEFAULT NULL COMMENT '头像',
     `status`      TINYINT      NOT NULL DEFAULT 1 COMMENT '状态：1在职 0停用 2离职',
     `del_flag`    TINYINT      NOT NULL DEFAULT 0 COMMENT '删除标记：0正常 1已删除',
@@ -24,8 +35,25 @@ CREATE TABLE `sys_user` (
     `update_time` DATETIME     DEFAULT NULL COMMENT '更新时间',
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_username` (`username`),
-    KEY `idx_dept_id` (`dept_id`)
+    KEY `idx_dept_id` (`dept_id`),
+    KEY `idx_employee_no` (`employee_no`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='用户表';
+
+-- ---------- 用户与部门关联（多部门）----------
+DROP TABLE IF EXISTS `sys_user_dept`;
+CREATE TABLE `sys_user_dept` (
+    `id`            BIGINT   NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `user_id`       BIGINT   NOT NULL COMMENT '用户ID',
+    `dept_id`       BIGINT   NOT NULL COMMENT '部门ID',
+    `is_main`       TINYINT  NOT NULL DEFAULT 0 COMMENT '是否主部门：1是 0否',
+    `is_leader`     TINYINT  NOT NULL DEFAULT 0 COMMENT '是否该部门负责人：1是 0否',
+    `order_in_dept` INT      NOT NULL DEFAULT 0 COMMENT '部门内排序',
+    `create_time`   DATETIME DEFAULT NULL,
+    `update_time`   DATETIME DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_dept` (`user_id`, `dept_id`),
+    KEY `idx_dept_id` (`dept_id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='用户与部门关联（多部门）';
 
 -- ---------- 组织架构表（公司 / 分公司 / 部门）----------
 DROP TABLE IF EXISTS `sys_dept`;

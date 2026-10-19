@@ -49,7 +49,7 @@ public class WeComDirectoryProvider implements DirectoryProvider {
 
     @Override
     public boolean isEnabled() {
-        return PROVIDER.equalsIgnoreCase(properties.getProvider())
+        return properties.includes(PROVIDER)
                 && StringUtils.hasText(properties.getWecomCorpId())
                 && StringUtils.hasText(properties.getWecomSecret());
     }
@@ -82,17 +82,57 @@ public class WeComDirectoryProvider implements DirectoryProvider {
             ExternalMember member = new ExternalMember();
             member.setExternalUserId(item.path("userid").asText());
             member.setName(item.path("name").asText());
+            member.setAlias(item.path("alias").asText(null));
+            member.setPosition(item.path("position").asText(null));
+            member.setGender(item.path("gender").asInt(0));
+            member.setBizMail(item.path("biz_mail").asText(null));
             member.setMobile(item.path("mobile").asText(null));
             member.setEmail(item.path("email").asText(null));
+            member.setTelephone(item.path("telephone").asText(null));
+            member.setDirectLeader(joinTextArray(item.path("direct_leader")));
+            member.setExternalPosition(item.path("external_position").asText(null));
+            member.setExternalNickname(item.path("external_nickname").asText(null));
+            member.setAddress(item.path("address").asText(null));
+            if (item.hasNonNull("extattr")) {
+                member.setExtAttr(item.get("extattr").toString());
+            }
+            member.setMainDepartmentId(item.hasNonNull("main_department")
+                    ? item.get("main_department").asText() : null);
             List<String> deptIds = new ArrayList<>();
             for (JsonNode dept : item.path("department")) {
                 deptIds.add(dept.asText());
             }
             member.setDepartmentIds(deptIds);
+            member.setLeaderInDept(hasFlag(item.path("is_leader_in_dept")));
+            member.setOrderInDept(item.path("order").isArray() && item.get("order").size() > 0
+                    ? item.get("order").get(0).asInt(0) : 0);
             member.setActive(item.path("status").asInt(1) == 1);
             result.add(member);
         }
         return result;
+    }
+
+    private String joinTextArray(JsonNode array) {
+        if (array == null || !array.isArray() || array.size() == 0) {
+            return null;
+        }
+        List<String> values = new ArrayList<>();
+        for (JsonNode node : array) {
+            values.add(node.asText());
+        }
+        return String.join(",", values);
+    }
+
+    private boolean hasFlag(JsonNode array) {
+        if (array == null || !array.isArray()) {
+            return false;
+        }
+        for (JsonNode node : array) {
+            if (node.asInt(0) == 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getToken() {

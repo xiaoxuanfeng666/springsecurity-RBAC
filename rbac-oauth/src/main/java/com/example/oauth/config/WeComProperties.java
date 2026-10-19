@@ -33,6 +33,9 @@ public class WeComProperties {
     /** 扫码授权页地址 */
     private String qrConnectUrl = "https://open.work.weixin.qq.com/wwopen/sso/qrConnect";
 
+    /** 企业微信网页授权（snsapi_base）地址，用于手机扫码后的授权码流程 */
+    private String oauth2AuthorizeUrl = "https://open.weixin.qq.com/connect/oauth2/authorize";
+
     /** 企业微信 API 网关 */
     private String apiBaseUrl = "https://qyapi.weixin.qq.com";
 

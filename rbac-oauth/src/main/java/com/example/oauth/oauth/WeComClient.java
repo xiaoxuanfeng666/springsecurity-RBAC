@@ -68,6 +68,22 @@ public class WeComClient {
     }
 
     /**
+     * 企业微信网页授权（snsapi_base）地址，用于手机扫码后的授权码流程
+     */
+    public String buildOAuth2AuthorizeUrl(String state) {
+        String url = UriComponentsBuilder.fromHttpUrl(properties.getOauth2AuthorizeUrl())
+                .queryParam("appid", properties.getCorpId())
+                .queryParam("redirect_uri", "{redirectUri}")
+                .queryParam("response_type", "code")
+                .queryParam("scope", "snsapi_base")
+                .queryParam("state", state)
+                .encode()
+                .buildAndExpand(properties.getCallbackUrl())
+                .toUriString();
+        return url + "#wechat_redirect";
+    }
+
+    /**
      * 用回调 code 换企业微信 userid
      */
     public String getUserId(String code) {

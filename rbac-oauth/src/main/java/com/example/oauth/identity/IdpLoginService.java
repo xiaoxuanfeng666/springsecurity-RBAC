@@ -45,6 +45,7 @@ public class IdpLoginService {
     private final UserDetailsService userDetailsService;
     private final AuthenticationManager authenticationManager;
     private final IdpProperties idpProperties;
+    private final WeComQrLoginService weComQrLoginService;
 
     @Value("${oauth2.login-page-url}")
     private String loginPageUrl;
@@ -72,6 +73,13 @@ public class IdpLoginService {
      */
     public void callback(String providerName, String code, String state,
                          HttpServletRequest request, HttpServletResponse response) {
+        // 扫码登录使用独立票据：state = qr_{code}，回调只确认，不建立手机端会话
+        if (WeComIdentityProvider.PROVIDER.equalsIgnoreCase(providerName)
+                && state != null && state.startsWith(WeComQrLoginService.STATE_PREFIX)) {
+            weComQrLoginService.handleCallback(code,
+                    state.substring(WeComQrLoginService.STATE_PREFIX.length()), response);
+            return;
+        }
         IdpState idpState = stateStore.consume(state);
         if (idpState == null || !providerName.equalsIgnoreCase(idpState.getProvider())) {
             redirect(response, errorUrl("idp_state"));

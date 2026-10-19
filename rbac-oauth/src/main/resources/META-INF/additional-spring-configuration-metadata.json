@@ -4,5 +4,15 @@
       "name": "oauth2.client-secret-key",
       "type": "java.lang.String",
       "description": "Description for oauth2.client-secret-key."
-  }
-] }
+    },
+    {
+      "name": "wecom.qr-connect-url",
+      "type": "java.lang.String",
+      "description": "Description for wecom.qr-connect-url."
+    },
+    {
+      "name": "wecom.api-base-url",
+      "type": "java.lang.String",
+      "description": "Description for wecom.api-base-url."
+    }
+  ] }

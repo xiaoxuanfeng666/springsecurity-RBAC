@@ -1,11 +1,13 @@
 package com.example.rbac.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.example.rbac.common.BusinessException;
 import com.example.rbac.config.DirectorySyncProperties;
 import com.example.rbac.directory.DirectoryProvider;
 import com.example.rbac.directory.DirectoryProviderRegistry;
 import com.example.rbac.directory.ExternalDepartment;
 import com.example.rbac.directory.ExternalMember;
+import com.example.rbac.directory.MockDingTalkDirectoryProvider;
 import com.example.rbac.directory.WeComDirectoryProvider;
 import com.example.rbac.entity.SysDept;
 import com.example.rbac.entity.SysDeptIdentity;
@@ -19,7 +21,8 @@ import com.example.rbac.mapper.SysRoleMapper;
 import com.example.rbac.mapper.SysUserIdentityMapper;
 import com.example.rbac.mapper.SysUserMapper;
 import com.example.rbac.mapper.SysUserRoleMapper;
-import com.example.rbac.common.BusinessException;
+import com.example.rbac.mq.SsoKickPublisher;
+import com.example.rbac.security.TokenStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,18 +34,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 /**
- * 外部通讯录 / 部门同步
+ * 外部通讯录 / 部门同步（Push + Pull 混合）
  * <p>
- * 部门：按 external_dept_id 映射到本地 sys_dept（sys_dept_identity），
- * 新部门挂在配置的 rootDeptId 下；成员：已绑定用户更新资料与状态，
- * 未绑定用户按配置自动建号（create-users），并写入 sys_user_identity。
- * <p>
- * 只同步「组织与用户」，不处理角色权限（默认角色由配置指定）。
+ * Pull：按配置的 providers 拉取全量快照做对账；
+ * Push：{@link DirectoryEventService} 调用本类的 upsert/deactivate 方法增量应用。
+ * 两条路径共用同一套幂等写入逻辑，最终状态一致。
  */
 @Slf4j
 @Service
@@ -61,21 +63,60 @@ public class DirectorySyncService {
     private final SysRoleMapper roleMapper;
     private final SysUserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
+    private final TokenStore tokenStore;
+    private final SsoKickPublisher ssoKickPublisher;
+    private final SysUserDeptService sysUserDeptService;
 
+    /**
+     * 拉取所有配置的提供方做对账
+     */
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> sync() {
-        DirectoryProvider provider = providerRegistry.get(properties.getProvider());
-        if (provider == null || !provider.isEnabled()) {
-            throw new BusinessException("通讯录同步提供方未启用: " + properties.getProvider());
-        }
         SysDept root = deptMapper.selectById(properties.getRootDeptId());
         if (root == null) {
             throw new BusinessException("通讯录同步根部门不存在: " + properties.getRootDeptId());
         }
+        if (properties.getProviders() == null || properties.getProviders().isEmpty()) {
+            throw new BusinessException("未配置通讯录同步提供方");
+        }
 
+        List<Map<String, Object>> providerResults = new ArrayList<>();
+        int totalDepartments = 0;
+        int totalMembers = 0;
+        int totalCreated = 0;
+        int totalUpdated = 0;
+
+        for (String name : properties.getProviders()) {
+            DirectoryProvider provider = providerRegistry.get(name);
+            if (provider == null || !provider.isEnabled()) {
+                Map<String, Object> skipped = new LinkedHashMap<>();
+                skipped.put("provider", name);
+                skipped.put("enabled", false);
+                providerResults.add(skipped);
+                log.info("通讯录提供方未启用，跳过: {}", name);
+                continue;
+            }
+            Map<String, Object> result = syncProvider(provider);
+            providerResults.add(result);
+            totalDepartments += (Integer) result.get("departments");
+            totalMembers += (Integer) result.get("members");
+            totalCreated += (Integer) result.get("createdUsers");
+            totalUpdated += (Integer) result.get("updatedUsers");
+        }
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("providers", providerResults);
+        result.put("departments", totalDepartments);
+        result.put("members", totalMembers);
+        result.put("createdUsers", totalCreated);
+        result.put("updatedUsers", totalUpdated);
+        log.info("通讯录同步完成: {}", result);
+        return result;
+    }
+
+    private Map<String, Object> syncProvider(DirectoryProvider provider) {
         String providerName = provider.provider();
         String corpId = resolveCorpId(providerName);
-
         List<ExternalDepartment> departments = provider.fetchDepartments();
         List<ExternalMember> members = provider.fetchMembers();
 
@@ -83,27 +124,123 @@ public class DirectorySyncService {
         int createdUsers = 0;
         int updatedUsers = 0;
         for (ExternalMember member : members) {
-            Long localDeptId = firstMappedDept(member.getDepartmentIds(), deptMapping);
+            List<Long> localDeptIds = mappedDepts(member.getDepartmentIds(), deptMapping);
+            Long localDeptId = mainDept(member, localDeptIds, deptMapping);
             SysUserIdentity identity = findUserIdentity(providerName, corpId, member.getExternalUserId());
             if (identity != null) {
-                if (updateUser(identity, member, localDeptId)) {
+                if (updateUser(identity, member, localDeptIds, localDeptId)) {
                     updatedUsers++;
                 }
             } else if (properties.isCreateUsers()) {
-                createUser(providerName, corpId, member, localDeptId);
+                createUser(providerName, corpId, member, localDeptIds, localDeptId);
                 createdUsers++;
             }
         }
 
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("provider", providerName);
+        result.put("enabled", true);
         result.put("departments", departments.size());
         result.put("members", members.size());
         result.put("createdUsers", createdUsers);
         result.put("updatedUsers", updatedUsers);
-        log.info("通讯录同步完成: {}", result);
         return result;
     }
+
+    /**
+     * 推送事件：新增/更新一个部门
+     */
+    public Long upsertDepartment(String provider, String corpId, ExternalDepartment external,
+                                 Long parentLocalId) {
+        return doUpsertDepartment(provider, corpId, external, parentLocalId);
+    }
+
+    /**
+     * 推送事件：新增/更新一个成员
+     *
+     * @return 本地用户ID；未建号且不允许自动建号时返回 null
+     */
+    public Long upsertMember(String provider, String corpId, ExternalMember member) {
+        SysUserIdentity identity = findUserIdentity(provider, corpId, member.getExternalUserId());
+        List<Long> deptIds = resolveMemberDepts(provider, corpId, member.getDepartmentIds());
+        Long deptId = resolveMemberMainDept(provider, corpId, member, deptIds);
+        if (identity != null) {
+            updateUser(identity, member, deptIds, deptId);
+            return identity.getUserId();
+        }
+        if (!properties.isCreateUsers()) {
+            log.info("成员未绑定且未开启自动建号，跳过: provider={}, externalUserId={}",
+                    provider, member.getExternalUserId());
+            return null;
+        }
+        return createUser(provider, corpId, member, deptIds, deptId);
+    }
+
+    /**
+     * 推送事件：停用成员（不物理删除，保留历史与审计），并踢下线
+     */
+    public boolean deactivateUser(String provider, String corpId, String externalUserId) {
+        SysUserIdentity identity = findUserIdentity(provider, corpId, externalUserId);
+        if (identity == null) {
+            return false;
+        }
+        SysUser user = userMapper.selectById(identity.getUserId());
+        if (user == null) {
+            return false;
+        }
+        SysUser update = new SysUser();
+        update.setId(user.getId());
+        update.setStatus(0);
+        userMapper.updateById(update);
+
+        identity.setStatus(0);
+        identity.setUpdateTime(LocalDateTime.now());
+        userIdentityMapper.updateById(identity);
+
+        tokenStore.removeSession(user.getId());
+        ssoKickPublisher.publish(SsoKickPublisher.TYPE_DISABLED, null, user.getId(),
+                user.getUsername(), "通讯录同步：成员已删除/停用");
+        log.info("通讯录同步停用用户: provider={}, username={}", provider, user.getUsername());
+        return true;
+    }
+
+    /**
+     * 推送事件：停用部门（保留本地组织节点，仅置为禁用）
+     */
+    public boolean deactivateDepartment(String provider, String corpId, String externalDeptId) {
+        SysDeptIdentity identity = findDeptIdentity(provider, corpId, externalDeptId);
+        if (identity == null) {
+            return false;
+        }
+        SysDept dept = deptMapper.selectById(identity.getDeptId());
+        if (dept != null) {
+            SysDept update = new SysDept();
+            update.setId(dept.getId());
+            update.setStatus(0);
+            deptMapper.updateById(update);
+        }
+        identity.setStatus(0);
+        identity.setUpdateTime(LocalDateTime.now());
+        deptIdentityMapper.updateById(identity);
+        return true;
+    }
+
+    public Long findDeptLocalId(String provider, String corpId, String externalDeptId) {
+        SysDeptIdentity identity = findDeptIdentity(provider, corpId, externalDeptId);
+        return identity == null ? null : identity.getDeptId();
+    }
+
+    public String resolveCorpId(String provider) {
+        if (WeComDirectoryProvider.PROVIDER.equalsIgnoreCase(provider)) {
+            return properties.getWecomCorpId();
+        }
+        if (MockDingTalkDirectoryProvider.PROVIDER.equalsIgnoreCase(provider)) {
+            return properties.getDingtalkCorpId();
+        }
+        return properties.getCorpId();
+    }
+
+    // ==================== 内部实现 ====================
 
     private Map<String, Long> syncDepartments(String provider, String corpId,
                                               List<ExternalDepartment> departments) {
@@ -120,7 +257,6 @@ public class DirectorySyncService {
                 if (StringUtils.hasText(department.getParentExternalId())) {
                     Long mapped = mapping.get(department.getParentExternalId());
                     if (mapped == null) {
-                        // 父部门尚未创建，下一轮再处理
                         if (byExternalId.containsKey(department.getParentExternalId())) {
                             deferred.add(department);
                             continue;
@@ -130,13 +266,12 @@ public class DirectorySyncService {
                     }
                 }
                 mapping.put(department.getExternalId(),
-                        upsertDepartment(provider, corpId, department, parentLocalId));
+                        doUpsertDepartment(provider, corpId, department, parentLocalId));
             }
             if (deferred.size() == remaining.size()) {
-                // 防止脏数据导致死循环：剩余的挂到根节点
                 for (ExternalDepartment department : deferred) {
                     mapping.put(department.getExternalId(),
-                            upsertDepartment(provider, corpId, department, properties.getRootDeptId()));
+                            doUpsertDepartment(provider, corpId, department, properties.getRootDeptId()));
                 }
                 remaining = new ArrayList<>();
             } else {
@@ -146,14 +281,9 @@ public class DirectorySyncService {
         return mapping;
     }
 
-    private Long upsertDepartment(String provider, String corpId, ExternalDepartment external,
-                                  Long parentLocalId) {
-        SysDeptIdentity identity = deptIdentityMapper.selectOne(
-                new LambdaQueryWrapper<SysDeptIdentity>()
-                        .eq(SysDeptIdentity::getProvider, provider)
-                        .eq(SysDeptIdentity::getCorpId, corpId)
-                        .eq(SysDeptIdentity::getExternalDeptId, external.getExternalId())
-                        .last("limit 1"));
+    private Long doUpsertDepartment(String provider, String corpId, ExternalDepartment external,
+                                    Long parentLocalId) {
+        SysDeptIdentity identity = findDeptIdentity(provider, corpId, external.getExternalId());
         if (identity != null) {
             SysDept dept = deptMapper.selectById(identity.getDeptId());
             if (dept != null) {
@@ -194,7 +324,8 @@ public class DirectorySyncService {
         return dept.getId();
     }
 
-    private boolean updateUser(SysUserIdentity identity, ExternalMember member, Long deptId) {
+    private boolean updateUser(SysUserIdentity identity, ExternalMember member,
+                               List<Long> deptIds, Long deptId) {
         SysUser user = userMapper.selectById(identity.getUserId());
         if (user == null) {
             log.warn("外部成员绑定的本地用户不存在，跳过: userId={}", identity.getUserId());
@@ -212,27 +343,35 @@ public class DirectorySyncService {
         if (StringUtils.hasText(member.getEmail())) {
             update.setEmail(member.getEmail());
         }
+        applyMemberProfile(update, member);
         update.setStatus(member.isActive() ? 1 : 0);
         userMapper.updateById(update);
+        sysUserDeptService.replace(user.getId(), deptId, deptIds,
+                member.isLeaderInDept(), member.getOrderInDept());
 
         identity.setUpdateTime(LocalDateTime.now());
         userIdentityMapper.updateById(identity);
         return true;
     }
 
-    private void createUser(String provider, String corpId, ExternalMember member, Long deptId) {
+    private Long createUser(String provider, String corpId, ExternalMember member,
+                            List<Long> deptIds, Long deptId) {
         String username = buildUniqueUsername(member.getExternalUserId());
+        Long mainDeptId = deptId == null ? properties.getRootDeptId() : deptId;
         SysUser user = new SysUser();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
         user.setNickname(StringUtils.hasText(member.getName()) ? member.getName() : member.getExternalUserId());
-        user.setDeptId(deptId == null ? properties.getRootDeptId() : deptId);
+        user.setDeptId(mainDeptId);
         user.setEmail(member.getEmail());
         user.setPhone(member.getMobile());
+        applyMemberProfile(user, member);
         user.setStatus(member.isActive() ? 1 : 0);
         user.setRemark("通讯录同步创建（" + provider + "）");
         userMapper.insert(user);
         assignDefaultRoles(user.getId());
+        sysUserDeptService.replace(user.getId(), mainDeptId, deptIds,
+                member.isLeaderInDept(), member.getOrderInDept());
 
         SysUserIdentity identity = new SysUserIdentity();
         identity.setUserId(user.getId());
@@ -247,6 +386,44 @@ public class DirectorySyncService {
         userIdentityMapper.insert(identity);
         log.info("通讯录同步创建用户: provider={}, externalUserId={}, username={}",
                 provider, member.getExternalUserId(), username);
+        return user.getId();
+    }
+
+    /** 外部成员资料字段，空值不覆盖本地已有值 */
+    private void applyMemberProfile(SysUser user, ExternalMember member) {
+        if (StringUtils.hasText(member.getEmployeeNo())) {
+            user.setEmployeeNo(member.getEmployeeNo());
+        }
+        if (StringUtils.hasText(member.getAlias())) {
+            user.setAlias(member.getAlias());
+        }
+        if (StringUtils.hasText(member.getPosition())) {
+            user.setPosition(member.getPosition());
+        }
+        if (member.getGender() != null) {
+            user.setGender(member.getGender());
+        }
+        if (StringUtils.hasText(member.getBizMail())) {
+            user.setBizMail(member.getBizMail());
+        }
+        if (StringUtils.hasText(member.getTelephone())) {
+            user.setTelephone(member.getTelephone());
+        }
+        if (StringUtils.hasText(member.getDirectLeader())) {
+            user.setDirectLeader(member.getDirectLeader());
+        }
+        if (StringUtils.hasText(member.getExternalPosition())) {
+            user.setExternalPosition(member.getExternalPosition());
+        }
+        if (StringUtils.hasText(member.getExternalNickname())) {
+            user.setExternalNickname(member.getExternalNickname());
+        }
+        if (StringUtils.hasText(member.getAddress())) {
+            user.setAddress(member.getAddress());
+        }
+        if (StringUtils.hasText(member.getExtAttr())) {
+            user.setExtAttr(member.getExtAttr());
+        }
     }
 
     private void assignDefaultRoles(Long userId) {
@@ -283,21 +460,65 @@ public class DirectorySyncService {
                 .last("limit 1"));
     }
 
-    private Long firstMappedDept(List<String> externalDeptIds, Map<String, Long> mapping) {
+    private SysDeptIdentity findDeptIdentity(String provider, String corpId, String externalDeptId) {
+        return deptIdentityMapper.selectOne(new LambdaQueryWrapper<SysDeptIdentity>()
+                .eq(SysDeptIdentity::getProvider, provider)
+                .eq(SysDeptIdentity::getCorpId, corpId)
+                .eq(SysDeptIdentity::getExternalDeptId, externalDeptId)
+                .last("limit 1"));
+    }
+
+    private List<Long> mappedDepts(List<String> externalDeptIds, Map<String, Long> mapping) {
+        LinkedHashSet<Long> result = new LinkedHashSet<>();
         if (externalDeptIds != null) {
             for (String externalDeptId : externalDeptIds) {
                 Long localId = mapping.get(externalDeptId);
                 if (localId != null) {
-                    return localId;
+                    result.add(localId);
                 }
             }
         }
-        return properties.getRootDeptId();
+        if (result.isEmpty()) {
+            result.add(properties.getRootDeptId());
+        }
+        return new ArrayList<>(result);
     }
 
-    private String resolveCorpId(String provider) {
-        return WeComDirectoryProvider.PROVIDER.equalsIgnoreCase(provider)
-                ? properties.getWecomCorpId() : properties.getCorpId();
+    private Long mainDept(ExternalMember member, List<Long> localDeptIds, Map<String, Long> mapping) {
+        if (member.getMainDepartmentId() != null) {
+            Long localId = mapping.get(member.getMainDepartmentId());
+            if (localId != null) {
+                return localId;
+            }
+        }
+        return localDeptIds.isEmpty() ? properties.getRootDeptId() : localDeptIds.get(0);
+    }
+
+    private List<Long> resolveMemberDepts(String provider, String corpId, List<String> externalDeptIds) {
+        LinkedHashSet<Long> result = new LinkedHashSet<>();
+        if (externalDeptIds != null) {
+            for (String externalDeptId : externalDeptIds) {
+                Long localId = findDeptLocalId(provider, corpId, externalDeptId);
+                if (localId != null) {
+                    result.add(localId);
+                }
+            }
+        }
+        if (result.isEmpty()) {
+            result.add(properties.getRootDeptId());
+        }
+        return new ArrayList<>(result);
+    }
+
+    private Long resolveMemberMainDept(String provider, String corpId, ExternalMember member,
+                                       List<Long> localDeptIds) {
+        if (member.getMainDepartmentId() != null) {
+            Long localId = findDeptLocalId(provider, corpId, member.getMainDepartmentId());
+            if (localId != null) {
+                return localId;
+            }
+        }
+        return localDeptIds.isEmpty() ? properties.getRootDeptId() : localDeptIds.get(0);
     }
 
     private String buildUniqueUsername(String externalUserId) {

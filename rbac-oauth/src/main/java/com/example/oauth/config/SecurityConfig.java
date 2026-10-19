@@ -78,6 +78,10 @@ public class SecurityConfig {
                     // 授权流程用到的剩余端点：确认页数据、授权码回调联调端点。
                     // 授权页面端点由链 2 负责，令牌端点由链 1 负责。
                     .antMatchers("/oauth/**").permitAll()
+                    // 扫码登录短链：二维码内容，必须允许手机匿名访问
+                    .antMatchers("/q/**").permitAll()
+                    // 企业微信域名校验文件（WW_verify_xxx.txt），必须匿名访问
+                    .antMatchers("/WW_verify_*.txt").permitAll()
                     // 兜底：本服务只对外提供 OAuth2 端点与 /openapi/**，没有别的接口
                     .anyRequest().authenticated()
                 .and()

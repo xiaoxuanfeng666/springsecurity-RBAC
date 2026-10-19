@@ -20,21 +20,40 @@
           </el-form-item>
         </el-form>
 
-        <el-button v-permission="'system:user:add'" type="primary" :icon="Plus" @click="openCreate">
-          新增用户
-        </el-button>
+        <div>
+          <el-button
+            v-permission="'system:user:edit'"
+            :icon="Upload"
+            @click="handleSyncAll"
+          >
+            推送全部到企业微信
+          </el-button>
+          <el-button v-permission="'system:user:add'" type="primary" :icon="Plus" @click="openCreate">
+            新增用户
+          </el-button>
+        </div>
       </div>
 
       <!-- 表格 -->
       <el-table v-loading="loading" :data="tableData" border stripe>
         <el-table-column type="index" label="#" width="55" align="center" />
         <el-table-column prop="username" label="用户名" min-width="120" />
+        <el-table-column prop="employeeNo" label="工号" min-width="100" />
         <el-table-column prop="nickname" label="昵称" min-width="120" />
-        <el-table-column label="所属部门" min-width="140">
+        <el-table-column label="部门" min-width="180">
           <template #default="{ row }">
-            {{ deptMap[row.deptId] || '-' }}
+            <el-tag
+              v-for="did in (row.deptIds && row.deptIds.length ? row.deptIds : [row.deptId])"
+              :key="did"
+              size="small"
+              style="margin-right: 4px"
+            >
+              {{ deptMap[did] || did }}
+            </el-tag>
+            <span v-if="!row.deptId && !(row.deptIds || []).length">-</span>
           </template>
         </el-table-column>
+        <el-table-column prop="position" label="职务" min-width="120" show-overflow-tooltip />
         <el-table-column label="岗位" min-width="170">
           <template #default="{ row }">
             <el-tag
@@ -56,7 +75,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" min-width="170" />
-        <el-table-column label="操作" width="410" fixed="right" align="center">
+        <el-table-column label="操作" width="490" fixed="right" align="center">
           <template #default="{ row }">
             <el-button v-permission="'system:user:edit'" link type="primary" @click="openEdit(row)">
               修改
@@ -84,6 +103,9 @@
             <el-button v-permission="'system:user:edit'" link type="success" @click="openIdentity(row)">
               身份绑定
             </el-button>
+            <el-button v-permission="'system:user:edit'" link type="primary" @click="handleSyncUser(row)">
+              推送企微
+            </el-button>
             <el-button v-permission="'system:user:remove'" link type="danger" @click="handleDelete(row)">
               删除
             </el-button>
@@ -105,8 +127,9 @@
     </el-card>
 
     <!-- 新增/编辑弹窗 -->
-    <el-dialog v-model="dialogVisible" :title="isEdit ? '修改用户' : '新增用户'" width="520px">
-      <el-form ref="formRef" :model="form" :rules="formRules" label-width="90px">
+    <el-dialog v-model="dialogVisible" :title="isEdit ? '修改用户' : '新增用户'" width="720px">
+      <el-form ref="formRef" :model="form" :rules="formRules" label-width="100px">
+        <el-divider content-position="left">基本资料</el-divider>
         <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username" :disabled="isEdit" placeholder="请输入用户名" />
         </el-form-item>
@@ -121,7 +144,24 @@
         <el-form-item label="昵称" prop="nickname">
           <el-input v-model="form.nickname" placeholder="请输入昵称" />
         </el-form-item>
-        <el-form-item label="所属部门">
+        <el-form-item label="工号">
+          <el-input v-model="form.employeeNo" placeholder="请输入工号" />
+        </el-form-item>
+        <el-form-item label="别名">
+          <el-input v-model="form.alias" placeholder="请输入别名" />
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-select v-model="form.gender" placeholder="请选择性别" style="width: 100%">
+            <el-option label="未知" :value="0" />
+            <el-option label="男" :value="1" />
+            <el-option label="女" :value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="职务">
+          <el-input v-model="form.position" placeholder="请输入职务" />
+        </el-form-item>
+        <el-divider content-position="left">组织信息</el-divider>
+        <el-form-item label="主部门">
           <el-tree-select
             v-model="form.deptId"
             :data="deptOptions"
@@ -130,20 +170,69 @@
             check-strictly
             clearable
             :render-after-expand="false"
-            placeholder="请选择部门"
+            placeholder="请选择主部门"
             style="width: 100%"
           />
+        </el-form-item>
+        <el-form-item label="兼任部门">
+          <el-tree-select
+            v-model="form.extraDeptIds"
+            :data="deptOptions"
+            :props="{ label: 'deptName', children: 'children', value: 'id' }"
+            node-key="id"
+            check-strictly
+            multiple
+            clearable
+            :render-after-expand="false"
+            placeholder="可多选，主部门无需重复选择"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-form-item label="部门负责人">
+          <el-switch v-model="form.leaderInDept" />
+          <span class="field-tip">仅作用于主部门</span>
+        </el-form-item>
+        <el-form-item label="部门内排序">
+          <el-input-number v-model="form.orderInDept" :min="0" :max="4294967295" controls-position="right" />
         </el-form-item>
         <el-form-item label="岗位">
           <el-select v-model="form.postIds" multiple placeholder="请选择岗位" style="width: 100%">
             <el-option v-for="p in postOptions" :key="p.id" :label="p.postName" :value="p.id" />
           </el-select>
         </el-form-item>
+        <el-form-item label="直属上级">
+          <el-input v-model="form.directLeader" placeholder="外部 userid / 用户名，多个用逗号分隔" />
+        </el-form-item>
+        <el-divider content-position="left">联系方式</el-divider>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="form.email" placeholder="请输入邮箱" />
         </el-form-item>
+        <el-form-item label="企业邮箱" prop="bizMail">
+          <el-input v-model="form.bizMail" placeholder="请输入企业邮箱" />
+        </el-form-item>
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="form.phone" placeholder="请输入手机号" />
+        </el-form-item>
+        <el-form-item label="座机" prop="telephone">
+          <el-input v-model="form.telephone" placeholder="请输入座机" />
+        </el-form-item>
+        <el-form-item label="地址">
+          <el-input v-model="form.address" placeholder="请输入地址" />
+        </el-form-item>
+        <el-divider content-position="left">对外资料</el-divider>
+        <el-form-item label="对外职务">
+          <el-input v-model="form.externalPosition" placeholder="请输入对外职务" />
+        </el-form-item>
+        <el-form-item label="对外昵称">
+          <el-input v-model="form.externalNickname" placeholder="请输入对外昵称" />
+        </el-form-item>
+        <el-form-item label="扩展属性" prop="extAttr">
+          <el-input
+            v-model="form.extAttr"
+            type="textarea"
+            :rows="3"
+            placeholder='JSON 格式，例如 {"工号":"A001"}'
+          />
         </el-form-item>
         <el-form-item label="角色">
           <el-select v-model="form.roleIds" multiple placeholder="请选择角色" style="width: 100%">
@@ -247,7 +336,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Search, Refresh, Plus } from '@element-plus/icons-vue'
+import { Search, Refresh, Plus, Upload } from '@element-plus/icons-vue'
 import {
   pageUsers,
   createUser,
@@ -266,6 +355,9 @@ import {
   createUserIdentity,
   deleteUserIdentity
 } from '@/api/userIdentity'
+import { syncAllToProvider, syncUserToProvider } from '@/api/idpOutbound'
+
+const OUTBOUND_PROVIDER = 'wecom'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -351,10 +443,24 @@ const defaultForm = () => ({
   username: '',
   password: '',
   nickname: '',
+  employeeNo: '',
+  alias: '',
+  position: '',
+  gender: 0,
   deptId: null,
+  extraDeptIds: [],
+  leaderInDept: false,
+  orderInDept: 0,
   postIds: [],
   email: '',
+  bizMail: '',
   phone: '',
+  telephone: '',
+  directLeader: '',
+  externalPosition: '',
+  externalNickname: '',
+  address: '',
+  extAttr: '',
   status: 1,
   remark: '',
   roleIds: []
@@ -364,6 +470,23 @@ const form = reactive(defaultForm())
 const formRules = {
   username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
   nickname: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
+  extAttr: [
+    {
+      validator: (rule, value, callback) => {
+        if (!value) {
+          callback()
+          return
+        }
+        try {
+          JSON.parse(value)
+          callback()
+        } catch (e) {
+          callback(new Error('扩展属性必须是合法的 JSON'))
+        }
+      },
+      trigger: 'blur'
+    }
+  ],
   password: [
     {
       validator: (rule, value, callback) => {
@@ -463,10 +586,24 @@ async function openEdit(row) {
     id: row.id,
     username: row.username,
     nickname: row.nickname,
+    employeeNo: row.employeeNo || '',
+    alias: row.alias || '',
+    position: row.position || '',
+    gender: row.gender == null ? 0 : row.gender,
     deptId: row.deptId,
+    extraDeptIds: (row.deptIds || []).filter((id) => id !== row.deptId),
+    leaderInDept: !!row.leaderInDept,
+    orderInDept: row.orderInDept || 0,
     postIds: [...(row.postIds || [])],
-    email: row.email,
-    phone: row.phone,
+    email: row.email || '',
+    bizMail: row.bizMail || '',
+    phone: row.phone || '',
+    telephone: row.telephone || '',
+    directLeader: row.directLeader || '',
+    externalPosition: row.externalPosition || '',
+    externalNickname: row.externalNickname || '',
+    address: row.address || '',
+    extAttr: row.extAttr || '',
     status: row.status,
     remark: row.remark,
     password: ''
@@ -484,11 +621,16 @@ async function handleSubmit() {
   }
   submitting.value = true
   try {
+    const { extraDeptIds, ...rest } = form
+    const deptIds = [
+      ...new Set([form.deptId, ...extraDeptIds].filter((id) => id !== null && id !== undefined))
+    ]
+    const payload = { ...rest, deptIds }
     if (isEdit.value) {
-      await updateUser({ ...form })
+      await updateUser(payload)
       ElMessage.success('修改成功')
     } else {
-      await createUser({ ...form })
+      await createUser(payload)
       ElMessage.success('新增成功')
     }
     dialogVisible.value = false
@@ -574,6 +716,37 @@ async function handleDelete(row) {
   loadData()
 }
 
+/** 全量推送：先部门后用户，已存在的企业微信账号按更新处理 */
+async function handleSyncAll() {
+  try {
+    await ElMessageBox.confirm(
+      '将把全部部门和用户推送到企业微信，已存在的账号会被更新。确定继续吗？',
+      '推送确认',
+      { confirmButtonText: '确定推送', cancelButtonText: '取消', type: 'warning' }
+    )
+  } catch (e) {
+    return
+  }
+  const res = await syncAllToProvider(OUTBOUND_PROVIDER)
+  const data = res.data || {}
+  ElMessage.success(`已加入同步队列：部门 ${data.departments || 0} 个，用户 ${data.users || 0} 个`)
+}
+
+/** 单个用户推送到企业微信 */
+async function handleSyncUser(row) {
+  try {
+    await ElMessageBox.confirm(
+      `确定把用户「${row.username}」推送到企业微信吗？`,
+      '推送确认',
+      { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
+    )
+  } catch (e) {
+    return
+  }
+  await syncUserToProvider(row.id, OUTBOUND_PROVIDER)
+  ElMessage.success('已加入同步队列')
+}
+
 function resetIdentityForm() {
   Object.assign(identityForm, {
     provider: 'wecom',
@@ -641,5 +814,10 @@ onMounted(() => {
   margin-left: 90px;
   font-size: 12px;
   color: #e6a23c;
+}
+.field-tip {
+  margin-left: 10px;
+  font-size: 12px;
+  color: #909399;
 }
 </style>

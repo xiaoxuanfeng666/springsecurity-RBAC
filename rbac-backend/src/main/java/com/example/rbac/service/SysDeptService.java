@@ -21,6 +21,7 @@ public class SysDeptService {
 
     private final SysDeptMapper deptMapper;
     private final SysUserMapper userMapper;
+    private final IdpOutboundService idpOutboundService;
 
     /**
      * 部门树（部门管理页与部门选择器共用）
@@ -47,6 +48,7 @@ public class SysDeptService {
         SysDept dept = new SysDept();
         copy(form, dept);
         deptMapper.insert(dept);
+        idpOutboundService.autoEnqueueDept("CREATE", dept);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -65,6 +67,7 @@ public class SysDeptService {
         dept.setId(form.getId());
         copy(form, dept);
         deptMapper.updateById(dept);
+        idpOutboundService.autoEnqueueDept("UPDATE", dept);
     }
 
     /** 是否指定了真实的上级部门（null 与 0 都表示顶级） */
@@ -74,7 +77,7 @@ public class SysDeptService {
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(Long id) {
-        getById(id);
+        SysDept exist = getById(id);
         Long children = deptMapper.selectCount(
                 new LambdaQueryWrapper<SysDept>().eq(SysDept::getParentId, id));
         if (children != null && children > 0) {
@@ -85,6 +88,7 @@ public class SysDeptService {
         if (users != null && users > 0) {
             throw new BusinessException(ResultCode.DEPT_IN_USE);
         }
+        idpOutboundService.autoEnqueueDept("DELETE", exist);
         deptMapper.deleteById(id);
     }
 

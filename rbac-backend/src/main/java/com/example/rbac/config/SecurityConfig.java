@@ -68,6 +68,8 @@ public class SecurityConfig {
                 .authorizeRequests()
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .antMatchers("/auth/login", "/auth/refresh").permitAll()
+                    // 外部通讯录推送：由 X-Directory-Token 共享密钥鉴权（见 DirectorySyncController）
+                    .antMatchers("/idp/directory/events/**").permitAll()
                     .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

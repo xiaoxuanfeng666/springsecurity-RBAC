@@ -53,6 +53,8 @@ public class SysUserService {
     private final SysOperationLogService logService;
     private final SubsystemSyncService subsystemSyncService;
     private final SsoKickPublisher ssoKickPublisher;
+    private final IdpOutboundService idpOutboundService;
+    private final SysUserDeptService sysUserDeptService;
 
     public Page<SysUser> page(long pageNum, long pageSize, String username, Integer status) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<SysUser>()
@@ -61,6 +63,7 @@ public class SysUserService {
                 .orderByDesc(SysUser::getCreateTime);
         Page<SysUser> page = userMapper.selectPage(new Page<>(pageNum, pageSize), wrapper);
         fillPostIds(page.getRecords());
+        sysUserDeptService.fill(page.getRecords());
         return page;
     }
 
@@ -85,6 +88,7 @@ public class SysUserService {
         if (user == null) {
             throw new BusinessException(ResultCode.USER_NOT_EXIST);
         }
+        sysUserDeptService.fill(user);
         return user;
     }
 
@@ -113,17 +117,18 @@ public class SysUserService {
         SysUser user = new SysUser();
         user.setUsername(form.getUsername());
         user.setPassword(passwordEncoder.encode(form.getPassword()));
-        user.setNickname(form.getNickname());
-        user.setDeptId(form.getDeptId());
-        user.setEmail(form.getEmail());
-        user.setPhone(form.getPhone());
+        applyProfile(form, user);
         user.setRemark(form.getRemark());
         user.setStatus(form.getStatus() == null ? 1 : form.getStatus());
         userMapper.insert(user);
         saveUserRoles(user.getId(), form.getRoleIds());
         saveUserPosts(user.getId(), form.getPostIds());
+        sysUserDeptService.replace(user.getId(), form.getDeptId(), form.getDeptIds(),
+                form.getLeaderInDept(), form.getOrderInDept());
         // 只把该用户同步到其角色有授权的子系统
         subsystemSyncService.syncForRoles(form.getRoleIds());
+        // 出站同步到企业微信/钉钉（未启用时无操作）
+        idpOutboundService.autoEnqueueUser("CREATE", user);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -137,10 +142,7 @@ public class SysUserService {
         }
         SysUser user = new SysUser();
         user.setId(form.getId());
-        user.setNickname(form.getNickname());
-        user.setDeptId(form.getDeptId());
-        user.setEmail(form.getEmail());
-        user.setPhone(form.getPhone());
+        applyProfile(form, user);
         user.setRemark(form.getRemark());
         if (form.getStatus() != null) {
             user.setStatus(form.getStatus());
@@ -150,6 +152,9 @@ public class SysUserService {
             user.setPassword(passwordEncoder.encode(form.getPassword()));
         }
         userMapper.updateById(user);
+        sysUserDeptService.replace(form.getId(),
+                form.getDeptId() != null ? form.getDeptId() : exist.getDeptId(),
+                form.getDeptIds(), form.getLeaderInDept(), form.getOrderInDept());
 
         if (form.getRoleIds() != null) {
             userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
@@ -171,6 +176,7 @@ public class SysUserService {
         // 用户资料与角色都在登录快照里，改完必须失效，否则昵称/部门等要等重新登录才更新
         snapshotStore.invalidateUser(form.getId());
         subsystemSyncService.syncForRoles(affectedRoleIds);
+        idpOutboundService.autoEnqueueUser("UPDATE", getById(form.getId()));
     }
 
     /**
@@ -192,11 +198,31 @@ public class SysUserService {
         }
         // 状态变化只影响该用户所属角色对应的子系统
         subsystemSyncService.syncForRoles(getRoleIds(id));
+        idpOutboundService.autoEnqueueUser("UPDATE", getById(id));
     }
 
     /** 停用(0)与离职(2)都会让用户立即下线 */
     private boolean isOffline(int status) {
         return status == 0 || status == STATUS_RESIGNED;
+    }
+
+    /** 用户宽表字段（参考企业微信创建成员接口） */
+    private void applyProfile(UserForm form, SysUser user) {
+        user.setNickname(form.getNickname());
+        user.setEmployeeNo(form.getEmployeeNo());
+        user.setAlias(form.getAlias());
+        user.setPosition(form.getPosition());
+        user.setGender(form.getGender());
+        user.setDeptId(form.getDeptId());
+        user.setEmail(form.getEmail());
+        user.setBizMail(form.getBizMail());
+        user.setPhone(form.getPhone());
+        user.setTelephone(form.getTelephone());
+        user.setDirectLeader(form.getDirectLeader());
+        user.setExternalPosition(form.getExternalPosition());
+        user.setExternalNickname(form.getExternalNickname());
+        user.setAddress(form.getAddress());
+        user.setExtAttr(form.getExtAttr());
     }
 
     /**
@@ -226,11 +252,13 @@ public class SysUserService {
         }
         // 删除前先记下角色：之后要靠它们决定通知哪些子系统
         List<Long> roleIds = getRoleIds(id);
+        idpOutboundService.autoEnqueueUser("DELETE", exist);
         // 先失效登录凭证，再删除数据
         tokenStore.removeSession(id);
         ssoKickPublisher.publish(SsoKickPublisher.TYPE_DELETE, null, id, exist.getUsername(), "账号已删除");
         releaseUsername(exist);
         userMapper.deleteById(id);
+        sysUserDeptService.deleteByUser(id);
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, id));
         log.info("用户已删除并失效登录凭证: {}", exist.getUsername());
         subsystemSyncService.syncForRoles(roleIds);

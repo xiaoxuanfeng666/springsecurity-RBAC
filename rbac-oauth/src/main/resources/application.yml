@@ -109,14 +109,24 @@ rbac:
 # enabled 置为 true 并填好 CorpID / AgentId / Secret / Callback 后，登录页会出现「企业微信扫码登录」。
 # 生产环境请通过环境变量或密钥管理服务注入 secret（也支持 ENC(...) 密文）。
 wecom:
-  enabled: ${WECOM_ENABLED:false}
-  corp-id: ${WECOM_CORP_ID:}
-  agent-id: ${WECOM_AGENT_ID:}
-  secret: ${WECOM_SECRET:}
+  enabled: ${WECOM_ENABLED:true}
+  corp-id: ${WECOM_CORP_ID:wwf3f175aaf3dcd969}
+  agent-id: ${WECOM_AGENT_ID:1000002}
+  secret: ${WECOM_SECRET:qnVA39jdFS69ZnDWSvIaqKCKRXS_zUD_lt4-xoHxCnY}
   # 必须与企业微信后台登记的回调地址完全一致，且公网可达
-  callback-url: ${WECOM_CALLBACK_URL:http://localhost:7071/oauth/wecom/callback}
+  callback-url: ${WECOM_CALLBACK_URL:http://102sp3174to00.vicp.fun/oauth/wecom/callback}
   qr-connect-url: https://open.work.weixin.qq.com/wwopen/sso/qrConnect
   api-base-url: https://qyapi.weixin.qq.com
+  # 扫码登录：二维码内容为本服务短链，票据写入 MySQL + Redis
+  qr:
+    enabled: ${WECOM_QR_ENABLED:true}
+    # 二维码/短链有效期（秒）
+    ttl-seconds: ${WECOM_QR_TTL_SECONDS:300}
+    # 手机确认后，电脑端完成登录的等待时间（秒）
+    confirm-ttl-seconds: ${WECOM_QR_CONFIRM_TTL_SECONDS:120}
+    # 短链对外基地址：必须是手机能访问的地址，通常与回调地址同域
+    public-base-url: ${WECOM_QR_PUBLIC_BASE_URL:http://102sp3174to00.vicp.fun}
+    short-path: ${WECOM_QR_SHORT_PATH:/q}
 
 # 多 IdP 登录策略
 idp:

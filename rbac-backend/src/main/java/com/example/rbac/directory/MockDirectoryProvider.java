@@ -26,7 +26,7 @@ public class MockDirectoryProvider implements DirectoryProvider {
 
     @Override
     public boolean isEnabled() {
-        return properties.isMockEnabled() && PROVIDER.equalsIgnoreCase(properties.getProvider());
+        return properties.isMockEnabled() && properties.includes(PROVIDER);
     }
 
     @Override
