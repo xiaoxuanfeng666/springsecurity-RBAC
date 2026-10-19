@@ -1,0 +1,74 @@
+npm warn Unknown user config "python". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> rbac-oauth-web@1.0.0 dev
+> vite
+
+
+  [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m2888[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5174[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m16:54:12[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m16:54:12[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/providers[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:05:48[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:05:50[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:05:52[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:05:54[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:05:56[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:05:58[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:06:00[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:06:02[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:06:04[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:06:06[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:06:08[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m17:06:12[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/providers[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m21:18:18[22m [31m[1m[vite][22m[39m [31mhttp proxy error: /oauth/wecom/qr/status[39m
+AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1492:18)
+    at afterConnectMultiple (node:net:2161:7)
+[2m21:57:32[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/login/index.vue[22m
+[2m21:57:35[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/login/index.vue[22m
+[2m21:57:37[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/login/index.vue?vue&type=style&index=0&scoped=2bf2fc29&lang.css[22m
+[2m22:06:36[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/login/index.vue?vue&type=style&index=0&scoped=2bf2fc29&lang.css[22m
