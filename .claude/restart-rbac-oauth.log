@@ -1,0 +1,302 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.example:rbac-oauth >-----------------------
+[INFO] Building rbac-oauth 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.7.18:run (default-cli) > test-compile @ rbac-oauth >>>
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ rbac-oauth ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ rbac-oauth ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 88 source files to D:\programs\ai\coding\springsecurity-RBAC\rbac-oauth\target\classes
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/rbac-oauth/src/main/java/com/example/oauth/config/OAuth2ApprovalConfig.java: 某些输入文件使用或覆盖了已过时的 API。
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/rbac-oauth/src/main/java/com/example/oauth/config/OAuth2ApprovalConfig.java: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/rbac-oauth/src/main/java/com/example/oauth/oauth/OAuth2TestCallbackController.java: D:\programs\ai\coding\springsecurity-RBAC\rbac-oauth\src\main\java\com\example\oauth\oauth\OAuth2TestCallbackController.java使用了未经检查或不安全的操作。
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/rbac-oauth/src/main/java/com/example/oauth/oauth/OAuth2TestCallbackController.java: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ rbac-oauth ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory D:\programs\ai\coding\springsecurity-RBAC\rbac-oauth\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ rbac-oauth ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.7.18:run (default-cli) < test-compile @ rbac-oauth <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.7.18:run (default-cli) @ rbac-oauth ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.7.18)
+
+2026-10-21 14:23:05.065  INFO 49556 --- [           main] com.example.oauth.OauthApplication       : Starting OauthApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 49556 (D:\programs\ai\coding\springsecurity-RBAC\rbac-oauth\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\rbac-oauth)
+2026-10-21 14:23:05.067 DEBUG 49556 --- [           main] com.example.oauth.OauthApplication       : Running with Spring Boot v2.7.18, Spring v5.3.31
+2026-10-21 14:23:05.067  INFO 49556 --- [           main] com.example.oauth.OauthApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-10-21 14:23:05.705  INFO 49556 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-21 14:23:05.707  INFO 49556 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-10-21 14:23:05.733  INFO 49556 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 13 ms. Found 0 Redis repository interfaces.
+2026-10-21 14:23:06.006  INFO 49556 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$c78f8f97] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 14:23:06.046  INFO 49556 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 14:23:06.063  INFO 49556 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 14:23:06.064  INFO 49556 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$1ec98633] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 14:23:06.407  INFO 49556 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7071 (http)
+2026-10-21 14:23:06.417  INFO 49556 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-21 14:23:06.417  INFO 49556 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-10-21 14:23:06.601  INFO 49556 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-21 14:23:06.602  INFO 49556 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1502 ms
+Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
+Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@1a8b81e8'
+Property 'mapperLocations' was not specified.
+Initialization Sequence datacenterId:19 workerId:9
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.3.2 
+2026-10-21 14:23:07.565 DEBUG 49556 --- [           main] c.e.oauth.oauth.OauthAuthCookieFilter    : Filter 'oauthAuthCookieFilter' configured for use
+2026-10-21 14:23:07.566 DEBUG 49556 --- [           main] c.e.o.o.OpenApiTokenAuthenticationFilter : Filter 'openApiTokenAuthenticationFilter' configured for use
+2026-10-21 14:23:07.659  INFO 49556 --- [           main] c.e.oauth.config.OAuth2ApprovalConfig    : OAuth2 授权确认页已指向自定义页面: http://localhost:5174/approve
+2026-10-21 14:23:08.585  INFO 49556 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='rbac-oauth-client-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_CLIENT_CHANGE', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-21 14:23:08.585  INFO 49556 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:clientChangeConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
+2026-10-21 14:23:09.109  INFO 49556 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='rbac-oauth-session-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_OAUTH_SESSION', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-21 14:23:09.109  INFO 49556 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:ssoKickConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_2
+2026-10-21 14:23:09.217  INFO 49556 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Or [Ant [pattern='/oauth/authorize'], Ant [pattern='/oauth/confirm_access'], Ant [pattern='/oauth/error'], Ant [pattern='/oauth/login']] with [org.springframework.security.web.session.DisableEncodeUrlFilter@5f08fe00, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@a1691c0, org.springframework.security.web.context.SecurityContextPersistenceFilter@65c17e38, org.springframework.security.web.header.HeaderWriterFilter@55736cfe, org.springframework.security.web.authentication.logout.LogoutFilter@7243145f, com.example.oauth.oauth.OauthAuthCookieFilter@6af91cc8, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@3e26482, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7015ebef, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@2a87ba34, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7c5df615, org.springframework.security.web.session.SessionManagementFilter@42ed89da, org.springframework.security.web.access.ExceptionTranslationFilter@6d963d70, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@592ca48c]
+2026-10-21 14:23:09.282  INFO 49556 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Or [Ant [pattern='/oauth/token'], Ant [pattern='/oauth/token_key'], Ant [pattern='/oauth/check_token']] with [org.springframework.security.web.session.DisableEncodeUrlFilter@7f5614f9, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@480cbe2e, org.springframework.security.web.context.SecurityContextPersistenceFilter@4fa86cb8, org.springframework.security.web.header.HeaderWriterFilter@491cafec, org.springframework.security.web.authentication.logout.LogoutFilter@12952aff, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@6c3f1658, org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter@110e9982, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@54c60202, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7889b4b9, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5eb0a686, org.springframework.security.web.session.SessionManagementFilter@cbd40c1, org.springframework.security.web.access.ExceptionTranslationFilter@237add, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@3b78c683]
+2026-10-21 14:23:09.287  INFO 49556 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Or [Ant [pattern='/openapi/**']] with [org.springframework.security.web.session.DisableEncodeUrlFilter@781aff8b, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7fbf26fc, org.springframework.security.web.context.SecurityContextPersistenceFilter@5f6b53ed, org.springframework.security.web.header.HeaderWriterFilter@1a9ec80e, org.springframework.security.web.authentication.logout.LogoutFilter@1142d377, com.example.oauth.oauth.OpenApiTokenAuthenticationFilter@28a9494b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@20cdb152, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4cffd3fd, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@11c78080, org.springframework.security.web.session.SessionManagementFilter@7fd4e815, org.springframework.security.web.access.ExceptionTranslationFilter@2eda2062, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@35e98af]
+2026-10-21 14:23:09.298  INFO 49556 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6221b13b, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@62c3f556, org.springframework.security.web.context.SecurityContextPersistenceFilter@38a4e2b0, org.springframework.security.web.header.HeaderWriterFilter@739831a4, org.springframework.web.filter.CorsFilter@2cfe272f, org.springframework.security.web.authentication.logout.LogoutFilter@27a6fef2, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@14c99bf6, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@266e9dda, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2f95653f, org.springframework.security.web.session.SessionManagementFilter@7e3236d, org.springframework.security.web.access.ExceptionTranslationFilter@5efe47fd, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@e91af20]
+2026-10-21 14:23:09.571  INFO 49556 --- [           main] o.a.r.s.a.RocketMQAutoConfiguration      : a producer (rbac-oauth-producer) init on namesrv localhost:9876
+2026-10-21 14:23:10.148  INFO 49556 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7071 (http) with context path ''
+2026-10-21 14:23:10.158  INFO 49556 --- [           main] com.example.oauth.OauthApplication       : Started OauthApplication in 5.38 seconds (JVM running for 5.777)
+Creating a new SqlSession
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1fefa0b7] was not registered for synchronization because synchronization is not active
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fb22ae3] was not registered for synchronization because synchronization is not active
+2026-10-21 14:23:10.175  INFO 49556 --- [   scheduling-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-21 14:23:10.292  INFO 49556 --- [   scheduling-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+JDBC Connection [HikariProxyConnection@402886448 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+JDBC Connection [HikariProxyConnection@1703169174 wrapping com.mysql.cj.jdbc.ConnectionImpl@25214797] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1fefa0b7]
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: audit, null, kZ2anm0yEQ68PR/L0GYu48V0NQ1kV45zFr4SRNHKleYcATvL, read, authorization_code,refresh_token, http://localhost:5178/oauth/callback, ROLE_CLIENT, 1800, 604800, null, read
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 1800, 604800, null, read
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@684bf0f1] was not registered for synchronization because synchronization is not active
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 1800, 604800, null, read
+<==        Row: portal, null, Rxo21XV1MhryGGFp6DCuXtwIU2fEF3RVmNimrWfS53BrYqubCg==, read, authorization_code,refresh_token, http://localhost:5177/oauth/callback, ROLE_CLIENT, 1800, 604800, null, read
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 1800, 604800, null, read
+<==        Row: rbac-third-party, null, 9EIpNtl04xH+IQsPjHTi66z7R+JKnnnF9SEWnBLCLOKVNqCoLw==, read,write, authorization_code,password,implicit,client_credentials,refresh_token, http://localhost:8080/callback,http://localhost:5173/oauth/callback,http://localhost:7071/oauth/test-callback, ROLE_CLIENT, 1800, 604800, null, null
+<==      Total: 6
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fb22ae3]
+2026-10-21 14:23:10.472  INFO 49556 --- [           main] c.e.o.security.SsoSessionPolicyCheck     : SSO 会话策略: idle=604800s, max=2592000s; 客户端刷新令牌最长=604800s (audit)
+JDBC Connection [HikariProxyConnection@726613742 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@684bf0f1]
+2026-10-21 14:23:20.118  INFO 49556 --- [nio-7071-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-21 14:23:20.118  INFO 49556 --- [nio-7071-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-21 14:23:20.119  INFO 49556 --- [nio-7071-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-10-21 14:23:20.381  INFO 49556 --- [nio-7071-exec-5] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=5BmAMovfa6CK, expireAt=2026-10-21T14:28:20.347
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1784f188] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@921906312 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1784f188]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@66accbec] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1444183552 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@66accbec]
+2026-10-21 14:24:20.216  INFO 49556 --- [nio-7071-exec-1] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=ktXTGYlGLSor, expireAt=2026-10-21T14:29:20.214
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3630786d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@918759148 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3630786d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e9ac8a9] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1809588231 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e9ac8a9]
+2026-10-21 14:25:20.113  INFO 49556 --- [nio-7071-exec-5] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=cZTkBLIlxvNm, expireAt=2026-10-21T14:30:20.112
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1251fdf6] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@436641941 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1251fdf6]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@68512339] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1970462088 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@68512339]
+2026-10-21 14:26:20.100  INFO 49556 --- [nio-7071-exec-7] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=mHsKxRi5mtCC, expireAt=2026-10-21T14:31:20.099
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4bf637ff] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1874898219 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4bf637ff]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4392c2e3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@966876321 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4392c2e3]
+2026-10-21 14:27:20.094  INFO 49556 --- [nio-7071-exec-4] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=iOuYGims5Ofl, expireAt=2026-10-21T14:32:20.093
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3ae4b73d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2046764901 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3ae4b73d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2edd86fa] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@828066842 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2edd86fa]
+2026-10-21 14:28:20.048  INFO 49556 --- [nio-7071-exec-6] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=quoaim6-qIxl, expireAt=2026-10-21T14:33:20.046
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@27579192] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1779403170 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@27579192]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1d30e966] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@116404307 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1d30e966]
+2026-10-21 14:29:20.092  INFO 49556 --- [nio-7071-exec-2] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=JeHbW2zvo1Dt, expireAt=2026-10-21T14:34:20.091
+2026-10-21 14:35:07.342  WARN 49556 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5m56s850ms874?s500ns).
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@72f98970] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1120067992 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@72f98970]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1034093d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1345468706 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1034093d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7b97498c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@655393650 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7b97498c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@fab2313] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1320271939 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@fab2313]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@775ccda9] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@557435882 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@775ccda9]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@42ffdffa] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1398764425 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@42ffdffa]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@88a6f4b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@884367791 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@88a6f4b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1427e29f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1334585191 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1427e29f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@38e1737a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@335105507 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@38e1737a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@71fdbde4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1110735362 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@71fdbde4]

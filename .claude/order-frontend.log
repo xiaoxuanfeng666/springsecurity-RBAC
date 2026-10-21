@@ -1,0 +1,20 @@
+
+> order-frontend@1.0.0 dev
+> vite
+
+
+  [32m[1mVITE[22m v5.4.21[39m  [2mready in [0m[1m11282[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5176[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m12:47:58[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/api/request.js[22m
+[2m12:47:58[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/api/auth.js[22m
+[2m12:47:58[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/store/user.js[22m
+[2m12:47:58[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/layout/index.vue[22m
+[2m12:47:58[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/router/index.js[22m
+[2m12:47:58[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/layout/index.vue[22m
+[2m12:47:58[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/views/login/index.vue, /src/views/login/index.vue?vue&type=style&index=0&scoped=2bf2fc29&lang.css[22m
+[2m12:47:58[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/utils/auth.js[22m
+[2m13:33:05[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/api/request.js[22m
+[2m13:33:06[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/api/request.js[22m
+[2m13:33:07[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/api/request.js[22m

@@ -1,0 +1,1015 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -------------------< com.example:marketing-backend >--------------------
+[INFO] Building marketing-backend 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.7.18:run (default-cli) > test-compile @ marketing-backend >>>
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ marketing-backend ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ marketing-backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ marketing-backend ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ marketing-backend ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.7.18:run (default-cli) < test-compile @ marketing-backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.7.18:run (default-cli) @ marketing-backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.7.18)
+
+2026-10-19 22:31:47.993  INFO 73920 --- [           main] c.e.marketing.MarketingApplication       : Starting MarketingApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 73920 (D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\marketing-backend)
+2026-10-19 22:31:47.999  INFO 73920 --- [           main] c.e.marketing.MarketingApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-10-19 22:31:50.060  INFO 73920 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$675a4960] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:50.145  INFO 73920 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:50.190  INFO 73920 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:50.193  INFO 73920 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$be943ffc] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:51.169  INFO 73920 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7072 (http)
+2026-10-19 22:31:51.179  INFO 73920 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-19 22:31:51.179  INFO 73920 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-10-19 22:31:51.415  INFO 73920 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-19 22:31:51.415  INFO 73920 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3302 ms
+Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
+Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@72825400'
+Property 'mapperLocations' was not specified.
+Initialization Sequence datacenterId:19 workerId:19
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.3.2 
+2026-10-19 22:31:55.489  INFO 73920 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='marketing-sync-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SUBSYSTEM_SYNC', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='marketing', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-19 22:31:55.490  INFO 73920 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:subsystemSyncConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
+2026-10-19 22:31:55.682  INFO 73920 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@36c2d629, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@55fee662, org.springframework.security.web.context.SecurityContextPersistenceFilter@74f827ad, org.springframework.security.web.header.HeaderWriterFilter@f425231, org.springframework.web.filter.CorsFilter@54089484, org.springframework.security.web.authentication.logout.LogoutFilter@695c938d, com.example.marketing.security.OAuth2TokenAuthenticationFilter@7ceb4478, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@5c7dfc05, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3d0cac1f, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@45adc393, org.springframework.security.web.session.SessionManagementFilter@5dbb50f3, org.springframework.security.web.access.ExceptionTranslationFilter@b46e103, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@6ebc9573]
+2026-10-19 22:31:56.453  INFO 73920 --- [           main] o.a.r.s.a.RocketMQAutoConfiguration      : a producer (marketing-backend-producer) init on namesrv localhost:9876
+2026-10-19 22:31:57.507  INFO 73920 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7072 (http) with context path ''
+2026-10-19 22:31:57.529  INFO 73920 --- [           main] c.e.marketing.MarketingApplication       : Started MarketingApplication in 10.309 seconds (JVM running for 11.369)
+2026-10-19 22:31:59.940  INFO 73920 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-19 22:32:00.384  INFO 73920 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+JDBC Connection [HikariProxyConnection@1678914136 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will be managed by Spring
+==>  Preparing: DELETE FROM marketing_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: DELETE FROM marketing_role_menu
+==> Parameters: 
+<==    Updates: 10
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: DELETE FROM marketing_menu
+==> Parameters: 
+<==    Updates: 19
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: DELETE FROM marketing_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 100(Long), 0(Long), 抽奖管理(String), 1(Integer), /lottery(String), Layout(String), Trophy(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 110(Long), 0(Long), 积分管理(String), 1(Integer), /points(String), Layout(String), Coin(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 101(Long), 100(Long), 抽奖活动(String), 2(Integer), marketing:activity:list(String), activity(String), lottery/activity/index(String), Tickets(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 106(Long), 100(Long), 抽奖记录(String), 2(Integer), marketing:record:list(String), record(String), lottery/record/index(String), Memo(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 117(Long), 100(Long), 奖品配置(String), 2(Integer), marketing:prize:list(String), prize(String), lottery/prize/index(String), Present(String), 3(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 102(Long), 101(Long), 活动查询(String), 3(Integer), marketing:activity:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 103(Long), 101(Long), 活动新增(String), 3(Integer), marketing:activity:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 104(Long), 101(Long), 活动修改(String), 3(Integer), marketing:activity:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 105(Long), 101(Long), 活动删除(String), 3(Integer), marketing:activity:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 111(Long), 110(Long), 积分任务(String), 2(Integer), marketing:task:list(String), task(String), points/task/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 116(Long), 110(Long), 积分流水(String), 2(Integer), marketing:points:list(String), flow(String), points/flow/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 112(Long), 111(Long), 任务查询(String), 3(Integer), marketing:task:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 113(Long), 111(Long), 任务新增(String), 3(Integer), marketing:task:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 114(Long), 111(Long), 任务修改(String), 3(Integer), marketing:task:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 115(Long), 111(Long), 任务删除(String), 3(Integer), marketing:task:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 118(Long), 117(Long), 奖品查询(String), 3(Integer), marketing:prize:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 119(Long), 117(Long), 奖品新增(String), 3(Integer), marketing:prize:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 120(Long), 117(Long), 奖品修改(String), 3(Integer), marketing:prize:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 121(Long), 117(Long), 奖品删除(String), 3(Integer), marketing:prize:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 100(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 101(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 102(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 106(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 110(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 111(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 112(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 116(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 117(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 118(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb] from current transaction
+==>  Preparing: INSERT INTO marketing_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-19T22:32:00.398(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+2026-10-19 22:32:01.024  INFO 73920 --- [sync-consumer_1] c.e.m.service.MarketingSyncService       : 已重建子系统同步数据: subsystemCode=marketing, menus=19, roleMenus=10, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2869cbdb]
+2026-10-19 22:35:36.258  INFO 73920 --- [nio-7072-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-19 22:35:36.258  INFO 73920 --- [nio-7072-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-19 22:35:36.260  INFO 73920 --- [nio-7072-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@10a9021c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1716967957 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@10a9021c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7cfbe700] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1916536559 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7cfbe700]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3b4896ef] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@660048052 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3b4896ef]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c5676d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@184719781 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c5676d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7b1fe889] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@197130092 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM lottery_activity WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 3
+<==      Total: 1
+==>  Preparing: SELECT id,activity_name,activity_code,start_time,end_time,daily_limit,prize_desc,status,remark,del_flag,create_time,update_time FROM lottery_activity WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, activity_name, activity_code, start_time, end_time, daily_limit, prize_desc, status, remark, del_flag, create_time, update_time
+<==        Row: 3, 签到抽好礼, DAILY_SIGN, 2026-10-01 00:00:00, 2026-12-31 23:59:59, 1, 每日签到一次，奖品为积分, 0, 已停用的旧活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 2, 新年抽红包, NEWYEAR_REDPACK, 2027-01-01 00:00:00, 2027-01-07 23:59:59, 1, 现金红包 0.5~88 元随机, 1, 元旦活动，待上线, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 1, 双十一大转盘, DOUBLE11_WHEEL, 2026-11-01 00:00:00, 2026-11-15 23:59:59, 3, 一等奖 iPhone、二等奖 100元券、三等奖 10元券, 1, 年中大促主活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7b1fe889]
+2026-10-19 22:50:10.640  WARN 73920 --- [nio-7072-exec-8] c.e.m.security.OAuth2TokenClient         : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-19 22:50:10.641  WARN 73920 --- [nio-7072-exec-8] c.e.m.common.GlobalExceptionHandler      : 业务异常: 刷新凭证无效，请重新登录
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@d326699] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@66427215 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@d326699]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@259eee8a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1748554355 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@259eee8a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2b13b8d6] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2032920960 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2b13b8d6]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5048c44f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@148001923 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5048c44f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1dfd47dc] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@300792127 wrapping com.mysql.cj.jdbc.ConnectionImpl@123c16a9] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM lottery_activity WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 3
+<==      Total: 1
+==>  Preparing: SELECT id,activity_name,activity_code,start_time,end_time,daily_limit,prize_desc,status,remark,del_flag,create_time,update_time FROM lottery_activity WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, activity_name, activity_code, start_time, end_time, daily_limit, prize_desc, status, remark, del_flag, create_time, update_time
+<==        Row: 3, 签到抽好礼, DAILY_SIGN, 2026-10-01 00:00:00, 2026-12-31 23:59:59, 1, 每日签到一次，奖品为积分, 0, 已停用的旧活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 2, 新年抽红包, NEWYEAR_REDPACK, 2027-01-01 00:00:00, 2027-01-07 23:59:59, 1, 现金红包 0.5~88 元随机, 1, 元旦活动，待上线, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 1, 双十一大转盘, DOUBLE11_WHEEL, 2026-11-01 00:00:00, 2026-11-15 23:59:59, 3, 一等奖 iPhone、二等奖 100元券、三等奖 10元券, 1, 年中大促主活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1dfd47dc]
+Creating a new SqlSession
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@45cf23f2] was not registered for synchronization because synchronization is not active
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5863ab6b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1382346216 wrapping com.mysql.cj.jdbc.ConnectionImpl@722f62b7] will not be managed by Spring
+JDBC Connection [HikariProxyConnection@1635401601 wrapping com.mysql.cj.jdbc.ConnectionImpl@264d4d14] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5863ab6b]
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@45cf23f2]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@286918f3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@417311816 wrapping com.mysql.cj.jdbc.ConnectionImpl@264d4d14] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+Creating a new SqlSession
+==> Parameters: 
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@40ad31f9] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@903061417 wrapping com.mysql.cj.jdbc.ConnectionImpl@722f62b7] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==      Total: 7
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@286918f3]
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@40ad31f9]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3856c0ff] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@639974531 wrapping com.mysql.cj.jdbc.ConnectionImpl@264d4d14] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3856c0ff]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@406da7df] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@395850059 wrapping com.mysql.cj.jdbc.ConnectionImpl@264d4d14] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM lottery_activity WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 3
+<==      Total: 1
+==>  Preparing: SELECT id,activity_name,activity_code,start_time,end_time,daily_limit,prize_desc,status,remark,del_flag,create_time,update_time FROM lottery_activity WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, activity_name, activity_code, start_time, end_time, daily_limit, prize_desc, status, remark, del_flag, create_time, update_time
+<==        Row: 3, 签到抽好礼, DAILY_SIGN, 2026-10-01 00:00:00, 2026-12-31 23:59:59, 1, 每日签到一次，奖品为积分, 0, 已停用的旧活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 2, 新年抽红包, NEWYEAR_REDPACK, 2027-01-01 00:00:00, 2027-01-07 23:59:59, 1, 现金红包 0.5~88 元随机, 1, 元旦活动，待上线, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 1, 双十一大转盘, DOUBLE11_WHEEL, 2026-11-01 00:00:00, 2026-11-15 23:59:59, 3, 一等奖 iPhone、二等奖 100元券、三等奖 10元券, 1, 年中大促主活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@406da7df]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@50e4b55e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1065430078 wrapping com.mysql.cj.jdbc.ConnectionImpl@264d4d14] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@50e4b55e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21919622] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1420462347 wrapping com.mysql.cj.jdbc.ConnectionImpl@264d4d14] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21919622]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@442cf80] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@176497016 wrapping com.mysql.cj.jdbc.ConnectionImpl@264d4d14] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@442cf80]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4bb82b43] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1494537083 wrapping com.mysql.cj.jdbc.ConnectionImpl@264d4d14] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4bb82b43]
+2026-10-19 23:41:43.455  WARN 73920 --- [nio-7072-exec-9] c.e.m.security.OAuth2TokenClient         : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-19 23:41:43.455  WARN 73920 --- [nio-7072-exec-9] c.e.m.common.GlobalExceptionHandler      : 业务异常: 刷新凭证无效，请重新登录
+2026-10-19 23:41:43.976  WARN 73920 --- [nio-7072-exec-1] c.e.m.security.OAuth2TokenClient         : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-19 23:41:43.976  WARN 73920 --- [nio-7072-exec-1] c.e.m.common.GlobalExceptionHandler      : 业务异常: 刷新凭证无效，请重新登录
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6823c454] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1971914263 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6823c454]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@75472e0a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1646450845 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@75472e0a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@75408fbc] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@968611936 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@75408fbc]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@41518b6b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@395704419 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@41518b6b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4a8bd383] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1059235072 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM lottery_activity WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 3
+<==      Total: 1
+==>  Preparing: SELECT id,activity_name,activity_code,start_time,end_time,daily_limit,prize_desc,status,remark,del_flag,create_time,update_time FROM lottery_activity WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, activity_name, activity_code, start_time, end_time, daily_limit, prize_desc, status, remark, del_flag, create_time, update_time
+<==        Row: 3, 签到抽好礼, DAILY_SIGN, 2026-10-01 00:00:00, 2026-12-31 23:59:59, 1, 每日签到一次，奖品为积分, 0, 已停用的旧活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 2, 新年抽红包, NEWYEAR_REDPACK, 2027-01-01 00:00:00, 2027-01-07 23:59:59, 1, 现金红包 0.5~88 元随机, 1, 元旦活动，待上线, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 1, 双十一大转盘, DOUBLE11_WHEEL, 2026-11-01 00:00:00, 2026-11-15 23:59:59, 3, 一等奖 iPhone、二等奖 100元券、三等奖 10元券, 1, 年中大促主活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4a8bd383]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@283acfa4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@87518215 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@283acfa4]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7cecbfe3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1107669805 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7cecbfe3]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21ff0143] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1416054030 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21ff0143]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@439b75a1] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1707590956 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@439b75a1]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5cb3b3d3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@299190166 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5cb3b3d3]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@607489ca] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@555258684 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@607489ca]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6a59df44] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1688087679 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6a59df44]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25a32644] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@27553355 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25a32644]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c50231a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1933637182 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c50231a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@22e76c3b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1060509460 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM lottery_activity WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 3
+<==      Total: 1
+==>  Preparing: SELECT id,activity_name,activity_code,start_time,end_time,daily_limit,prize_desc,status,remark,del_flag,create_time,update_time FROM lottery_activity WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, activity_name, activity_code, start_time, end_time, daily_limit, prize_desc, status, remark, del_flag, create_time, update_time
+<==        Row: 3, 签到抽好礼, DAILY_SIGN, 2026-10-01 00:00:00, 2026-12-31 23:59:59, 1, 每日签到一次，奖品为积分, 0, 已停用的旧活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 2, 新年抽红包, NEWYEAR_REDPACK, 2027-01-01 00:00:00, 2027-01-07 23:59:59, 1, 现金红包 0.5~88 元随机, 1, 元旦活动，待上线, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 1, 双十一大转盘, DOUBLE11_WHEEL, 2026-11-01 00:00:00, 2026-11-15 23:59:59, 3, 一等奖 iPhone、二等奖 100元券、三等奖 10元券, 1, 年中大促主活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@22e76c3b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2257323d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@339012521 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2257323d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@15409473] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@236821052 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@15409473]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58423e2] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2036094508 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58423e2]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2deaaa97] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2112895385 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM lottery_activity WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 3
+<==      Total: 1
+==>  Preparing: SELECT id,activity_name,activity_code,start_time,end_time,daily_limit,prize_desc,status,remark,del_flag,create_time,update_time FROM lottery_activity WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, activity_name, activity_code, start_time, end_time, daily_limit, prize_desc, status, remark, del_flag, create_time, update_time
+<==        Row: 3, 签到抽好礼, DAILY_SIGN, 2026-10-01 00:00:00, 2026-12-31 23:59:59, 1, 每日签到一次，奖品为积分, 0, 已停用的旧活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 2, 新年抽红包, NEWYEAR_REDPACK, 2027-01-01 00:00:00, 2027-01-07 23:59:59, 1, 现金红包 0.5~88 元随机, 1, 元旦活动，待上线, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==        Row: 1, 双十一大转盘, DOUBLE11_WHEEL, 2026-11-01 00:00:00, 2026-11-15 23:59:59, 3, 一等奖 iPhone、二等奖 100元券、三等奖 10元券, 1, 年中大促主活动, 0, 2026-10-16 17:05:41, 2026-10-16 17:05:41
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2deaaa97]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@439b6159] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2124381827 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@439b6159]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@366cf24d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@786812016 wrapping com.mysql.cj.jdbc.ConnectionImpl@34353e85] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@366cf24d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6b6e79ee] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@446834256 wrapping com.mysql.cj.jdbc.ConnectionImpl@7d3d95bc] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6b6e79ee]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@60e782d4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1811724350 wrapping com.mysql.cj.jdbc.ConnectionImpl@7d3d95bc] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@60e782d4]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6f858014] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1168454209 wrapping com.mysql.cj.jdbc.ConnectionImpl@6f6eb9e2] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6f858014]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@c14d937] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1624229326 wrapping com.mysql.cj.jdbc.ConnectionImpl@6f6eb9e2] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@c14d937]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+JDBC Connection [HikariProxyConnection@1874208367 wrapping com.mysql.cj.jdbc.ConnectionImpl@750b7c03] will be managed by Spring
+==>  Preparing: DELETE FROM marketing_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: DELETE FROM marketing_role_menu
+==> Parameters: 
+<==    Updates: 10
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: DELETE FROM marketing_menu
+==> Parameters: 
+<==    Updates: 19
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: DELETE FROM marketing_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 100(Long), 0(Long), 抽奖管理(String), 1(Integer), /lottery(String), Layout(String), Trophy(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 110(Long), 0(Long), 积分管理(String), 1(Integer), /points(String), Layout(String), Coin(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 101(Long), 100(Long), 抽奖活动(String), 2(Integer), marketing:activity:list(String), activity(String), lottery/activity/index(String), Tickets(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 106(Long), 100(Long), 抽奖记录(String), 2(Integer), marketing:record:list(String), record(String), lottery/record/index(String), Memo(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 117(Long), 100(Long), 奖品配置(String), 2(Integer), marketing:prize:list(String), prize(String), lottery/prize/index(String), Present(String), 3(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 102(Long), 101(Long), 活动查询(String), 3(Integer), marketing:activity:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 103(Long), 101(Long), 活动新增(String), 3(Integer), marketing:activity:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 104(Long), 101(Long), 活动修改(String), 3(Integer), marketing:activity:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 105(Long), 101(Long), 活动删除(String), 3(Integer), marketing:activity:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 111(Long), 110(Long), 积分任务(String), 2(Integer), marketing:task:list(String), task(String), points/task/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 116(Long), 110(Long), 积分流水(String), 2(Integer), marketing:points:list(String), flow(String), points/flow/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 112(Long), 111(Long), 任务查询(String), 3(Integer), marketing:task:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 113(Long), 111(Long), 任务新增(String), 3(Integer), marketing:task:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 114(Long), 111(Long), 任务修改(String), 3(Integer), marketing:task:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 115(Long), 111(Long), 任务删除(String), 3(Integer), marketing:task:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 118(Long), 117(Long), 奖品查询(String), 3(Integer), marketing:prize:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 119(Long), 117(Long), 奖品新增(String), 3(Integer), marketing:prize:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 120(Long), 117(Long), 奖品修改(String), 3(Integer), marketing:prize:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 121(Long), 117(Long), 奖品删除(String), 3(Integer), marketing:prize:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 100(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 101(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 102(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 106(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 110(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 111(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 112(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 116(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 117(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 118(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea] from current transaction
+==>  Preparing: INSERT INTO marketing_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-20T00:53:03.670(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+2026-10-20 00:53:03.736  INFO 73920 --- [sync-consumer_2] c.e.m.service.MarketingSyncService       : 已重建子系统同步数据: subsystemCode=marketing, menus=19, roleMenus=10, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5e22bdea]
+2026-10-20 00:59:45.042  WARN 73920 --- [nio-7072-exec-7] c.e.m.security.OAuth2TokenClient         : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-20 00:59:45.045  WARN 73920 --- [nio-7072-exec-7] c.e.m.common.GlobalExceptionHandler      : 业务异常: 刷新凭证无效，请重新登录
+2026-10-20 00:59:45.523  WARN 73920 --- [nio-7072-exec-9] c.e.m.security.OAuth2TokenClient         : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-20 00:59:45.523  WARN 73920 --- [nio-7072-exec-9] c.e.m.common.GlobalExceptionHandler      : 业务异常: 刷新凭证无效，请重新登录
+2026-10-20 03:24:14.698  WARN 73920 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h20m41s733ms683?s800ns).
+2026-10-20 09:08:31.626  WARN 73920 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5h44m16s928ms17?s100ns).
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11:16 h
+[INFO] Finished at: 2026-10-20T09:47:34+08:00
+[INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "global-plugins" could not be activated because it does not exist.
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:2.7.18:run (default-cli) on project marketing-backend: Application finished with exit code: -1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

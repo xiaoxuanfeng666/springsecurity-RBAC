@@ -1,0 +1,750 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< com.example:order-backend >----------------------
+[INFO] Building order-backend 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.7.18:run (default-cli) > test-compile @ order-backend >>>
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ order-backend ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ order-backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ order-backend ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ order-backend ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.7.18:run (default-cli) < test-compile @ order-backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.7.18:run (default-cli) @ order-backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.7.18)
+
+2026-10-20 13:44:54.245  INFO 62092 --- [           main] com.example.order.OrderApplication       : Starting OrderApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 62092 (D:\programs\ai\coding\springsecurity-RBAC\order-backend\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\order-backend)
+2026-10-20 13:44:54.248  INFO 62092 --- [           main] com.example.order.OrderApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-10-20 13:44:55.046  INFO 62092 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-20 13:44:55.049  INFO 62092 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-10-20 13:44:55.081  INFO 62092 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 0 Redis repository interfaces.
+2026-10-20 13:44:55.675  INFO 62092 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$3a6b5960] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-20 13:44:55.763  INFO 62092 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-20 13:44:55.798  INFO 62092 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-20 13:44:55.801  INFO 62092 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$91a54ffc] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-20 13:44:56.526  INFO 62092 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7073 (http)
+2026-10-20 13:44:56.542  INFO 62092 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-20 13:44:56.543  INFO 62092 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-10-20 13:44:56.874  INFO 62092 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-20 13:44:56.875  INFO 62092 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2572 ms
+Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
+Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@2a369e14'
+Property 'mapperLocations' was not specified.
+Initialization Sequence datacenterId:19 workerId:5
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.3.2 
+2026-10-20 13:45:01.569  INFO 62092 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='order-sync-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SUBSYSTEM_SYNC', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='order-center', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-20 13:45:01.571  INFO 62092 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:subsystemSyncConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
+2026-10-20 13:45:02.376  INFO 62092 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7197b07f, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1f10fec6, org.springframework.security.web.context.SecurityContextPersistenceFilter@69aabcb0, org.springframework.security.web.header.HeaderWriterFilter@3b9ac754, org.springframework.web.filter.CorsFilter@7a65a360, org.springframework.security.web.authentication.logout.LogoutFilter@617449dd, com.example.order.security.OAuth2TokenAuthenticationFilter@6614bd4b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@629e8212, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@16ee9aa7, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@30a7653e, org.springframework.security.web.session.SessionManagementFilter@4525e9e8, org.springframework.security.web.access.ExceptionTranslationFilter@22d8f4ed, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@53eba4b8]
+2026-10-20 13:45:03.859  INFO 62092 --- [           main] o.a.r.s.a.RocketMQAutoConfiguration      : a producer (order-backend-producer) init on namesrv localhost:9876
+2026-10-20 13:45:05.013  INFO 62092 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7073 (http) with context path ''
+2026-10-20 13:45:05.027  INFO 62092 --- [           main] com.example.order.OrderApplication       : Started OrderApplication in 11.223 seconds (JVM running for 11.659)
+2026-10-20 13:45:06.228  INFO 62092 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-20 13:45:06.408  INFO 62092 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+JDBC Connection [HikariProxyConnection@1877906341 wrapping com.mysql.cj.jdbc.ConnectionImpl@59f15a6a] will be managed by Spring
+==>  Preparing: DELETE FROM order_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: DELETE FROM order_role_menu
+==> Parameters: 
+<==    Updates: 2
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: DELETE FROM order_menu
+==> Parameters: 
+<==    Updates: 7
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: DELETE FROM order_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), 0(Long), 订单管理(String), 1(Integer), /order(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 订单列表(String), 2(Integer), order:order:list(String), list(String), order/list/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 1(Long), 订单统计(String), 2(Integer), order:stat:list(String), stat(String), order/stat/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 201(Long), 2(Long), 订单查询(String), 3(Integer), order:order:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 202(Long), 2(Long), 订单新增(String), 3(Integer), order:order:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 203(Long), 2(Long), 订单修改(String), 3(Integer), order:order:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 204(Long), 2(Long), 订单删除(String), 3(Integer), order:order:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 3(Long), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849] from current transaction
+==>  Preparing: INSERT INTO order_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-20T13:45:06.419(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+2026-10-20 13:45:06.846  INFO 62092 --- [sync-consumer_1] c.e.order.service.OrderSyncService       : 已重建子系统同步数据: subsystemCode=order-center, menus=7, roleMenus=2, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8ebc849]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+JDBC Connection [HikariProxyConnection@1452439610 wrapping com.mysql.cj.jdbc.ConnectionImpl@1390ec8c] will be managed by Spring
+==>  Preparing: DELETE FROM order_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: DELETE FROM order_role_menu
+==> Parameters: 
+<==    Updates: 2
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: DELETE FROM order_menu
+==> Parameters: 
+<==    Updates: 7
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: DELETE FROM order_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), 0(Long), 订单管理(String), 1(Integer), /order(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 订单列表(String), 2(Integer), order:order:list(String), list(String), order/list/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 1(Long), 订单统计(String), 2(Integer), order:stat:list(String), stat(String), order/stat/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 201(Long), 2(Long), 订单查询(String), 3(Integer), order:order:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 202(Long), 2(Long), 订单新增(String), 3(Integer), order:order:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 203(Long), 2(Long), 订单修改(String), 3(Integer), order:order:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 204(Long), 2(Long), 订单删除(String), 3(Integer), order:order:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 3(Long), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a] from current transaction
+==>  Preparing: INSERT INTO order_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-20T14:57:44.587(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+2026-10-20 14:57:44.659  INFO 62092 --- [sync-consumer_2] c.e.order.service.OrderSyncService       : 已重建子系统同步数据: subsystemCode=order-center, menus=7, roleMenus=2, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c6a134a]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+JDBC Connection [HikariProxyConnection@307546499 wrapping com.mysql.cj.jdbc.ConnectionImpl@1390ec8c] will be managed by Spring
+==>  Preparing: DELETE FROM order_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: DELETE FROM order_role_menu
+==> Parameters: 
+<==    Updates: 2
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: DELETE FROM order_menu
+==> Parameters: 
+<==    Updates: 7
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: DELETE FROM order_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), 0(Long), 订单管理(String), 1(Integer), /order(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 订单列表(String), 2(Integer), order:order:list(String), list(String), order/list/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 1(Long), 订单统计(String), 2(Integer), order:stat:list(String), stat(String), order/stat/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 201(Long), 2(Long), 订单查询(String), 3(Integer), order:order:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 202(Long), 2(Long), 订单新增(String), 3(Integer), order:order:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 203(Long), 2(Long), 订单修改(String), 3(Integer), order:order:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 204(Long), 2(Long), 订单删除(String), 3(Integer), order:order:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 3(Long), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa] from current transaction
+==>  Preparing: INSERT INTO order_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-20T15:07:42.724(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+2026-10-20 15:07:42.784  INFO 62092 --- [sync-consumer_3] c.e.order.service.OrderSyncService       : 已重建子系统同步数据: subsystemCode=order-center, menus=7, roleMenus=2, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190925aa]
+2026-10-20 15:10:59.800  INFO 62092 --- [nio-7073-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-20 15:10:59.801  INFO 62092 --- [nio-7073-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-20 15:10:59.819  INFO 62092 --- [nio-7073-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 18 ms
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+JDBC Connection [HikariProxyConnection@359745448 wrapping com.mysql.cj.jdbc.ConnectionImpl@5073cb62] will be managed by Spring
+==>  Preparing: DELETE FROM order_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: DELETE FROM order_role_menu
+==> Parameters: 
+<==    Updates: 2
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: DELETE FROM order_menu
+==> Parameters: 
+<==    Updates: 7
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: DELETE FROM order_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), 0(Long), 订单管理(String), 1(Integer), /order(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 订单列表(String), 2(Integer), order:order:list(String), list(String), order/list/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 1(Long), 订单统计(String), 2(Integer), order:stat:list(String), stat(String), order/stat/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 201(Long), 2(Long), 订单查询(String), 3(Integer), order:order:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 202(Long), 2(Long), 订单新增(String), 3(Integer), order:order:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 203(Long), 2(Long), 订单修改(String), 3(Integer), order:order:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 204(Long), 2(Long), 订单删除(String), 3(Integer), order:order:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 3(Long), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8] from current transaction
+==>  Preparing: INSERT INTO order_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-20T15:18:46.752(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+2026-10-20 15:18:46.805  INFO 62092 --- [sync-consumer_4] c.e.order.service.OrderSyncService       : 已重建子系统同步数据: subsystemCode=order-center, menus=7, roleMenus=2, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f892cd8]
+2026-10-20 16:17:14.620  WARN 62092 --- [nio-7073-exec-6] c.e.order.common.GlobalExceptionHandler  : 业务异常: 登录状态已失效或已被使用，请重新发起登录
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7619ef16] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2026055542 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-20 15:18:47
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7619ef16]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7f57c31] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@154309311 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-20 15:18:47
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7f57c31]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4eb9457f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1970324472 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4eb9457f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@556b083d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1538059488 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-20 15:18:47
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@556b083d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7dfb6dd1] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1016968643 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM order_info WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 6
+<==      Total: 1
+==>  Preparing: SELECT id,order_no,customer_name,order_amount,status,order_time,remark,del_flag,create_time,update_time FROM order_info WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, order_no, customer_name, order_amount, status, order_time, remark, del_flag, create_time, update_time
+<==        Row: 6, ORD20261015006, 李四, 780.00, 4, 2026-10-15 11:02:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 5, ORD20261014005, 赵六, 15.90, 5, 2026-10-14 20:21:00, 用户主动取消, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 4, ORD20261013004, 张三, 2560.00, 3, 2026-10-13 16:48:00, 已出库, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 3, ORD20261012003, 王五, 88.00, 1, 2026-10-12 09:05:00, 用户尚未付款, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 2, ORD20261011002, 李四, 199.50, 2, 2026-10-11 14:30:00, 等待发货, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 1, ORD20261010001, 张三, 1299.00, 4, 2026-10-10 10:12:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==      Total: 6
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7dfb6dd1]
+2026-10-20 16:19:24.838  WARN 62092 --- [nio-7073-exec-9] c.e.order.security.OAuth2TokenClient     : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或刷新令牌已失效，请重新登录, status=400
+2026-10-20 16:19:24.839  WARN 62092 --- [nio-7073-exec-9] c.e.order.common.GlobalExceptionHandler  : 业务异常: 刷新凭证无效，请重新登录
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1ebe2e6] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@823243151 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-20 15:18:47
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1ebe2e6]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@60769fdb] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1646662414 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-20 15:18:47
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@60769fdb]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3310ff6d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1741432467 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3310ff6d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@10ec7b10] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2083159879 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-20 15:18:47
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@10ec7b10]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4c229f18] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@270195083 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM order_info WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 6
+<==      Total: 1
+==>  Preparing: SELECT id,order_no,customer_name,order_amount,status,order_time,remark,del_flag,create_time,update_time FROM order_info WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, order_no, customer_name, order_amount, status, order_time, remark, del_flag, create_time, update_time
+<==        Row: 6, ORD20261015006, 李四, 780.00, 4, 2026-10-15 11:02:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 5, ORD20261014005, 赵六, 15.90, 5, 2026-10-14 20:21:00, 用户主动取消, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 4, ORD20261013004, 张三, 2560.00, 3, 2026-10-13 16:48:00, 已出库, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 3, ORD20261012003, 王五, 88.00, 1, 2026-10-12 09:05:00, 用户尚未付款, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 2, ORD20261011002, 李四, 199.50, 2, 2026-10-11 14:30:00, 等待发货, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 1, ORD20261010001, 张三, 1299.00, 4, 2026-10-10 10:12:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==      Total: 6
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4c229f18]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+JDBC Connection [HikariProxyConnection@1495538045 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will be managed by Spring
+==>  Preparing: DELETE FROM order_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: DELETE FROM order_role_menu
+==> Parameters: 
+<==    Updates: 2
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: DELETE FROM order_menu
+==> Parameters: 
+<==    Updates: 7
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: DELETE FROM order_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), 0(Long), 订单管理(String), 1(Integer), /order(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 订单列表(String), 2(Integer), order:order:list(String), list(String), order/list/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 1(Long), 订单统计(String), 2(Integer), order:stat:list(String), stat(String), order/stat/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 201(Long), 2(Long), 订单查询(String), 3(Integer), order:order:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 202(Long), 2(Long), 订单新增(String), 3(Integer), order:order:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 203(Long), 2(Long), 订单修改(String), 3(Integer), order:order:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 204(Long), 2(Long), 订单删除(String), 3(Integer), order:order:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 3(Long), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d] from current transaction
+==>  Preparing: INSERT INTO order_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-20T16:28:12.388(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+2026-10-20 16:28:12.440  INFO 62092 --- [sync-consumer_5] c.e.order.service.OrderSyncService       : 已重建子系统同步数据: subsystemCode=order-center, menus=7, roleMenus=2, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@53dc720d]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+JDBC Connection [HikariProxyConnection@1028235139 wrapping com.mysql.cj.jdbc.ConnectionImpl@1aec0e22] will be managed by Spring
+==>  Preparing: DELETE FROM order_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: DELETE FROM order_role_menu
+==> Parameters: 
+<==    Updates: 2
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: DELETE FROM order_menu
+==> Parameters: 
+<==    Updates: 7
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: DELETE FROM order_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), 0(Long), 订单管理(String), 1(Integer), /order(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 订单列表(String), 2(Integer), order:order:list(String), list(String), order/list/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 1(Long), 订单统计(String), 2(Integer), order:stat:list(String), stat(String), order/stat/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 201(Long), 2(Long), 订单查询(String), 3(Integer), order:order:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 202(Long), 2(Long), 订单新增(String), 3(Integer), order:order:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 203(Long), 2(Long), 订单修改(String), 3(Integer), order:order:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 204(Long), 2(Long), 订单删除(String), 3(Integer), order:order:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 3(Long), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c] from current transaction
+==>  Preparing: INSERT INTO order_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-20T16:33:18.734(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+2026-10-20 16:33:18.778  INFO 62092 --- [sync-consumer_6] c.e.order.service.OrderSyncService       : 已重建子系统同步数据: subsystemCode=order-center, menus=7, roleMenus=2, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197be48c]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  02:55 h
+[INFO] Finished at: 2026-10-20T16:40:00+08:00
+[INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "global-plugins" could not be activated because it does not exist.
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:2.7.18:run (default-cli) on project order-backend: Application finished with exit code: 1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

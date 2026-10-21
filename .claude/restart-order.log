@@ -1,0 +1,170 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< com.example:order-backend >----------------------
+[INFO] Building order-backend 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.7.18:run (default-cli) > test-compile @ order-backend >>>
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ order-backend ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ order-backend ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 62 source files to D:\programs\ai\coding\springsecurity-RBAC\order-backend\target\classes
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/order-backend/src/main/java/com/example/order/security/OAuth2TokenClient.java: D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\OAuth2TokenClient.java使用了未经检查或不安全的操作。
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/order-backend/src/main/java/com/example/order/security/OAuth2TokenClient.java: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ order-backend ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ order-backend ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.7.18:run (default-cli) < test-compile @ order-backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.7.18:run (default-cli) @ order-backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.7.18)
+
+2026-10-21 14:38:05.747  INFO 40184 --- [           main] com.example.order.OrderApplication       : Starting OrderApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 40184 (D:\programs\ai\coding\springsecurity-RBAC\order-backend\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\order-backend)
+2026-10-21 14:38:05.755  INFO 40184 --- [           main] com.example.order.OrderApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-10-21 14:38:06.777  INFO 40184 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-21 14:38:06.779  INFO 40184 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-10-21 14:38:06.807  INFO 40184 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 14 ms. Found 0 Redis repository interfaces.
+2026-10-21 14:38:07.310  INFO 40184 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$a26a38ae] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 14:38:07.373  INFO 40184 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 14:38:07.416  INFO 40184 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 14:38:07.418  INFO 40184 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$f9a42f4a] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 14:38:07.964  INFO 40184 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7073 (http)
+2026-10-21 14:38:07.976  INFO 40184 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-21 14:38:07.977  INFO 40184 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-10-21 14:38:08.352  INFO 40184 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-21 14:38:08.352  INFO 40184 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2500 ms
+2026-10-21 14:38:09.642  INFO 40184 --- [           main] c.e.order.security.JwtTokenVerifier      : 已加载授权服务令牌公钥: http://localhost:7071/oauth/token_key
+Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
+Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@4e224df5'
+Property 'mapperLocations' was not specified.
+Initialization Sequence datacenterId:19 workerId:9
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.3.2 
+2026-10-21 14:38:11.887  INFO 40184 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='order-session-revoke-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SESSION_REVOKE', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-21 14:38:11.887  INFO 40184 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:sessionRevokeConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
+2026-10-21 14:38:12.747  INFO 40184 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='order-sync-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SUBSYSTEM_SYNC', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='order-center', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-21 14:38:12.747  INFO 40184 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:subsystemSyncConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_2
+2026-10-21 14:38:12.888  INFO 40184 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@33d7765a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@69ed5ea2, org.springframework.security.web.context.SecurityContextPersistenceFilter@51ff3c4b, org.springframework.security.web.header.HeaderWriterFilter@b5ac0c1, org.springframework.web.filter.CorsFilter@56a4abd0, org.springframework.security.web.authentication.logout.LogoutFilter@14b528b6, com.example.order.security.OAuth2TokenAuthenticationFilter@1235151c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@57bd6a8f, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@517704, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5eed6dfb, org.springframework.security.web.session.SessionManagementFilter@2afdf6b7, org.springframework.security.web.access.ExceptionTranslationFilter@2e56b4d, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@361cd35c]
+2026-10-21 14:38:13.463  INFO 40184 --- [           main] o.a.r.s.a.RocketMQAutoConfiguration      : a producer (order-backend-producer) init on namesrv localhost:9876
+2026-10-21 14:38:14.199  INFO 40184 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7073 (http) with context path ''
+2026-10-21 14:38:14.211  INFO 40184 --- [           main] com.example.order.OrderApplication       : Started OrderApplication in 9.242 seconds (JVM running for 10.249)
+2026-10-21 14:38:18.624  INFO 40184 --- [nio-7073-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-21 14:38:18.624  INFO 40184 --- [nio-7073-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-21 14:38:18.626  INFO 40184 --- [nio-7073-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-10-21 14:38:19.099  INFO 40184 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-21 14:38:19.350  INFO 40184 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+JDBC Connection [HikariProxyConnection@2112731066 wrapping com.mysql.cj.jdbc.ConnectionImpl@4b60df7f] will be managed by Spring
+==>  Preparing: DELETE FROM order_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: DELETE FROM order_role_menu
+==> Parameters: 
+<==    Updates: 2
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: DELETE FROM order_menu
+==> Parameters: 
+<==    Updates: 7
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: DELETE FROM order_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), 0(Long), 订单管理(String), 1(Integer), /order(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 订单列表(String), 2(Integer), order:order:list(String), list(String), order/list/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 1(Long), 订单统计(String), 2(Integer), order:stat:list(String), stat(String), order/stat/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 201(Long), 2(Long), 订单查询(String), 3(Integer), order:order:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 202(Long), 2(Long), 订单新增(String), 3(Integer), order:order:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 203(Long), 2(Long), 订单修改(String), 3(Integer), order:order:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 204(Long), 2(Long), 订单删除(String), 3(Integer), order:order:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 3(Long), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad] from current transaction
+==>  Preparing: INSERT INTO order_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-21T14:38:19.361(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+2026-10-21 14:38:19.506  INFO 40184 --- [sync-consumer_1] c.e.order.service.OrderSyncService       : 已重建子系统同步数据: subsystemCode=order-center, menus=7, roleMenus=2, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70ecc3ad]

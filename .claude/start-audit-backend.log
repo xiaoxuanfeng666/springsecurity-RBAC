@@ -1,0 +1,471 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< com.example:audit-backend >----------------------
+[INFO] Building audit-backend 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.7.18:run (default-cli) > test-compile @ audit-backend >>>
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ audit-backend ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ audit-backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ audit-backend ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ audit-backend ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.7.18:run (default-cli) < test-compile @ audit-backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.7.18:run (default-cli) @ audit-backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.7.18)
+
+2026-10-19 22:31:47.995  INFO 54872 --- [           main] com.example.audit.AuditApplication       : Starting AuditApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 54872 (D:\programs\ai\coding\springsecurity-RBAC\audit-backend\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\audit-backend)
+2026-10-19 22:31:48.002  INFO 54872 --- [           main] com.example.audit.AuditApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-10-19 22:31:49.937  INFO 54872 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$ba6ceb93] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:50.041  INFO 54872 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:50.084  INFO 54872 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:50.086  INFO 54872 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$11a6e22f] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:51.072  INFO 54872 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7074 (http)
+2026-10-19 22:31:51.096  INFO 54872 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-19 22:31:51.097  INFO 54872 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-10-19 22:31:51.413  INFO 54872 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-19 22:31:51.413  INFO 54872 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3310 ms
+Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
+Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@67594471'
+Property 'mapperLocations' was not specified.
+Initialization Sequence datacenterId:19 workerId:12
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.3.2 
+2026-10-19 22:31:55.354  INFO 54872 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='audit-log-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_AUDIT_LOG', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-19 22:31:55.356  INFO 54872 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:auditLogConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
+2026-10-19 22:31:56.554  INFO 54872 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='audit-sync-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SUBSYSTEM_SYNC', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='audit', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-19 22:31:56.554  INFO 54872 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:subsystemSyncConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_2
+2026-10-19 22:31:56.738  INFO 54872 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@69afa141, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@49f40c00, org.springframework.security.web.context.SecurityContextPersistenceFilter@14998e21, org.springframework.security.web.header.HeaderWriterFilter@4779aae6, org.springframework.web.filter.CorsFilter@643d2dae, org.springframework.security.web.authentication.logout.LogoutFilter@4fd05028, com.example.audit.security.OAuth2TokenAuthenticationFilter@7e2c64, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@43c87306, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4c447c09, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@52d6d273, org.springframework.security.web.session.SessionManagementFilter@6de6faa6, org.springframework.security.web.access.ExceptionTranslationFilter@6015a4a5, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@17092fff]
+2026-10-19 22:31:57.255  INFO 54872 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7074 (http) with context path ''
+2026-10-19 22:31:57.287  INFO 54872 --- [           main] com.example.audit.AuditApplication       : Started AuditApplication in 10.064 seconds (JVM running for 11.131)
+2026-10-19 22:32:00.003  INFO 54872 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-19 22:32:00.426  INFO 54872 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+JDBC Connection [HikariProxyConnection@1823356393 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will be managed by Spring
+==>  Preparing: DELETE FROM audit_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: DELETE FROM audit_role_menu
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: DELETE FROM audit_menu
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: DELETE FROM audit_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: INSERT INTO audit_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 300(Long), 0(Long), 审计日志(String), 1(Integer), /audit(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:00.444(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: INSERT INTO audit_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 301(Long), 300(Long), 操作日志(String), 2(Integer), audit:log:list(String), log(String), audit/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:00.444(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: INSERT INTO audit_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 302(Long), 301(Long), 日志查询(String), 3(Integer), audit:log:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:00.444(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: INSERT INTO audit_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 300(Long), 2026-10-19T22:32:00.444(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: INSERT INTO audit_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 301(Long), 2026-10-19T22:32:00.444(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: INSERT INTO audit_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 302(Long), 2026-10-19T22:32:00.444(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: INSERT INTO audit_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-19T22:32:00.444(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: INSERT INTO audit_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-19T22:32:00.444(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: INSERT INTO audit_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-19T22:32:00.444(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568] from current transaction
+==>  Preparing: INSERT INTO audit_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-19T22:32:00.444(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+2026-10-19 22:32:00.972  INFO 54872 --- [sync-consumer_1] c.e.audit.service.AuditSyncService       : 已重建子系统同步数据: subsystemCode=audit, menus=3, roleMenus=3, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79f66568]
+2026-10-19 22:35:36.498  INFO 54872 --- [nio-7074-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-19 22:35:36.498  INFO 54872 --- [nio-7074-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-19 22:35:36.499  INFO 54872 --- [nio-7074-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ea37138] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1728324550 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ea37138]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25ded8d0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@791065504 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@25ded8d0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7e40167c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1820854650 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM audit_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 300, 0, 审计日志, 1, null, /audit, Layout, Document, 1, 1, 1
+<==        Row: 301, 300, 操作日志, 2, audit:log:list, log, audit/index, List, 1, 1, 1
+<==      Total: 2
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7e40167c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@35e95137] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@992913914 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@35e95137]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@68aa2049] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@645557608 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM audit_log
+==> Parameters: 
+<==    Columns: total
+<==        Row: 131
+<==      Total: 1
+==>  Preparing: SELECT id,source,module,action,description,operator_id,operator_name,http_method,request_uri,request_params,success,error_msg,duration_ms,ip,create_time FROM audit_log ORDER BY create_time DESC,id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, source, module, action, description, operator_id, operator_name, http_method, request_uri, request_params, success, error_msg, duration_ms, ip, create_time
+<==        Row: 132, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/40, <<BLOB>>, 1, null, 21, 0:0:0:0:0:0:0:1, 2026-10-18 14:42:52
+<==        Row: 131, rbac, 用户管理, UPDATE, 修改用户, 1, admin, PUT, /user, <<BLOB>>, 1, null, 110, 0:0:0:0:0:0:0:1, 2026-10-18 14:40:55
+<==        Row: 130, rbac, 用户管理, CREATE, 新增用户, 1, admin, POST, /user, <<BLOB>>, 1, null, 107, 0:0:0:0:0:0:0:1, 2026-10-18 14:40:55
+<==        Row: 129, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/39, <<BLOB>>, 1, null, 40, 0:0:0:0:0:0:0:1, 2026-10-18 14:40:55
+<==        Row: 128, rbac, 用户管理, UPDATE, 修改用户, 1, admin, PUT, /user, <<BLOB>>, 1, null, 152, 0:0:0:0:0:0:0:1, 2026-10-18 14:33:02
+<==        Row: 127, rbac, 用户管理, CREATE, 新增用户, 1, admin, POST, /user, <<BLOB>>, 1, null, 137, 0:0:0:0:0:0:0:1, 2026-10-18 14:33:02
+<==        Row: 126, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/38, <<BLOB>>, 1, null, 71, 0:0:0:0:0:0:0:1, 2026-10-18 14:33:02
+<==        Row: 125, rbac, 用户管理, UPDATE, 修改用户, 1, admin, PUT, /user, <<BLOB>>, 1, null, 90, 0:0:0:0:0:0:0:1, 2026-10-18 14:24:49
+<==        Row: 124, rbac, 用户管理, CREATE, 新增用户, 1, admin, POST, /user, <<BLOB>>, 1, null, 85, 0:0:0:0:0:0:0:1, 2026-10-18 14:24:48
+<==        Row: 123, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/37, <<BLOB>>, 1, null, 36, 0:0:0:0:0:0:0:1, 2026-10-18 14:24:48
+<==      Total: 10
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@68aa2049]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1feb9f89] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@288125444 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1feb9f89]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5011783f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@331723363 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM audit_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 300, 0, 审计日志, 1, null, /audit, Layout, Document, 1, 1, 1
+<==        Row: 301, 300, 操作日志, 2, audit:log:list, log, audit/index, List, 1, 1, 1
+<==      Total: 2
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5011783f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2da5160f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@593685963 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2da5160f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@625fe7f0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1733263578 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM audit_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 300, 0, 审计日志, 1, null, /audit, Layout, Document, 1, 1, 1
+<==        Row: 301, 300, 操作日志, 2, audit:log:list, log, audit/index, List, 1, 1, 1
+<==      Total: 2
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@625fe7f0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2bed7f6] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@209271249 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2bed7f6]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@39315cd3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2084789653 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM audit_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 300, 0, 审计日志, 1, null, /audit, Layout, Document, 1, 1, 1
+<==        Row: 301, 300, 操作日志, 2, audit:log:list, log, audit/index, List, 1, 1, 1
+<==      Total: 2
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@39315cd3]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@77782717] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2042611592 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@77782717]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3882cdb3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@166727930 wrapping com.mysql.cj.jdbc.ConnectionImpl@7f9644c5] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM audit_log
+==> Parameters: 
+<==    Columns: total
+<==        Row: 131
+<==      Total: 1
+==>  Preparing: SELECT id,source,module,action,description,operator_id,operator_name,http_method,request_uri,request_params,success,error_msg,duration_ms,ip,create_time FROM audit_log ORDER BY create_time DESC,id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, source, module, action, description, operator_id, operator_name, http_method, request_uri, request_params, success, error_msg, duration_ms, ip, create_time
+<==        Row: 132, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/40, <<BLOB>>, 1, null, 21, 0:0:0:0:0:0:0:1, 2026-10-18 14:42:52
+<==        Row: 131, rbac, 用户管理, UPDATE, 修改用户, 1, admin, PUT, /user, <<BLOB>>, 1, null, 110, 0:0:0:0:0:0:0:1, 2026-10-18 14:40:55
+<==        Row: 130, rbac, 用户管理, CREATE, 新增用户, 1, admin, POST, /user, <<BLOB>>, 1, null, 107, 0:0:0:0:0:0:0:1, 2026-10-18 14:40:55
+<==        Row: 129, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/39, <<BLOB>>, 1, null, 40, 0:0:0:0:0:0:0:1, 2026-10-18 14:40:55
+<==        Row: 128, rbac, 用户管理, UPDATE, 修改用户, 1, admin, PUT, /user, <<BLOB>>, 1, null, 152, 0:0:0:0:0:0:0:1, 2026-10-18 14:33:02
+<==        Row: 127, rbac, 用户管理, CREATE, 新增用户, 1, admin, POST, /user, <<BLOB>>, 1, null, 137, 0:0:0:0:0:0:0:1, 2026-10-18 14:33:02
+<==        Row: 126, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/38, <<BLOB>>, 1, null, 71, 0:0:0:0:0:0:0:1, 2026-10-18 14:33:02
+<==        Row: 125, rbac, 用户管理, UPDATE, 修改用户, 1, admin, PUT, /user, <<BLOB>>, 1, null, 90, 0:0:0:0:0:0:0:1, 2026-10-18 14:24:49
+<==        Row: 124, rbac, 用户管理, CREATE, 新增用户, 1, admin, POST, /user, <<BLOB>>, 1, null, 85, 0:0:0:0:0:0:0:1, 2026-10-18 14:24:48
+<==        Row: 123, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/37, <<BLOB>>, 1, null, 36, 0:0:0:0:0:0:0:1, 2026-10-18 14:24:48
+<==      Total: 10
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3882cdb3]
+2026-10-19 22:50:09.900  WARN 54872 --- [nio-7074-exec-1] c.e.audit.security.OAuth2TokenClient     : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-19 22:50:09.902  WARN 54872 --- [nio-7074-exec-1] c.e.audit.common.GlobalExceptionHandler  : 业务异常: 刷新凭证无效，请重新登录
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6ac17e2c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1847490074 wrapping com.mysql.cj.jdbc.ConnectionImpl@5a887f62] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6ac17e2c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@73e5d53d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1956526837 wrapping com.mysql.cj.jdbc.ConnectionImpl@5a887f62] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@73e5d53d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@71ce20a7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1070153216 wrapping com.mysql.cj.jdbc.ConnectionImpl@5a887f62] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM audit_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 300, 0, 审计日志, 1, null, /audit, Layout, Document, 1, 1, 1
+<==        Row: 301, 300, 操作日志, 2, audit:log:list, log, audit/index, List, 1, 1, 1
+<==      Total: 2
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@71ce20a7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79c3c6ae] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1202819330 wrapping com.mysql.cj.jdbc.ConnectionImpl@5a887f62] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@79c3c6ae]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5ea45c46] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1917298735 wrapping com.mysql.cj.jdbc.ConnectionImpl@5a887f62] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM audit_log
+==> Parameters: 
+<==    Columns: total
+<==        Row: 131
+<==      Total: 1
+==>  Preparing: SELECT id,source,module,action,description,operator_id,operator_name,http_method,request_uri,request_params,success,error_msg,duration_ms,ip,create_time FROM audit_log ORDER BY create_time DESC,id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, source, module, action, description, operator_id, operator_name, http_method, request_uri, request_params, success, error_msg, duration_ms, ip, create_time
+<==        Row: 132, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/40, <<BLOB>>, 1, null, 21, 0:0:0:0:0:0:0:1, 2026-10-18 14:42:52
+<==        Row: 131, rbac, 用户管理, UPDATE, 修改用户, 1, admin, PUT, /user, <<BLOB>>, 1, null, 110, 0:0:0:0:0:0:0:1, 2026-10-18 14:40:55
+<==        Row: 130, rbac, 用户管理, CREATE, 新增用户, 1, admin, POST, /user, <<BLOB>>, 1, null, 107, 0:0:0:0:0:0:0:1, 2026-10-18 14:40:55
+<==        Row: 129, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/39, <<BLOB>>, 1, null, 40, 0:0:0:0:0:0:0:1, 2026-10-18 14:40:55
+<==        Row: 128, rbac, 用户管理, UPDATE, 修改用户, 1, admin, PUT, /user, <<BLOB>>, 1, null, 152, 0:0:0:0:0:0:0:1, 2026-10-18 14:33:02
+<==        Row: 127, rbac, 用户管理, CREATE, 新增用户, 1, admin, POST, /user, <<BLOB>>, 1, null, 137, 0:0:0:0:0:0:0:1, 2026-10-18 14:33:02
+<==        Row: 126, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/38, <<BLOB>>, 1, null, 71, 0:0:0:0:0:0:0:1, 2026-10-18 14:33:02
+<==        Row: 125, rbac, 用户管理, UPDATE, 修改用户, 1, admin, PUT, /user, <<BLOB>>, 1, null, 90, 0:0:0:0:0:0:0:1, 2026-10-18 14:24:49
+<==        Row: 124, rbac, 用户管理, CREATE, 新增用户, 1, admin, POST, /user, <<BLOB>>, 1, null, 85, 0:0:0:0:0:0:0:1, 2026-10-18 14:24:48
+<==        Row: 123, rbac, 用户管理, DELETE, 删除用户, 1, admin, DELETE, /user/37, <<BLOB>>, 1, null, 36, 0:0:0:0:0:0:0:1, 2026-10-18 14:24:48
+<==      Total: 10
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5ea45c46]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6b35daa9] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@809404272 wrapping com.mysql.cj.jdbc.ConnectionImpl@5a887f62] will not be managed by Spring
+==>  Preparing: SELECT * FROM audit_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:00
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6b35daa9]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3514330f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1882281878 wrapping com.mysql.cj.jdbc.ConnectionImpl@5a887f62] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM audit_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 300, 0, 审计日志, 1, null, /audit, Layout, Document, 1, 1, 1
+<==        Row: 301, 300, 操作日志, 2, audit:log:list, log, audit/index, List, 1, 1, 1
+<==      Total: 2
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3514330f]
+2026-10-19 23:41:57.984  WARN 54872 --- [nio-7074-exec-8] c.e.audit.security.OAuth2TokenClient     : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-19 23:41:57.984  WARN 54872 --- [nio-7074-exec-8] c.e.audit.common.GlobalExceptionHandler  : 业务异常: 刷新凭证无效，请重新登录
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+JDBC Connection [HikariProxyConnection@1697366682 wrapping com.mysql.cj.jdbc.ConnectionImpl@2029505b] will be managed by Spring
+==>  Preparing: DELETE FROM audit_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: DELETE FROM audit_role_menu
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: DELETE FROM audit_menu
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: DELETE FROM audit_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: INSERT INTO audit_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 300(Long), 0(Long), 审计日志(String), 1(Integer), /audit(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.709(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: INSERT INTO audit_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 301(Long), 300(Long), 操作日志(String), 2(Integer), audit:log:list(String), log(String), audit/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.709(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: INSERT INTO audit_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 302(Long), 301(Long), 日志查询(String), 3(Integer), audit:log:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.709(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: INSERT INTO audit_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 300(Long), 2026-10-20T00:53:03.709(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: INSERT INTO audit_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 301(Long), 2026-10-20T00:53:03.709(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: INSERT INTO audit_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 302(Long), 2026-10-20T00:53:03.709(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: INSERT INTO audit_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-20T00:53:03.709(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: INSERT INTO audit_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-20T00:53:03.709(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: INSERT INTO audit_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-20T00:53:03.709(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea] from current transaction
+==>  Preparing: INSERT INTO audit_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-20T00:53:03.709(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+2026-10-20 00:53:03.754  INFO 54872 --- [sync-consumer_2] c.e.audit.service.AuditSyncService       : 已重建子系统同步数据: subsystemCode=audit, menus=3, roleMenus=3, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6fd3a9ea]
+2026-10-20 03:24:14.953  WARN 54872 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h20m41s817ms771?s500ns).
+2026-10-20 09:08:31.895  WARN 54872 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5h44m16s942ms76?s900ns).
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11:15 h
+[INFO] Finished at: 2026-10-20T09:47:34+08:00
+[INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "global-plugins" could not be activated because it does not exist.
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:2.7.18:run (default-cli) on project audit-backend: Application finished with exit code: -1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

@@ -1,0 +1,1242 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.example:rbac-oauth >-----------------------
+[INFO] Building rbac-oauth 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.7.18:run (default-cli) > test-compile @ rbac-oauth >>>
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ rbac-oauth ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ rbac-oauth ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 80 source files to D:\programs\ai\coding\springsecurity-RBAC\rbac-oauth\target\classes
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/rbac-oauth/src/main/java/com/example/oauth/config/OAuth2ApprovalConfig.java: 某些输入文件使用或覆盖了已过时的 API。
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/rbac-oauth/src/main/java/com/example/oauth/config/OAuth2ApprovalConfig.java: 有关详细信息, 请使用 -Xlint:deprecation 重新编译。
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/rbac-oauth/src/main/java/com/example/oauth/oauth/OAuth2TestCallbackController.java: D:\programs\ai\coding\springsecurity-RBAC\rbac-oauth\src\main\java\com\example\oauth\oauth\OAuth2TestCallbackController.java使用了未经检查或不安全的操作。
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/rbac-oauth/src/main/java/com/example/oauth/oauth/OAuth2TestCallbackController.java: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ rbac-oauth ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory D:\programs\ai\coding\springsecurity-RBAC\rbac-oauth\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ rbac-oauth ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.7.18:run (default-cli) < test-compile @ rbac-oauth <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.7.18:run (default-cli) @ rbac-oauth ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.7.18)
+
+2026-10-20 00:52:59.879  INFO 51856 --- [           main] com.example.oauth.OauthApplication       : Starting OauthApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 51856 (D:\programs\ai\coding\springsecurity-RBAC\rbac-oauth\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\rbac-oauth)
+2026-10-20 00:52:59.882 DEBUG 51856 --- [           main] com.example.oauth.OauthApplication       : Running with Spring Boot v2.7.18, Spring v5.3.31
+2026-10-20 00:52:59.883  INFO 51856 --- [           main] com.example.oauth.OauthApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-10-20 00:53:00.646  INFO 51856 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-20 00:53:00.649  INFO 51856 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-10-20 00:53:00.672  INFO 51856 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 12 ms. Found 0 Redis repository interfaces.
+2026-10-20 00:53:00.965  INFO 51856 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$c48987ff] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-20 00:53:01.011  INFO 51856 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-20 00:53:01.030  INFO 51856 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-20 00:53:01.030  INFO 51856 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$1bc37e9b] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-20 00:53:01.415  INFO 51856 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7071 (http)
+2026-10-20 00:53:01.423  INFO 51856 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-20 00:53:01.424  INFO 51856 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-10-20 00:53:01.566  INFO 51856 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-20 00:53:01.567  INFO 51856 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1642 ms
+2026-10-20 00:53:02.139 DEBUG 51856 --- [           main] c.e.oauth.oauth.OauthAuthCookieFilter    : Filter 'oauthAuthCookieFilter' configured for use
+2026-10-20 00:53:02.140 DEBUG 51856 --- [           main] c.e.o.o.OpenApiTokenAuthenticationFilter : Filter 'openApiTokenAuthenticationFilter' configured for use
+Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
+Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@303c55fa'
+Property 'mapperLocations' was not specified.
+Initialization Sequence datacenterId:19 workerId:21
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.3.2 
+2026-10-20 00:53:02.652  INFO 51856 --- [           main] c.e.oauth.config.OAuth2ApprovalConfig    : OAuth2 授权确认页已指向自定义页面: http://localhost:5174/approve
+2026-10-20 00:53:03.775  INFO 51856 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='rbac-oauth-session-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_OAUTH_SESSION', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-20 00:53:03.775  INFO 51856 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:ssoKickConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
+2026-10-20 00:53:03.901  INFO 51856 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Or [Ant [pattern='/oauth/authorize'], Ant [pattern='/oauth/confirm_access'], Ant [pattern='/oauth/error'], Ant [pattern='/oauth/login']] with [org.springframework.security.web.session.DisableEncodeUrlFilter@37c5284a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5b8572df, org.springframework.security.web.context.SecurityContextPersistenceFilter@60e1d87c, org.springframework.security.web.header.HeaderWriterFilter@c2df90e, org.springframework.security.web.authentication.logout.LogoutFilter@8fd91d1, com.example.oauth.oauth.AuthorizeClientSecretFilter@7aaad0, com.example.oauth.oauth.OauthAuthCookieFilter@4bd5849e, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@1f4f0fcc, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@87d9a01, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@10177794, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@eed890d, org.springframework.security.web.session.SessionManagementFilter@5f9f3e58, org.springframework.security.web.access.ExceptionTranslationFilter@3380ca3d, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5927f904]
+2026-10-20 00:53:03.977  INFO 51856 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Or [Ant [pattern='/oauth/token'], Ant [pattern='/oauth/token_key'], Ant [pattern='/oauth/check_token']] with [org.springframework.security.web.session.DisableEncodeUrlFilter@5460edd3, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@5dbbb292, org.springframework.security.web.context.SecurityContextPersistenceFilter@40943a6, org.springframework.security.web.header.HeaderWriterFilter@2fe2965c, org.springframework.security.web.authentication.logout.LogoutFilter@100aa331, org.springframework.security.web.authentication.www.BasicAuthenticationFilter@613f7eb7, org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter@565aa4ac, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@798cb6d9, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@42679fc2, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@587c5c1, org.springframework.security.web.session.SessionManagementFilter@3375ebd3, org.springframework.security.web.access.ExceptionTranslationFilter@415795f3, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@29f3c438]
+2026-10-20 00:53:03.983  INFO 51856 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure Or [Ant [pattern='/openapi/**']] with [org.springframework.security.web.session.DisableEncodeUrlFilter@44e4cb76, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@51cab489, org.springframework.security.web.context.SecurityContextPersistenceFilter@44aa2e13, org.springframework.security.web.header.HeaderWriterFilter@dbddbe3, org.springframework.security.web.authentication.logout.LogoutFilter@4b55ff0a, com.example.oauth.oauth.OpenApiTokenAuthenticationFilter@2121d1f9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@599a9cb2, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3a1b36a1, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2f9a10df, org.springframework.security.web.session.SessionManagementFilter@7a83ccd2, org.springframework.security.web.access.ExceptionTranslationFilter@39549f33, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@7675c171]
+2026-10-20 00:53:03.998  INFO 51856 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1a9ec80e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7fd4e815, org.springframework.security.web.context.SecurityContextPersistenceFilter@7889b4b9, org.springframework.security.web.header.HeaderWriterFilter@4fa86cb8, org.springframework.web.filter.CorsFilter@5f6b53ed, org.springframework.security.web.authentication.logout.LogoutFilter@433ea2ac, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1e545821, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@12952aff, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@20cdb152, org.springframework.security.web.session.SessionManagementFilter@54c60202, org.springframework.security.web.access.ExceptionTranslationFilter@cbd40c1, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@2eda2062]
+2026-10-20 00:53:04.324  INFO 51856 --- [           main] o.a.r.s.a.RocketMQAutoConfiguration      : a producer (rbac-oauth-producer) init on namesrv localhost:9876
+2026-10-20 00:53:04.906  INFO 51856 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7071 (http) with context path ''
+2026-10-20 00:53:04.914  INFO 51856 --- [           main] com.example.oauth.OauthApplication       : Started OauthApplication in 5.605 seconds (JVM running for 6.409)
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3fc831c4] was not registered for synchronization because synchronization is not active
+2026-10-20 00:53:04.971  INFO 51856 --- [   scheduling-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-20 00:53:05.072  INFO 51856 --- [   scheduling-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+JDBC Connection [HikariProxyConnection@1334637558 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 58, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0, Edge / Windows 10/11, PASSWORD, 2026-10-19 23:41:54, null, 1, null, 2026-10-19 23:41:54, 2026-10-19 23:41:54
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3fc831c4]
+2026-10-20 00:53:22.875  INFO 51856 --- [nio-7071-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-20 00:53:22.876  INFO 51856 --- [nio-7071-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-20 00:53:22.877  INFO 51856 --- [nio-7071-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@11affda] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1919059616 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@11affda]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@226fbb80] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1853398405 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,username,password,nickname,dept_id,email,phone,avatar,status,del_flag,remark,create_time,update_time FROM sys_user WHERE del_flag=0 AND (username = ?)
+==> Parameters: admin(String)
+<==    Columns: id, username, password, nickname, dept_id, email, phone, avatar, status, del_flag, remark, create_time, update_time
+<==        Row: 1, admin, $2b$10$difBcjnEBpNcRUTaL/9iduXuOjB5ohvM11FwkbtE5C.4qHuxzazou, Mock User, 21, mock1@example.com, 13800000001, null, 1, 0, 系统内置管理员, 2026-10-13 08:58:39, 2026-10-18 12:48:24
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@226fbb80]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1567569b]
+JDBC Connection [HikariProxyConnection@405643686 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will be managed by Spring
+==>  Preparing: UPDATE sys_sso_session SET logout_time=?, status=?, logout_reason=?, update_time=? WHERE (username = ? AND status = ?)
+==> Parameters: 2026-10-20T00:53:28.053(LocalDateTime), 0(Integer), 被新登录顶替(String), 2026-10-20T00:53:28.053(LocalDateTime), admin(String), 1(Integer)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1567569b]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1567569b] from current transaction
+==>  Preparing: INSERT INTO sys_sso_session ( user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, status, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 0:0:0:0:0:0:0:1(String), curl/7.54.0(String), curl / 未知系统(String), PASSWORD(String), 2026-10-20T00:53:28.053(LocalDateTime), 1(Integer), 2026-10-20T00:53:28.053(LocalDateTime), 2026-10-20T00:53:28.053(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1567569b]
+2026-10-20 00:53:28.075  INFO 51856 --- [nio-7071-exec-3] c.e.o.service.SsoSessionRecordService    : SSO 登录已记录: username=admin, device=curl / 未知系统, ip=0:0:0:0:0:0:0:1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1567569b]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1567569b]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1567569b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4124c095] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1340286657 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4124c095]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5d078abb] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1817134647 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5d078abb]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@624ec7b5] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@66964245 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@624ec7b5]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@568b0215] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1122763806 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@568b0215]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@14ae8ba8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1913191324 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@14ae8ba8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@96ec795] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1282169052 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@96ec795]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@280dff79] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1935179907 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@280dff79]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65026d5f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@573812913 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65026d5f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21c1569e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1276376759 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21c1569e]
+2026-10-20 00:53:37.759 DEBUG 51856 --- [nio-7071-exec-5] c.example.oauth.oauth.SsoTokenServices   : SSO 会话已建立/续期: username=admin, sid=e579a4073c874f379e57ef44ddeb39fa, clientId=rbac-admin
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a496bb]
+JDBC Connection [HikariProxyConnection@116911558 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a496bb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a496bb] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a496bb]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a496bb] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a496bb]
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a496bb]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a496bb]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a496bb]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b3636fd] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1887729017 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b3636fd]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2e9f7c44] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@715193679 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2e9f7c44]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@c666cb] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@171838907 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@c666cb]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4adfb52b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1897701784 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4adfb52b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3330e742] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@74541794 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3330e742]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@56d957cf] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@979515059 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@56d957cf]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@715aaf35]
+JDBC Connection [HikariProxyConnection@915596716 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will be managed by Spring
+==>  Preparing: SELECT id,username,password,nickname,dept_id,email,phone,avatar,status,del_flag,remark,create_time,update_time FROM sys_user WHERE del_flag=0 AND (username = ?)
+==> Parameters: admin(String)
+<==    Columns: id, username, password, nickname, dept_id, email, phone, avatar, status, del_flag, remark, create_time, update_time
+<==        Row: 1, admin, $2b$10$difBcjnEBpNcRUTaL/9iduXuOjB5ohvM11FwkbtE5C.4qHuxzazou, Mock User, 21, mock1@example.com, 13800000001, null, 1, 0, 系统内置管理员, 2026-10-13 08:58:39, 2026-10-18 12:48:24
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@715aaf35]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@715aaf35] from current transaction
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@715aaf35]
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@715aaf35]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@715aaf35]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@715aaf35]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@69427122] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2075632078 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@69427122]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4f9eddc6] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@746774857 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 59, 1, admin, Mock User, 0:0:0:0:0:0:0:1, curl/7.54.0, curl / 未知系统, PASSWORD, 2026-10-20 00:53:28, null, 1, null, 2026-10-20 00:53:28, 2026-10-20 00:53:28
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4f9eddc6]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3376aef9] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@822875419 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 59, 1, admin, Mock User, 0:0:0:0:0:0:0:1, curl/7.54.0, curl / 未知系统, PASSWORD, 2026-10-20 00:53:28, null, 1, null, 2026-10-20 00:53:28, 2026-10-20 00:53:28
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3376aef9]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5ab9ec62] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@197959395 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 59, 1, admin, Mock User, 0:0:0:0:0:0:0:1, curl/7.54.0, curl / 未知系统, PASSWORD, 2026-10-20 00:53:28, null, 1, null, 2026-10-20 00:53:28, 2026-10-20 00:53:28
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5ab9ec62]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36655278] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@598368810 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 59, 1, admin, Mock User, 0:0:0:0:0:0:0:1, curl/7.54.0, curl / 未知系统, PASSWORD, 2026-10-20 00:53:28, null, 1, null, 2026-10-20 00:53:28, 2026-10-20 00:53:28
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36655278]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@c19bbad] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2085761846 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 59, 1, admin, Mock User, 0:0:0:0:0:0:0:1, curl/7.54.0, curl / 未知系统, PASSWORD, 2026-10-20 00:53:28, null, 1, null, 2026-10-20 00:53:28, 2026-10-20 00:53:28
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@c19bbad]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5af65469] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@90222557 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5af65469]
+2026-10-20 00:58:47.124  INFO 51856 --- [nio-7071-exec-2] c.e.oauth.oauth.SsoLogoutController      : 统一登出：已清除 SSO 会话，该用户所有子系统令牌即刻失效: username=admin
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f4a34f8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1897967096 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: UPDATE sys_sso_session SET logout_time=?, status=?, logout_reason=?, update_time=? WHERE (username = ? AND status = ?)
+==> Parameters: 2026-10-20T00:58:47.125(LocalDateTime), 0(Integer), 主动登出(String), 2026-10-20T00:58:47.125(LocalDateTime), admin(String), 1(Integer)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f4a34f8]
+2026-10-20 00:58:47.200 DEBUG 51856 --- [nio-7071-exec-7] c.example.oauth.oauth.SsoTokenServices   : 令牌校验未通过：SSO 会话不存在、已登出或 sid 已被新登录轮换: username=admin
+2026-10-20 00:58:47.201  INFO 51856 --- [nio-7071-exec-7] o.s.s.o.p.endpoint.CheckTokenEndpoint    : Handling error: InvalidTokenException, Token was not recognised
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@9dd1aed] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1685803875 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@9dd1aed]
+2026-10-20 00:59:19.261 DEBUG 51856 --- [nio-7071-exec-5] c.example.oauth.oauth.SsoTokenServices   : 令牌校验未通过：SSO 会话不存在、已登出或 sid 已被新登录轮换: username=admin
+2026-10-20 00:59:19.262  INFO 51856 --- [nio-7071-exec-5] o.s.s.o.p.endpoint.CheckTokenEndpoint    : Handling error: InvalidTokenException, Token was not recognised
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7d6e7692] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1230706155 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7d6e7692]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8501bbd] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@100935363 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8501bbd]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@13e2c9ad] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@468170143 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@13e2c9ad]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@27759692] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@585075824 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@27759692]
+2026-10-20 00:59:19.413  INFO 51856 --- [nio-7071-exec-8] c.example.oauth.oauth.SsoTokenServices   : 拒绝刷新：会话已结束或已在其他浏览器登录: username=admin
+2026-10-20 00:59:19.416  WARN 51856 --- [nio-7071-exec-8] o.s.s.o.provider.endpoint.TokenEndpoint  : Handling error: InvalidGrantException, 登录会话已结束或已在其他浏览器登录，请重新登录
+2026-10-20 00:59:19.672 DEBUG 51856 --- [nio-7071-exec-9] c.example.oauth.oauth.SsoTokenServices   : 令牌校验未通过：SSO 会话不存在、已登出或 sid 已被新登录轮换: username=admin
+2026-10-20 00:59:19.673  INFO 51856 --- [nio-7071-exec-9] o.s.s.o.p.endpoint.CheckTokenEndpoint    : Handling error: InvalidTokenException, Token was not recognised
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197e824e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@945863496 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@197e824e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2501507e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1216404066 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2501507e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4cfe2598] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1674780377 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4cfe2598]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@641605e9] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1509502486 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@641605e9]
+2026-10-20 00:59:19.967  INFO 51856 --- [io-7071-exec-10] c.example.oauth.oauth.SsoTokenServices   : 拒绝刷新：会话已结束或已在其他浏览器登录: username=admin
+2026-10-20 00:59:19.969  WARN 51856 --- [io-7071-exec-10] o.s.s.o.provider.endpoint.TokenEndpoint  : Handling error: InvalidGrantException, 登录会话已结束或已在其他浏览器登录，请重新登录
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7a98ac7a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@942325666 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7a98ac7a]
+2026-10-20 00:59:21.293  INFO 51856 --- [nio-7071-exec-3] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=IoUanagLrXIi, expireAt=2026-10-20T01:04:21.286
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@9cedbf6] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1990671154 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,username,password,nickname,dept_id,email,phone,avatar,status,del_flag,remark,create_time,update_time FROM sys_user WHERE del_flag=0 AND (username = ?)
+==> Parameters: admin(String)
+<==    Columns: id, username, password, nickname, dept_id, email, phone, avatar, status, del_flag, remark, create_time, update_time
+<==        Row: 1, admin, $2b$10$difBcjnEBpNcRUTaL/9iduXuOjB5ohvM11FwkbtE5C.4qHuxzazou, Mock User, 21, mock1@example.com, 13800000001, null, 1, 0, 系统内置管理员, 2026-10-13 08:58:39, 2026-10-18 12:48:24
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@9cedbf6]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4238b9f]
+JDBC Connection [HikariProxyConnection@880552822 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will be managed by Spring
+==>  Preparing: UPDATE sys_sso_session SET logout_time=?, status=?, logout_reason=?, update_time=? WHERE (username = ? AND status = ?)
+==> Parameters: 2026-10-20T00:59:29.608(LocalDateTime), 0(Integer), 被新登录顶替(String), 2026-10-20T00:59:29.608(LocalDateTime), admin(String), 1(Integer)
+<==    Updates: 0
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4238b9f]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4238b9f] from current transaction
+==>  Preparing: INSERT INTO sys_sso_session ( user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, status, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 0:0:0:0:0:0:0:1(String), Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0(String), Edge / Windows 10/11(String), PASSWORD(String), 2026-10-20T00:59:29.608(LocalDateTime), 1(Integer), 2026-10-20T00:59:29.608(LocalDateTime), 2026-10-20T00:59:29.608(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4238b9f]
+2026-10-20 00:59:29.618  INFO 51856 --- [nio-7071-exec-8] c.e.o.service.SsoSessionRecordService    : SSO 登录已记录: username=admin, device=Edge / Windows 10/11, ip=0:0:0:0:0:0:0:1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4238b9f]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4238b9f]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4238b9f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f8d8930] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2066775351 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f8d8930]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@bc3721c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1935830934 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@bc3721c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@32440720] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@570933478 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@32440720]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@59222a5b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1263360856 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@59222a5b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5d8d835f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@364190279 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5d8d835f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7be887ba] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@797310051 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7be887ba]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@23160928] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@486313895 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@23160928]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@442e5701] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1474451941 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@442e5701]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@63b869b3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1436069018 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@63b869b3]
+2026-10-20 00:59:30.079 DEBUG 51856 --- [io-7071-exec-10] c.example.oauth.oauth.SsoTokenServices   : SSO 会话已建立/续期: username=admin, sid=16d3cb0aabb746269b02ebfc2a81dcd6, clientId=order-center
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@64376687]
+JDBC Connection [HikariProxyConnection@1418655273 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@64376687]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@64376687] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@64376687]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@64376687] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@64376687]
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@64376687]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@64376687]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@64376687]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@69060c27] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1455592961 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@69060c27]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@337bc07e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@927220425 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@337bc07e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1b3f73] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1630362415 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1b3f73]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5ceb4bdc] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2066287550 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5ceb4bdc]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1bed479c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@501107350 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1bed479c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7f9f3ffd] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@247420469 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7f9f3ffd]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190975b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@133574723 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@190975b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@43da6fce] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1190462113 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@43da6fce]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@98efd2] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@942934006 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@98efd2]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@30aea75a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1997486306 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@30aea75a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@101fdf6b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1439579717 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@101fdf6b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@50cd8b8f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1053287034 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@50cd8b8f]
+2026-10-20 00:59:34.253 DEBUG 51856 --- [nio-7071-exec-6] c.example.oauth.oauth.SsoTokenServices   : SSO 会话已建立/续期: username=admin, sid=16d3cb0aabb746269b02ebfc2a81dcd6, clientId=rbac-admin
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76b01f8]
+JDBC Connection [HikariProxyConnection@982745689 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76b01f8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76b01f8] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76b01f8]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76b01f8] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76b01f8]
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76b01f8]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76b01f8]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@76b01f8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@17f68c4d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1083831420 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@17f68c4d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@637f9a9] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2019044202 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@637f9a9]
+Creating a new SqlSession
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16651cb2] was not registered for synchronization because synchronization is not active
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@71774e7c] was not registered for synchronization because synchronization is not active
+Creating a new SqlSession
+JDBC Connection [HikariProxyConnection@627832202 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1c600eb9] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1713005373 wrapping com.mysql.cj.jdbc.ConnectionImpl@517f2d22] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+JDBC Connection [HikariProxyConnection@1269299984 wrapping com.mysql.cj.jdbc.ConnectionImpl@68bb73f3] will not be managed by Spring
+==> Parameters: rbac-admin(String)
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16651cb2]
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+Creating a new SqlSession
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@319424c7] was not registered for synchronization because synchronization is not active
+<==      Total: 1
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1c600eb9]
+JDBC Connection [HikariProxyConnection@1931796074 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@71774e7c]
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@319424c7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2eebd455] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1132370374 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2eebd455]
+2026-10-20 00:59:40.353  INFO 51856 --- [nio-7071-exec-2] c.e.oauth.oauth.SsoLogoutController      : 统一登出：已清除 SSO 会话，该用户所有子系统令牌即刻失效: username=admin
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@74858a15] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@142982459 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: UPDATE sys_sso_session SET logout_time=?, status=?, logout_reason=?, update_time=? WHERE (username = ? AND status = ?)
+==> Parameters: 2026-10-20T00:59:40.354(LocalDateTime), 0(Integer), 主动登出(String), 2026-10-20T00:59:40.354(LocalDateTime), admin(String), 1(Integer)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@74858a15]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16c5c4e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@163129905 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails
+==> Parameters: 
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: audit, null, kZ2anm0yEQ68PR/L0GYu48V0NQ1kV45zFr4SRNHKleYcATvL, read, authorization_code,refresh_token, http://localhost:5178/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==        Row: portal, null, Rxo21XV1MhryGGFp6DCuXtwIU2fEF3RVmNimrWfS53BrYqubCg==, read, authorization_code,refresh_token, http://localhost:5177/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==        Row: rbac-third-party, null, 9EIpNtl04xH+IQsPjHTi66z7R+JKnnnF9SEWnBLCLOKVNqCoLw==, read,write, authorization_code,password,implicit,client_credentials,refresh_token, http://localhost:8080/callback,http://localhost:5173/oauth/callback,http://localhost:7071/oauth/test-callback, ROLE_CLIENT, 3600, 604800, null, null
+<==      Total: 6
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16c5c4e]
+2026-10-20 00:59:40.388  INFO 51856 --- [nio-7071-exec-6] c.e.oauth.oauth.SsoLogoutController      : 统一登出（整页跳转）: username=null, 跳回=http://localhost:5173/login
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@51d58aef] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1919086716 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: rbac-admin(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: rbac-admin, null, LZUXslbxKjUDNjSg45x+khzZHW/BvAWWOvLvUAzPo5oHuv0=, read, authorization_code,refresh_token, http://localhost:5173/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@51d58aef]
+2026-10-20 00:59:40.893  INFO 51856 --- [nio-7071-exec-9] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=Qrj86ti5oN1E, expireAt=2026-10-20T01:04:40.892
+2026-10-20 00:59:42.041 DEBUG 51856 --- [io-7071-exec-10] c.example.oauth.oauth.SsoTokenServices   : 令牌校验未通过：SSO 会话不存在、已登出或 sid 已被新登录轮换: username=admin
+2026-10-20 00:59:42.041  INFO 51856 --- [io-7071-exec-10] o.s.s.o.p.endpoint.CheckTokenEndpoint    : Handling error: InvalidTokenException, Token was not recognised
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@110e4d68] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@616093695 wrapping com.mysql.cj.jdbc.ConnectionImpl@517f2d22] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@110e4d68]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@59f53379] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@980631586 wrapping com.mysql.cj.jdbc.ConnectionImpl@517f2d22] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@59f53379]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@63e87199] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@334952550 wrapping com.mysql.cj.jdbc.ConnectionImpl@517f2d22] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@63e87199]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a4aa3d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2019589129 wrapping com.mysql.cj.jdbc.ConnectionImpl@517f2d22] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58a4aa3d]
+2026-10-20 00:59:42.090  INFO 51856 --- [nio-7071-exec-8] c.example.oauth.oauth.SsoTokenServices   : 拒绝刷新：会话已结束或已在其他浏览器登录: username=admin
+2026-10-20 00:59:42.091  WARN 51856 --- [nio-7071-exec-8] o.s.s.o.provider.endpoint.TokenEndpoint  : Handling error: InvalidGrantException, 登录会话已结束或已在其他浏览器登录，请重新登录
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3441c55d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@618888462 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: order-center(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: order-center, null, yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE, read,write, authorization_code,password,refresh_token, http://localhost:5176/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3441c55d]
+2026-10-20 00:59:43.211  INFO 51856 --- [nio-7071-exec-3] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=p-o8ewYhfNl_, expireAt=2026-10-20T01:04:43.209
+2026-10-20 00:59:44.863 DEBUG 51856 --- [nio-7071-exec-6] c.example.oauth.oauth.SsoTokenServices   : 令牌校验未通过：SSO 会话不存在、已登出或 sid 已被新登录轮换: username=admin
+2026-10-20 00:59:44.864  INFO 51856 --- [nio-7071-exec-6] o.s.s.o.p.endpoint.CheckTokenEndpoint    : Handling error: InvalidTokenException, Token was not recognised
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1df59579] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1619715802 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: marketing(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1df59579]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@46185e4e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2012693929 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: marketing(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@46185e4e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@355ab930] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@833911803 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: marketing(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@355ab930]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a745d5f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@973597720 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: marketing(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a745d5f]
+2026-10-20 00:59:45.037  INFO 51856 --- [nio-7071-exec-7] c.example.oauth.oauth.SsoTokenServices   : 拒绝刷新：会话已结束或已在其他浏览器登录: username=admin
+2026-10-20 00:59:45.039  WARN 51856 --- [nio-7071-exec-7] o.s.s.o.provider.endpoint.TokenEndpoint  : Handling error: InvalidGrantException, 登录会话已结束或已在其他浏览器登录，请重新登录
+2026-10-20 00:59:45.408 DEBUG 51856 --- [nio-7071-exec-9] c.example.oauth.oauth.SsoTokenServices   : 令牌校验未通过：SSO 会话不存在、已登出或 sid 已被新登录轮换: username=admin
+2026-10-20 00:59:45.408  INFO 51856 --- [nio-7071-exec-9] o.s.s.o.p.endpoint.CheckTokenEndpoint    : Handling error: InvalidTokenException, Token was not recognised
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@55f733c0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@570174741 wrapping com.mysql.cj.jdbc.ConnectionImpl@68bb73f3] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: marketing(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@55f733c0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2c673f06] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1080189049 wrapping com.mysql.cj.jdbc.ConnectionImpl@68bb73f3] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: marketing(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2c673f06]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4d21c5a7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1487625226 wrapping com.mysql.cj.jdbc.ConnectionImpl@68bb73f3] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: marketing(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4d21c5a7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3853b709] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2065453401 wrapping com.mysql.cj.jdbc.ConnectionImpl@68bb73f3] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: marketing(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3853b709]
+2026-10-20 00:59:45.515  INFO 51856 --- [io-7071-exec-10] c.example.oauth.oauth.SsoTokenServices   : 拒绝刷新：会话已结束或已在其他浏览器登录: username=admin
+2026-10-20 00:59:45.518  WARN 51856 --- [io-7071-exec-10] o.s.s.o.provider.endpoint.TokenEndpoint  : Handling error: InvalidGrantException, 登录会话已结束或已在其他浏览器登录，请重新登录
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@488ad67e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1918605599 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: marketing(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: marketing, null, a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==, read,write, authorization_code,password,refresh_token, http://localhost:5175/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@488ad67e]
+2026-10-20 00:59:47.191  INFO 51856 --- [nio-7071-exec-3] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=Em8kCaAe6hx-, expireAt=2026-10-20T01:04:47.189
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@56fe5f04] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@924138820 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@56fe5f04]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@42c4f8a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1555005502 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@42c4f8a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@587467b8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1215592136 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@587467b8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7a40e9cd] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@32643226 wrapping com.mysql.cj.jdbc.ConnectionImpl@448d9e8d] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7a40e9cd]
+2026-10-20 03:24:16.103  WARN 51856 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h20m40s722ms193?s100ns).
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5790e668] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1002735816 wrapping com.mysql.cj.jdbc.ConnectionImpl@e480ad6] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5790e668]
+2026-10-20 09:08:33.051  WARN 51856 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5h44m16s948ms247?s400ns).
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6ff7bb13] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@946969116 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6ff7bb13]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21443414] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@357690202 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21443414]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@62ad35e7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1648974130 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@62ad35e7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3b29b659] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@318892231 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3b29b659]
+2026-10-20 09:12:59.198  INFO 51856 --- [nio-7071-exec-7] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=kyvNu2nwLg96, expireAt=2026-10-20T09:17:59.168
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1da26021] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1808762546 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1da26021]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@adb5f49] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@74876251 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@adb5f49]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@44be6522] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@349133803 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@44be6522]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6cbb7d60] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1536918176 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6cbb7d60]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@bbb040b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1021061217 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@bbb040b]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@22f842db] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1907397075 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@22f842db]
+2026-10-20 09:18:56.814  INFO 51856 --- [io-7071-exec-10] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=0lfIUn5foUxR, expireAt=2026-10-20T09:23:56.813
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e2b1d01] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1587904133 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3e2b1d01]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16a4a042] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1887532162 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16a4a042]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c869d64] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1863548934 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5c869d64]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3aacf4bf] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1386820403 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3aacf4bf]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b1eff27] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@113959415 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b1eff27]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70137cc0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1557676578 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@70137cc0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@35f5ea1c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@735241210 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: audit(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: audit, null, kZ2anm0yEQ68PR/L0GYu48V0NQ1kV45zFr4SRNHKleYcATvL, read, authorization_code,refresh_token, http://localhost:5178/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@35f5ea1c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2c8bdb24] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1966250337 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT appId,resourceIds,appSecret,scope,grantTypes,redirectUrl,authorities,access_token_validity,refresh_token_validity,additionalInformation,autoApproveScopes FROM clientdetails WHERE appId=?
+==> Parameters: audit(String)
+<==    Columns: appId, resourceIds, appSecret, scope, grantTypes, redirectUrl, authorities, access_token_validity, refresh_token_validity, additionalInformation, autoApproveScopes
+<==        Row: audit, null, kZ2anm0yEQ68PR/L0GYu48V0NQ1kV45zFr4SRNHKleYcATvL, read, authorization_code,refresh_token, http://localhost:5178/oauth/callback, ROLE_CLIENT, 3600, 604800, null, read
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2c8bdb24]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1b6eaac2] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1894785043 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1b6eaac2]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a8a1d3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1811821342 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a8a1d3]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4920b4b5] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@155591291 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4920b4b5]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@72127b15] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1054600446 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@72127b15]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@41ff3c0a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@550780403 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@41ff3c0a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@75aef6fa] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1300863785 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@75aef6fa]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@41ff9582] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1130672737 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@41ff9582]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16b49803] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@735726802 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@16b49803]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@265af6ad] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@345769701 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@265af6ad]
+2026-10-20 09:33:54.102  INFO 51856 --- [nio-7071-exec-6] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=-8w5Ta9R2SX1, expireAt=2026-10-20T09:38:54.101
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@78a48525] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@163248898 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@78a48525]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5bb9be9e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@124294497 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5bb9be9e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f98922e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@423854093 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f98922e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@238d55d0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1758440045 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@238d55d0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@29e039ec] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1611324117 wrapping com.mysql.cj.jdbc.ConnectionImpl@6a8c9122] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@29e039ec]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@50cb6fde] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2018251634 wrapping com.mysql.cj.jdbc.ConnectionImpl@4ea6a2dc] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@50cb6fde]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  08:46 h
+[INFO] Finished at: 2026-10-20T09:39:48+08:00
+[INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "global-plugins" could not be activated because it does not exist.
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:2.7.18:run (default-cli) on project rbac-oauth: Application finished with exit code: -1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

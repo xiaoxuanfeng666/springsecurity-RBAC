@@ -1,0 +1,673 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< com.example:order-backend >----------------------
+[INFO] Building order-backend 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot-maven-plugin:2.7.18:run (default-cli) > test-compile @ order-backend >>>
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ order-backend ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ order-backend ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ order-backend ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ order-backend ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] <<< spring-boot-maven-plugin:2.7.18:run (default-cli) < test-compile @ order-backend <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.7.18:run (default-cli) @ order-backend ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::               (v2.7.18)
+
+2026-10-19 22:31:47.993  INFO 34272 --- [           main] com.example.order.OrderApplication       : Starting OrderApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 34272 (D:\programs\ai\coding\springsecurity-RBAC\order-backend\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\order-backend)
+2026-10-19 22:31:47.998  INFO 34272 --- [           main] com.example.order.OrderApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-10-19 22:31:50.058  INFO 34272 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$568566ae] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:50.139  INFO 34272 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:50.184  INFO 34272 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:50.186  INFO 34272 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$adbf5d4a] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-19 22:31:51.155  INFO 34272 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7073 (http)
+2026-10-19 22:31:51.167  INFO 34272 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-19 22:31:51.167  INFO 34272 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-10-19 22:31:51.415  INFO 34272 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-19 22:31:51.415  INFO 34272 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3312 ms
+Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
+Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@4eb1c69'
+Property 'mapperLocations' was not specified.
+Initialization Sequence datacenterId:19 workerId:4
+ _ _   |_  _ _|_. ___ _ |    _ 
+| | |\/|_)(_| | |_\  |_)||_|_\ 
+     /               |         
+                        3.5.3.2 
+2026-10-19 22:31:55.352  INFO 34272 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='order-sync-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SUBSYSTEM_SYNC', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='order-center', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-19 22:31:55.355  INFO 34272 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:subsystemSyncConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
+2026-10-19 22:31:55.576  INFO 34272 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@228bda54, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@75b6dd5b, org.springframework.security.web.context.SecurityContextPersistenceFilter@7eb200ce, org.springframework.security.web.header.HeaderWriterFilter@2fd64b11, org.springframework.web.filter.CorsFilter@b3e86d5, org.springframework.security.web.authentication.logout.LogoutFilter@5eea5627, com.example.order.security.OAuth2TokenAuthenticationFilter@a9f023e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@19a20bb2, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3eb3232b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@72b43104, org.springframework.security.web.session.SessionManagementFilter@365cdacf, org.springframework.security.web.access.ExceptionTranslationFilter@594d9f07, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@267cde2e]
+2026-10-19 22:31:56.305  INFO 34272 --- [           main] o.a.r.s.a.RocketMQAutoConfiguration      : a producer (order-backend-producer) init on namesrv localhost:9876
+2026-10-19 22:31:57.365  INFO 34272 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7073 (http) with context path ''
+2026-10-19 22:31:57.381  INFO 34272 --- [           main] com.example.order.OrderApplication       : Started OrderApplication in 10.16 seconds (JVM running for 11.204)
+2026-10-19 22:32:26.358  INFO 34272 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-19 22:32:26.505  INFO 34272 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+JDBC Connection [HikariProxyConnection@447364450 wrapping com.mysql.cj.jdbc.ConnectionImpl@8f9253e] will be managed by Spring
+==>  Preparing: DELETE FROM order_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: DELETE FROM order_role_menu
+==> Parameters: 
+<==    Updates: 2
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: DELETE FROM order_menu
+==> Parameters: 
+<==    Updates: 7
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: DELETE FROM order_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), 0(Long), 订单管理(String), 1(Integer), /order(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 订单列表(String), 2(Integer), order:order:list(String), list(String), order/list/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 1(Long), 订单统计(String), 2(Integer), order:stat:list(String), stat(String), order/stat/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 201(Long), 2(Long), 订单查询(String), 3(Integer), order:order:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 202(Long), 2(Long), 订单新增(String), 3(Integer), order:order:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 203(Long), 2(Long), 订单修改(String), 3(Integer), order:order:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 204(Long), 2(Long), 订单删除(String), 3(Integer), order:order:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 3(Long), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17] from current transaction
+==>  Preparing: INSERT INTO order_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-19T22:32:26.512(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+2026-10-19 22:32:26.655  INFO 34272 --- [sync-consumer_1] c.e.order.service.OrderSyncService       : 已重建子系统同步数据: subsystemCode=order-center, menus=7, roleMenus=2, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@36ee8c17]
+2026-10-19 22:35:36.371  INFO 34272 --- [nio-7073-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-19 22:35:36.372  INFO 34272 --- [nio-7073-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-19 22:35:36.374  INFO 34272 --- [nio-7073-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-10-19 23:59:57.385  WARN 34272 --- [nio-7073-exec-1] c.e.order.security.OAuth2TokenClient     : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-19 23:59:57.387  WARN 34272 --- [nio-7073-exec-1] c.e.order.common.GlobalExceptionHandler  : 业务异常: 刷新凭证无效，请重新登录
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@11a84eca] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@410648521 wrapping com.mysql.cj.jdbc.ConnectionImpl@4114d47f] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@11a84eca]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@38f4be33] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@909330269 wrapping com.mysql.cj.jdbc.ConnectionImpl@4114d47f] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@38f4be33]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a51b589] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2141453203 wrapping com.mysql.cj.jdbc.ConnectionImpl@4114d47f] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5a51b589]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2db0a2f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@203219972 wrapping com.mysql.cj.jdbc.ConnectionImpl@4114d47f] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2db0a2f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2e83ac7d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@254586764 wrapping com.mysql.cj.jdbc.ConnectionImpl@4114d47f] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM order_info WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 6
+<==      Total: 1
+==>  Preparing: SELECT id,order_no,customer_name,order_amount,status,order_time,remark,del_flag,create_time,update_time FROM order_info WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, order_no, customer_name, order_amount, status, order_time, remark, del_flag, create_time, update_time
+<==        Row: 6, ORD20261015006, 李四, 780.00, 4, 2026-10-15 11:02:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 5, ORD20261014005, 赵六, 15.90, 5, 2026-10-14 20:21:00, 用户主动取消, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 4, ORD20261013004, 张三, 2560.00, 3, 2026-10-13 16:48:00, 已出库, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 3, ORD20261012003, 王五, 88.00, 1, 2026-10-12 09:05:00, 用户尚未付款, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 2, ORD20261011002, 李四, 199.50, 2, 2026-10-11 14:30:00, 等待发货, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 1, ORD20261010001, 张三, 1299.00, 4, 2026-10-10 10:12:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==      Total: 6
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2e83ac7d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5990a093] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1465337297 wrapping com.mysql.cj.jdbc.ConnectionImpl@5368cbe3] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5990a093]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4aa2e18c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@657874116 wrapping com.mysql.cj.jdbc.ConnectionImpl@5368cbe3] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4aa2e18c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3b86e9b4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@893456564 wrapping com.mysql.cj.jdbc.ConnectionImpl@5368cbe3] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3b86e9b4]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@747c1a8f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2025555709 wrapping com.mysql.cj.jdbc.ConnectionImpl@5368cbe3] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@747c1a8f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1b276ccf] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@367038939 wrapping com.mysql.cj.jdbc.ConnectionImpl@5368cbe3] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1b276ccf]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@54dd9be0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1698950565 wrapping com.mysql.cj.jdbc.ConnectionImpl@5368cbe3] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM order_info WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 6
+<==      Total: 1
+==>  Preparing: SELECT id,order_no,customer_name,order_amount,status,order_time,remark,del_flag,create_time,update_time FROM order_info WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, order_no, customer_name, order_amount, status, order_time, remark, del_flag, create_time, update_time
+<==        Row: 6, ORD20261015006, 李四, 780.00, 4, 2026-10-15 11:02:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 5, ORD20261014005, 赵六, 15.90, 5, 2026-10-14 20:21:00, 用户主动取消, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 4, ORD20261013004, 张三, 2560.00, 3, 2026-10-13 16:48:00, 已出库, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 3, ORD20261012003, 王五, 88.00, 1, 2026-10-12 09:05:00, 用户尚未付款, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 2, ORD20261011002, 李四, 199.50, 2, 2026-10-11 14:30:00, 等待发货, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 1, ORD20261010001, 张三, 1299.00, 4, 2026-10-10 10:12:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==      Total: 6
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@54dd9be0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@214c1458] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1871284618 wrapping com.mysql.cj.jdbc.ConnectionImpl@5368cbe3] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@214c1458]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@44a4e2b8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@93048992 wrapping com.mysql.cj.jdbc.ConnectionImpl@5368cbe3] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@44a4e2b8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@23ad263a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@857734006 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@23ad263a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@271d1aa4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@866511020 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@271d1aa4]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@67dbf5d3] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@235763572 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@67dbf5d3]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@668ca74a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1581364005 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@668ca74a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7be68e2f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@157109090 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7be68e2f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e0061a5] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1111315646 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM order_info WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 6
+<==      Total: 1
+==>  Preparing: SELECT id,order_no,customer_name,order_amount,status,order_time,remark,del_flag,create_time,update_time FROM order_info WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, order_no, customer_name, order_amount, status, order_time, remark, del_flag, create_time, update_time
+<==        Row: 6, ORD20261015006, 李四, 780.00, 4, 2026-10-15 11:02:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 5, ORD20261014005, 赵六, 15.90, 5, 2026-10-14 20:21:00, 用户主动取消, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 4, ORD20261013004, 张三, 2560.00, 3, 2026-10-13 16:48:00, 已出库, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 3, ORD20261012003, 王五, 88.00, 1, 2026-10-12 09:05:00, 用户尚未付款, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 2, ORD20261011002, 李四, 199.50, 2, 2026-10-11 14:30:00, 等待发货, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 1, ORD20261010001, 张三, 1299.00, 4, 2026-10-10 10:12:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==      Total: 6
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e0061a5]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5caee48a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1200226306 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5caee48a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5feb9348] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1959437963 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5feb9348]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@66a0c42a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1453670909 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@66a0c42a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@661be54] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1711319846 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@661be54]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1838d69d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1090209664 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1838d69d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@239bf03c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2110342892 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@239bf03c]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7645b0a5] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@733380960 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7645b0a5]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2910674e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1839798513 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM order_info WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 6
+<==      Total: 1
+==>  Preparing: SELECT id,order_no,customer_name,order_amount,status,order_time,remark,del_flag,create_time,update_time FROM order_info WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, order_no, customer_name, order_amount, status, order_time, remark, del_flag, create_time, update_time
+<==        Row: 6, ORD20261015006, 李四, 780.00, 4, 2026-10-15 11:02:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 5, ORD20261014005, 赵六, 15.90, 5, 2026-10-14 20:21:00, 用户主动取消, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 4, ORD20261013004, 张三, 2560.00, 3, 2026-10-13 16:48:00, 已出库, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 3, ORD20261012003, 王五, 88.00, 1, 2026-10-12 09:05:00, 用户尚未付款, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 2, ORD20261011002, 李四, 199.50, 2, 2026-10-11 14:30:00, 等待发货, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 1, ORD20261010001, 张三, 1299.00, 4, 2026-10-10 10:12:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==      Total: 6
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2910674e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1453e5c0] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@821757401 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1453e5c0]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@101d9d32] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2015401765 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@101d9d32]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@26f9af45] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@399308214 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-19 22:32:27
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@26f9af45]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1ebbe0d2] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1268985400 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1ebbe0d2]
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+JDBC Connection [HikariProxyConnection@1111138848 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will be managed by Spring
+==>  Preparing: DELETE FROM order_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: DELETE FROM order_role_menu
+==> Parameters: 
+<==    Updates: 2
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: DELETE FROM order_menu
+==> Parameters: 
+<==    Updates: 7
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: DELETE FROM order_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), 0(Long), 订单管理(String), 1(Integer), /order(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 订单列表(String), 2(Integer), order:order:list(String), list(String), order/list/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 1(Long), 订单统计(String), 2(Integer), order:stat:list(String), stat(String), order/stat/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 201(Long), 2(Long), 订单查询(String), 3(Integer), order:order:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 202(Long), 2(Long), 订单新增(String), 3(Integer), order:order:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 203(Long), 2(Long), 订单修改(String), 3(Integer), order:order:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 204(Long), 2(Long), 订单删除(String), 3(Integer), order:order:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 1(Long), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 3(Long), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950] from current transaction
+==>  Preparing: INSERT INTO order_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-20T00:53:03.597(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+2026-10-20 00:53:03.626  INFO 34272 --- [sync-consumer_2] c.e.order.service.OrderSyncService       : 已重建子系统同步数据: subsystemCode=order-center, menus=7, roleMenus=2, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@48c2c950]
+2026-10-20 00:59:19.422  WARN 34272 --- [nio-7073-exec-3] c.e.order.security.OAuth2TokenClient     : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-20 00:59:19.424  WARN 34272 --- [nio-7073-exec-3] c.e.order.common.GlobalExceptionHandler  : 业务异常: 刷新凭证无效，请重新登录
+2026-10-20 00:59:19.971  WARN 34272 --- [nio-7073-exec-4] c.e.order.security.OAuth2TokenClient     : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-20 00:59:19.972  WARN 34272 --- [nio-7073-exec-4] c.e.order.common.GlobalExceptionHandler  : 业务异常: 刷新凭证无效，请重新登录
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7820a1fd] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@463105092 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-20 00:53:04
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7820a1fd]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7df1cf2e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@853095302 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-20 00:53:04
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7df1cf2e]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ba41ef5] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1138848142 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM order_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 1, 0, 订单管理, 1, null, /order, Layout, Document, 1, 1, 1
+<==        Row: 2, 1, 订单列表, 2, order:order:list, list, order/list/index, List, 1, 1, 1
+<==        Row: 3, 1, 订单统计, 2, order:stat:list, stat, order/stat/index, DataLine, 2, 1, 1
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ba41ef5]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4b4a2848] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1845616448 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT * FROM order_user WHERE username = ?
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-20 00:53:04
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4b4a2848]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@458aaa27] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1057222106 wrapping com.mysql.cj.jdbc.ConnectionImpl@207840fc] will not be managed by Spring
+==>  Preparing: SELECT COUNT(*) AS total FROM order_info WHERE del_flag = 0
+==> Parameters: 
+<==    Columns: total
+<==        Row: 6
+<==      Total: 1
+==>  Preparing: SELECT id,order_no,customer_name,order_amount,status,order_time,remark,del_flag,create_time,update_time FROM order_info WHERE del_flag=0 ORDER BY id DESC LIMIT ?
+==> Parameters: 10(Long)
+<==    Columns: id, order_no, customer_name, order_amount, status, order_time, remark, del_flag, create_time, update_time
+<==        Row: 6, ORD20261015006, 李四, 780.00, 4, 2026-10-15 11:02:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 5, ORD20261014005, 赵六, 15.90, 5, 2026-10-14 20:21:00, 用户主动取消, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 4, ORD20261013004, 张三, 2560.00, 3, 2026-10-13 16:48:00, 已出库, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 3, ORD20261012003, 王五, 88.00, 1, 2026-10-12 09:05:00, 用户尚未付款, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 2, ORD20261011002, 李四, 199.50, 2, 2026-10-11 14:30:00, 等待发货, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==        Row: 1, ORD20261010001, 张三, 1299.00, 4, 2026-10-10 10:12:00, 已签收, 0, 2026-10-16 18:52:02, 2026-10-16 18:52:02
+<==      Total: 6
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@458aaa27]
+2026-10-20 00:59:42.094  WARN 34272 --- [io-7073-exec-10] c.e.order.security.OAuth2TokenClient     : 授权服务返回错误: error=invalid_grant, description=登录会话已结束或已在其他浏览器登录，请重新登录, status=400
+2026-10-20 00:59:42.095  WARN 34272 --- [io-7073-exec-10] c.e.order.common.GlobalExceptionHandler  : 业务异常: 刷新凭证无效，请重新登录
+2026-10-20 09:08:26.521  WARN 34272 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8h4m27s609ms169?s900ns).
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11:15 h
+[INFO] Finished at: 2026-10-20T09:47:34+08:00
+[INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "global-plugins" could not be activated because it does not exist.
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:2.7.18:run (default-cli) on project order-backend: Application finished with exit code: -1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
