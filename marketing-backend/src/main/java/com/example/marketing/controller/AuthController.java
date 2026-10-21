@@ -4,8 +4,6 @@ import com.example.marketing.common.Result;
 import com.example.marketing.dto.CodeLoginRequest;
 import com.example.marketing.dto.LoginInfoResponse;
 import com.example.marketing.dto.PasswordLoginRequest;
-import com.example.marketing.dto.RefreshRequest;
-import com.example.marketing.dto.TokenResponse;
 import com.example.marketing.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -13,9 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -24,6 +22,9 @@ import javax.validation.Valid;
  * <p>
  * 本系统没有自己的登录页与用户表：这里的每个接口都是把请求转给 rbac-oauth，
  * 或把令牌带来的身份落到本地同步数据上。
+ * <p>
+ * 登录成功后<b>不返回任何令牌</b>：令牌存进服务端 BFF 会话，浏览器只拿到 HttpOnly Cookie
+ * 和渲染页面所需的用户信息。续期与登出也都在服务端完成。
  */
 @RestController
 @RequestMapping("/auth")
@@ -33,43 +34,45 @@ public class AuthController {
     private final AuthService authService;
 
     /**
-     * 密码模式登录：转发给授权服务的 grant_type=password
+     * 密码模式登录：转发给授权服务的 grant_type=password（供第三方接入与联调）
      */
     @PostMapping("/login")
-    public Result<TokenResponse> login(@Valid @RequestBody PasswordLoginRequest request) {
+    public Result<LoginInfoResponse> login(@Valid @RequestBody PasswordLoginRequest request,
+                                           HttpServletResponse response) {
         return Result.success("登录成功",
-                authService.loginByPassword(request.getUsername(), request.getPassword()));
+                authService.loginByPassword(request.getUsername(), request.getPassword(), response));
     }
 
     /**
-     * 授权码模式登录：用授权服务回调带回来的 code 换令牌
+     * 授权码模式登录：用授权服务回调带回来的 code + state 换令牌并建立会话
      */
     @PostMapping("/code")
-    public Result<TokenResponse> loginByCode(@Valid @RequestBody CodeLoginRequest request) {
-        return Result.success("登录成功", authService.loginByCode(request.getCode()));
+    public Result<LoginInfoResponse> loginByCode(@Valid @RequestBody CodeLoginRequest request,
+                                                 HttpServletRequest httpRequest,
+                                                 HttpServletResponse response) {
+        return Result.success("登录成功",
+                authService.loginByCode(request.getCode(), request.getState(), httpRequest, response));
     }
 
     /**
-     * 刷新令牌
+     * 登出：销毁授权服务的 SSO 会话与本系统的 BFF 会话
      */
-    @PostMapping("/refresh")
-    public Result<TokenResponse> refresh(@Valid @RequestBody RefreshRequest request) {
-        return Result.success(authService.refresh(request.getRefreshToken()));
+    @PostMapping("/logout")
+    public Result<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        authService.logout(request, response);
+        return Result.success("已登出", null);
     }
 
     /**
      * 发起授权：拼接授权地址并 302 跳过去（未登录时前端就导航到这里）
      * <p>
-     * 为什么这条跳转由后端做，而不是「返回授权地址让前端自己跳」：授权地址上必须带
-     * {@code client_secret}（本项目对授权端点的定制要求）。作为接口数据返回，密钥就会落进
-     * 前端代码、浏览器网络面板和前端日志；这里让前端只做一次导航，URL 由后端拼、302 由后端发，
-     * 客户端标识与密钥全程只在服务端。
+     * 为什么这条跳转由后端做：客户端配置（client_id、回调地址）与 state 都由服务端生成，
+     * 前端只做一次导航，不必也不应接触这些参数。client_secret 只用于后端调令牌端点。
      */
     @GetMapping("/sso-login")
-    public void ssoLogin(@RequestParam(required = false) String state,
-                         HttpServletResponse response) {
+    public void ssoLogin(HttpServletResponse response) {
         response.setStatus(HttpServletResponse.SC_FOUND);
-        response.setHeader(HttpHeaders.LOCATION, authService.buildAuthorizeUrl(state));
+        response.setHeader(HttpHeaders.LOCATION, authService.buildAuthorizeUrl(response));
     }
 
     /**

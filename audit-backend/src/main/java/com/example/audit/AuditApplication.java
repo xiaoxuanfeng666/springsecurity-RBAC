@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 审计日志系统后端
@@ -17,6 +18,7 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
  * 看着像是存在一个可用的默认账号。
  */
 @SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
+@EnableScheduling
 @MapperScan("com.example.audit.mapper")
 public class AuditApplication {
 

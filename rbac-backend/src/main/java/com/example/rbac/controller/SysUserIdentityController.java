@@ -46,8 +46,8 @@ public class SysUserIdentityController {
     }
 
     @PostMapping("/{userId}/identities")
-    @PreAuthorize("@ss.hasPerm('system:user:edit')")
-    @OperLog(module = "用户管理", action = AuditAction.GRANT, description = "绑定企业微信")
+    @PreAuthorize("@ss.hasPerm('system:user:identity')")
+    @OperLog(module = "用户管理", action = AuditAction.GRANT, description = "绑定外部身份")
     public Result<Void> create(@PathVariable Long userId,
                                @Valid @RequestBody UserIdentityForm form) {
         identityService.create(userId, form);
@@ -55,8 +55,8 @@ public class SysUserIdentityController {
     }
 
     @DeleteMapping("/identity/{id}")
-    @PreAuthorize("@ss.hasPerm('system:user:edit')")
-    @OperLog(module = "用户管理", action = AuditAction.DELETE, description = "解绑企业微信")
+    @PreAuthorize("@ss.hasPerm('system:user:identity')")
+    @OperLog(module = "用户管理", action = AuditAction.DELETE, description = "解绑外部身份")
     public Result<Void> delete(@PathVariable Long id) {
         identityService.delete(id);
         return Result.success("解绑成功", null);

@@ -10,6 +10,13 @@ spring:
     url: jdbc:mysql://localhost:3306/marketing?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: 123456
+  # 只用于授权流程 state 的一次性缓存（防重放）；业务数据仍只在自己的 MySQL
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    password:
+    timeout: 5000ms
   jackson:
     # 注意：这里没有 spring.jackson.date-format —— 它只作用于 java.util.Date，
     # 对 LocalDateTime 无效。实体里的时间字段统一由 JacksonConfig 按 yyyy-MM-dd HH:mm:ss 处理。
@@ -31,10 +38,10 @@ mybatis-plus:
 # 本系统没有用户体系，登录授权全部交给 rbac-oauth（授权服务器，端口 7071）：
 #   密码模式   -> 后端带客户端凭证调 /oauth/token（grant_type=password）
 #   授权码模式 -> 前端跳 /oauth/authorize，回调后由后端调 /oauth/token（grant_type=authorization_code）
-#   请求鉴权   -> 取 Bearer 令牌调 /oauth/check_token 换回用户名
+#   请求鉴权   -> 本地用 /oauth/token_key 的公钥验签 JWT，不再每请求回调 /oauth/check_token
 # client-id / client-secret 必须与 RBAC 库 clientdetails 里的 marketing 客户端一致。
 oauth2:
-  # 后端到后端调用用（换令牌、check_token）
+  # 后端到后端调用用（换令牌、启动时拉取验签公钥）
   server-url: http://localhost:7071
   # 浏览器跳转到授权端点用的地址：走授权前端（5174）的 /oauth 代理，与登录页同源。
   # 分工的原因见 OAuth2ClientProperties#browserAuthorizeBaseUrl。
@@ -60,4 +67,25 @@ rocketmq:
   producer:
     group: marketing-backend-producer
     send-message-timeout: 3000
+
+rbac:
+  session:
+    # 消费 rbac-oauth 广播的「会话已撤销」：本地验签看不到会话是否存活，靠这条消息拒掉已登出/被踢的令牌
+    # 【必须与 rbac-oauth 的 rbac.session.revoke-topic 一致】
+    revoke-topic: RBAC_SESSION_REVOKE
+    # 撤销记录兜底保留秒数：仅在消息未带 TTL 时使用。正常由 rbac-oauth 按客户端
+    # access_token_validity 计算后随消息下发，令牌有效期改长时不需要改这里
+    revoke-ttl-seconds: 43200
+  # 登录用户/权限缓存（Redis）的有效期（秒）：正常失效靠 RBAC 同步消息清空，这里只是兜底
+  auth-cache-ttl-seconds: 300
+  # BFF：浏览器只持一个 HttpOnly 会话 Cookie，OAuth 令牌全部存在本服务 Redis
+  bff:
+    # Cookie 名按系统区分，多个子系统部署在同一域名下时互不覆盖
+    cookie-name: marketing_bff_session
+    # 生产环境走 HTTPS 时置为 true（开发环境是 http，加了浏览器会丢弃 Cookie）
+    cookie-secure: false
+    # 空闲有效期：会话在这段时间内没有续期就过期
+    session-idle-ttl-seconds: 604800
+    # 绝对有效期：从登录时刻算起，到点必须重新授权
+    session-max-ttl-seconds: 604800
 

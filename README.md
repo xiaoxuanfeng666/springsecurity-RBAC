@@ -6,14 +6,14 @@
 
 | 需求 | 实现方式 |
 |---|---|
-| **无感知续期** | Access Token 短有效期（默认 15 分钟），过期后前端拦截 401，用 Refresh Token 自动调用 `POST /auth/refresh` 换取新的 Access Token 并重放原请求（并发 401 只刷新一次）。用户全程无感知，不需要重新登录。 |
-| **离职立刻失效凭证** | 用户状态三值：**1 在职 / 0 停用 / 2 离职**。会话保存在 Redis（`login:session:{userId}` + `login:refresh:{sessionId}`）。标记停用或离职时删除会话键，配合认证过滤器的会话校验，存量 Access Token 在下一次请求即被拒绝，旧 Refresh Token 也无法再续期，无需等待自然过期。**同时经 MQ（`RBAC_OAUTH_SESSION`）通知 rbac-oauth 删除该用户的 SSO 会话**（`sso:session:{username}` + `oauth2:auth:{token}`），订单中心、营销系统等子系统手里的令牌也立即失效。 |
-| **登录快照（用户 + 权限 + 角色）** | 用户信息、权限、角色在**登录时**查库一次，整体序列化写入 Redis（`login:perm:{sessionId}`）。之后每个请求都由快照重建认证主体，**不再访问数据库** —— 省掉「用户-角色-菜单」的多表联查与逐请求的用户行查询。 |
+| **无感知续期** | Access Token 短有效期（由 `clientdetails.access_token_validity` 决定，默认 30 分钟）。RBAC 管理后台与订单中心 / 营销系统 / 审计日志系统统一采用 **BFF**：浏览器只持一个 HttpOnly 会话 Cookie，令牌保存在各自服务端 Redis，过期后由后端静默续期，前端不接触任何令牌。用户全程无感知，不需要重新登录。 |
+| **离职立刻失效凭证** | 用户状态三值：**1 在职 / 0 停用 / 2 离职**。登录态由 rbac-oauth 统一管理（`sso:session:{username}`），rbac-backend 与各子系统每个请求都**本地验签 JWT**（公钥来自 `/oauth/token_key`），不再每请求回源 `/oauth/check_token`。标记停用或离职时经 MQ（`RBAC_OAUTH_SESSION`）通知 rbac-oauth 删除该用户的 SSO 会话（`sso:session:{username}` + `oauth2:auth:{token}`），后台与订单中心、营销系统等所有子系统手里的存量令牌在下一次请求即被拒绝，刷新令牌也换不出新的，无需等待自然过期。 |
+| **登录快照（用户 + 权限 + 角色）** | 用户信息、权限、角色在首次建立登录态时查库一次，整体序列化写入 Redis（`login:perm:user:{username}`）。之后每个请求都由快照重建认证主体，**不再访问数据库** —— 省掉「用户-角色-菜单」的多表联查与逐请求的用户行查询。 |
 | **动态修改角色权限** | 管理员在角色授权页调整「角色-菜单」映射后，服务端立即**失效该角色下所有用户的权限快照**，用户下一次请求重建快照并拿到新权限，无需重新登录。 |
 | **子系统菜单统一配置** | RBAC 作为中枢登记各子系统（每个子系统有**唯一编码**，如 `order-center` / `marketing` / `audit`），并在「菜单管理」页顶部按「所属系统」切换：选 RBAC 本系统维护 `sys_menu`，选某个子系统直接维护该子系统的 `sys_subsystem_menu`（目录 / 菜单 / 按钮三级，均带 `perms`）。顶部「新增子系统」可直接登记**子系统名称 + 唯一编码**，保存后自动切换到该子系统继续维护菜单。角色的子系统授权仍按子系统单独保存，并**经 RocketMQ 实时下发给对应子系统**。 |
 | **超级管理员免配置** | `admin` 的权限**不落库**：代码里直接给通配符 `*:*:*` 与全部启用菜单。新增菜单或接口后不需要再手动给它补授权，`sys_role_menu` 里也不会有它的记录。 |
 | **操作日志与审计日志** | **账号/会话类动作**（登录、登出、强制下线、停用/启用/离职、重置密码、自助改密）留在 RBAC 库的 `sys_operation_log`；**各系统的接口增删改**（新增、修改、删除、授权）统一上报到独立的**审计日志系统**（独立库 `audit_log`），记录来源系统、模块、动作、操作人、请求方法路径、**已脱敏的请求参数**、成败、耗时、来源 IP。登录/登出**不进入**审计日志。各系统经 RocketMQ topic `RBAC_AUDIT_LOG` 上报，审计系统只做接收与查询。 |
-| **统一登出** | 各子系统共享授权服务上的登录态：任一子系统登出即删掉该用户的 SSO 会话，**所有子系统**手里的旧令牌下一个请求就失效，刷新令牌也换不出新的（自包含 JWT 本身删不掉，靠这层服务端会话把生死收回来）。已经登录过的人再进另一个子系统**不弹登录页**（凭会话直接发码）。见「SSO 会话与统一登出」一节。 |
+| **统一登出** | RBAC 管理后台与各子系统共享授权服务上的登录态：任一系统登出即删掉该用户的 SSO 会话，**所有系统**手里的旧令牌下一个请求就失效，刷新令牌也换不出新的（自包含 JWT 本身删不掉，靠这层服务端会话把生死收回来）。已经登录过的人再进另一个系统**不弹登录页**（凭会话直接发码）。见「SSO 会话与统一登出」一节。 |
 | **多 IdP 登录（企业微信 / Mock）** | 登录页在账号密码之外动态展示已启用的外部身份提供方（企业微信、Mock）。统一走 `/oauth/idp/{provider}/**`：认证成功后查绑定、按策略自助绑定或 JIT 自动建号，再建立与密码登录**完全相同**的 SSO 登录态，回到最初的 `/oauth/authorize` 继续发授权码。第三方授权码流程不变。rbac-backend 另提供通讯录/部门同步（Mock 可测）。 |
 
 ## 服务划分
@@ -24,7 +24,7 @@
 |---|---|---|---|
 | **rbac-backend** | 7070 | 中枢 | RBAC 业务：登录/续期、用户、角色、菜单、部门、岗位、客户端管理、子系统与子系统菜单、操作日志、**用户企业微信身份绑定** |
 | **rbac-oauth** | 7071 | 中枢 | OAuth2 授权服务器：五种授权模式的端点、**统一登出 `/oauth/sso-logout`**、**企业微信扫码登录 `/oauth/wecom/**`**、第三方开放接口 `/openapi/**` |
-| **rbac-frontend** | 5173 | 中枢 | RBAC 管理后台界面 |
+| **rbac-frontend** | 5173 | 中枢 | RBAC 管理后台界面：登录跳统一授权（无本地登录表单）、动态路由、按钮级权限 |
 | **rbac-oauth-web** | 5174 | 中枢 | OAuth2 授权流程页面：授权登录页（账号密码 + **企业微信扫码入口**）、授权确认页。它要与授权端点同源（靠 `/oauth → 7071` 代理），因为登录页是用原生表单 POST 到 `/oauth/login` |
 | **order-backend** | 7073 | 子系统 | 订单中心后端：订单增删改查 + 统计汇总。独立库 `order_center`，无登录、无用户表 |
 | **order-frontend** | 5176 | 子系统 | 订单中心界面：未登录时直接去授权服务的登录页（无自己的登录页）、动态路由、按钮级权限 |
@@ -39,7 +39,7 @@
 
 ## 技术栈
 
-- **后端**：Spring Boot 2.7.18 / JDK 8 / Spring Security 5.7 / MyBatis-Plus 3.5 / jjwt 0.11.5 / Maven
+- **后端**：Spring Boot 2.7.18 / JDK 8 / Spring Security 5.7 / MyBatis-Plus 3.5 / Maven
   - rbac-oauth 另用 spring-security-oauth2 2.5.2（传统授权服务器）+ spring-security-jwt（JWT 令牌）
   - 各子系统的后端另用 RocketMQ Spring Boot Starter 2.2.3（消费 RBAC 下发的权限数据）
   - audit-backend 另用 RocketMQ Spring Boot Starter 2.2.3（消费 RBAC 权限快照 + 消费各系统上报的审计日志）
@@ -58,7 +58,7 @@ springsecurity-RBAC/
 │       ├── common/        # 统一返回、异常、状态码
 │       ├── config/        # Security / Redis / MyBatis-Plus 配置
 │       ├── aspect/        # @OperLog 操作日志切面
-│       ├── security/      # JWT、会话存储、权限快照、权限校验、超级管理员隐式权限、过滤器
+│       ├── security/      # OAuth2 令牌客户端与过滤器、权限快照、权限校验、超级管理员隐式权限
 │       ├── entity/        # 各表实体（含 sys_subsystem / sys_subsystem_menu）
 │       ├── mapper/        # MyBatis-Plus Mapper
 │       ├── service/       # 业务逻辑
@@ -218,7 +218,7 @@ mysql -uroot -p --default-character-set=utf8mb4 < sql/upgrade-2026-10-18-wecom-q
 >
 > 三个子系统的 `*-schema.sql` 都是 `DROP DATABASE` 重建，只在首次接入时执行；日常升级不碰它们（同步表的数据由 MQ 自己维护）。
 
-Redis 默认连接 `localhost:6379`。子系统**不使用 Redis**。
+Redis 默认连接 `localhost:6379`。子系统只连 Redis 缓存授权流程的 state（一次性、30 分钟 TTL）；业务数据仍只存在自己的 MySQL。
 
 ### 2. 准备 RocketMQ
 
@@ -248,13 +248,14 @@ topic `RBAC_SUBSYSTEM_SYNC` 与 `RBAC_AUDIT_LOG` 都由生产者自动创建，�
 |---|---|
 | `oauth2.client-secret-key` | **中枢两服务必须相同**（子系统不需要）。rbac-backend 用它加密/解密客户端密钥（页面要展示明文给第三方），rbac-oauth 用它解密以校验客户端身份。一旦变更，库中已存的密文都解不开，需在「客户端管理」页面重设密钥 |
 | MySQL 连接 | 中枢两服务是同一个库：`clientdetails` 由 rbac-backend 读写、rbac-oauth 读；`sys_user` 供授权服务的密码模式校验身份与开放接口的用户访问。**子系统各连各的库**（`order_center` / `marketing` / `audit_log`），与中枢库无任何交集 |
-| Redis 连接 | 同一套 Redis（库号也要一致）：`login:session:*` 由 rbac-backend 写、rbac-oauth 读。子系统不连 Redis |
-| `oauth2.client-id` / `client-secret` | 子系统各自的客户端身份，必须与中枢库 `clientdetails` 里的记录一致（订单中心 `order-center` / `order123`，营销系统 `marketing` / `marketing123`，审计系统 `audit` / `audit123`） |
-| `oauth2.redirect-uri` | 子系统前端的回调页，必须与 `clientdetails.redirectUrl` **一模一样**，否则授权码模式换令牌会被拒（订单中心 5176，营销系统 5175，审计系统 5178） |
-| `oauth2.browser-authorize-base-url` | 子系统用来拼**浏览器跳转**的授权地址（默认 `http://localhost:5174`，走授权前端的 `/oauth` 代理）。后端自己调令牌端点仍用 `oauth2.server-url`（7071） |
-| 前端 `.env.development` | 三个子系统前端（订单中心 / 营销系统 / 审计系统）各要配 `VITE_OAUTH_SERVER_URL`（授权服务 7071）：子系统未登录时跳它去登录、统一登出也整页跳向它。改端口/换授权服务地址时改这一项即可 |
+| Redis 连接 | 同一套 Redis（库号也要一致）：SSO 会话 `sso:session:*` 是本服务的登录态源头，rbac-backend 与各子系统靠撤权广播（`*:sso:revoked:*`）感知会话销毁；rbac-backend 另用自己的 `login:perm:user:*` 权限快照与 `rbac:bff-session:*` BFF 会话。子系统各自使用 `{system}:bff-session:*` 与 `{system}:sso:revoked:*`，不存业务数据 |
+| `oauth2.client-id` / `client-secret` | 各系统自己的客户端身份，必须与中枢库 `clientdetails` 里的记录一致（RBAC 管理后台 `rbac-admin` / `rbac123`，订单中心 `order-center` / `order123`，营销系统 `marketing` / `marketing123`，审计系统 `audit` / `audit123`） |
+| `oauth2.redirect-uri` | 各系统前端的回调页，必须与 `clientdetails.redirectUrl` **一模一样**，否则授权码模式换令牌会被拒（RBAC 后台 5173，订单中心 5176，营销系统 5175，审计系统 5178） |
+| `oauth2.browser-authorize-base-url` | 用来拼**浏览器跳转**的授权地址（默认 `http://localhost:5174`，走授权前端的 `/oauth` 代理）。后端自己调令牌端点仍用 `oauth2.server-url`（7071） |
+| 前端 `.env.development` | 各前端都要配 `VITE_OAUTH_SERVER_URL`（授权服务 7071）：未登录时跳它去登录、统一登出也整页跳向它。RBAC 后台为 5173，三个子系统前端为 5175/5176/5178 |
 | `rocketmq.name-server` | 子系统必填（`localhost:9876`）。中枢的 rbac-backend 也用它做**生产者** |
 | `rocketmq.producer.group` | **需要上报审计日志的系统必须配置**（`rbac-backend-producer` / `marketing-backend-producer` / `order-backend-producer`）。不配时 starter 不创建 `RocketMQTemplate`，审计上报会被静默跳过；audit-backend 只消费，不需要生产者组 |
+| `rbac.sso.*`（rbac-oauth） | `kick-topic` / `kick-consumer-group`（强制下线 MQ）、`reconcile-interval-ms`（在线记录对账）、`session-idle-ttl-seconds`（会话空闲超时，默认 604800 秒，每次刷新续期）、`session-max-ttl-seconds`（会话绝对上限，默认 2592000 秒，登录时写入、永不延长）。Redis 实际 TTL 取两者较小值 |
 | `wecom.*`（rbac-oauth） | 企业微信扫码登录配置：`enabled`、`corp-id`、`agent-id`、`secret`（支持 `ENC(...)` 密文，建议用环境变量/Vault）、`callback-url`（必须与企业微信后台登记一致且公网可达）。详见「多 IdP 登录」一节 |
 | `wecom.qr.*`（rbac-oauth） | 扫码登录短链：`enabled`、`ttl-seconds`（二维码有效期）、`confirm-ttl-seconds`（手机确认后电脑端等待时间）、`public-base-url`（手机可访问的短链域名）、`short-path`（默认 `/q`）。票据同时写 MySQL `sys_qr_login_ticket` 与 Redis `oauth2:qr:login:{code}` |
 | `wecom.oauth2-authorize-url`（rbac-oauth） | 手机扫码后的企业微信网页授权地址，默认 `https://open.weixin.qq.com/connect/oauth2/authorize`，使用 `snsapi_base` 授权码流程 |
@@ -262,7 +263,7 @@ topic `RBAC_SUBSYSTEM_SYNC` 与 `RBAC_AUDIT_LOG` 都由生产者自动创建，�
 | `idp.directory-sync.*`（rbac-backend） | 通讯录/部门同步：`enabled`、`providers`（wecom,dingtalk,mock，可多个）、`push-token`（推送共享密钥）、`mock-enabled`、`cron`、`root-dept-id`、`create-users`、`default-role-keys`、`username-prefix`，以及企业微信/钉钉的企业 ID 与 Secret |
 | `idp.outbound.*`（rbac-backend） | **RBAC → 企业微信/钉钉** 反向推送：`enabled` 总开关、`providers`（`wecom`/`dingtalk`/`mock`，可多个）、`max-retries`、`process-interval-ms`；`wecom-corp-id` + `wecom-secret`、`dingtalk-app-key` + `dingtalk-app-secret`、`dingtalk-corp-id`（身份映射用企业 ID）。也可用环境变量 `IDP_OUTBOUND_ENABLED`、`IDP_OUTBOUND_PROVIDERS`、`WECOM_*`、`DINGTALK_*` 配置 |
 
-`jwt.secret` 生产环境务必更换，长度 ≥ 32 字节。
+`oauth2.*` 里的客户端密钥与回调地址必须与库中 `clientdetails` 一致；`oauth2.client-secret-key` 生产环境务必更换（两端同步）。
 
 ### 4. 启动五个后端
 
@@ -286,16 +287,17 @@ cd rbac-frontend      && npm install && npm run dev    # 管理后台：http://l
 cd rbac-oauth-web     && npm install && npm run dev    # 授权流程页：http://localhost:5174
 cd order-frontend     && npm install && npm run dev    # 订单中心：http://localhost:5176
 cd marketing-frontend && npm install && npm run dev    # 营销系统：http://localhost:5175
-cd audit-frontend     && npm install && npm run dev    # 审计日志系统：http://localhost:5178
+
+cd audit-frontend     && npm install && npm run dev    # 审计日志系统：
 ```
 
-- 管理后台 `http://localhost:5173`：`/api` 代理到 rbac-backend（7070）
+- 管理后台 `http://localhost:5173`：`/api` 代理到 rbac-backend（7070）。**没有自己的登录表单**，未登录会跳到授权服务的登录页（5174），登录完经 `/oauth/callback` 回到本系统
 - 授权流程页 `http://localhost:5174`：`/oauth` 原样代理到 rbac-oauth（7071）——授权码/隐式模式靠浏览器跳转与原生表单提交，必须与授权端点同源，Cookie 才带得上
 - 订单中心 `http://localhost:5176`：`/api` 代理到 order-backend（7073）。**没有自己的登录页**，未登录会直接去授权服务的登录页（5174），登录完自动回到本系统
 - 营销系统 `http://localhost:5175`：`/api` 代理到 marketing-backend（7072）。同上
 - 审计日志系统 `http://localhost:5178`：`/api` 代理到 audit-backend（7074）。同样没有登录页，登录走同一套 SSO
 
-> 令牌存在 `localStorage`，每个前端用自己的键名（`rbac_*` / `order_*` / `marketing_*` / `audit_*`），因此**五个前端可以同时开在同一个浏览器里互不干扰**。登录态则由 rbac-oauth 的会话 Cookie 共享：登录过一次之后，再访问另一个子系统会**跳过登录页、也跳过授权确认页**（各子系统客户端的 `autoApproveScopes` 已放行 `read`），直接落地。
+> 四个系统统一采用 **BFF**：令牌保存在各自后端 Redis（`{system}:bff-session:*`），浏览器只有独立的 HttpOnly 会话 Cookie（`rbac_bff_session` / `order_bff_session` / `marketing_bff_session` / `audit_bff_session`），OAuth 令牌一律不下发。因此**五个前端仍可以同时开在同一个浏览器里互不干扰**。登录态则由 rbac-oauth 的会话 Cookie 共享：登录过一次之后，再访问另一个系统会**跳过登录页、也跳过授权确认页**（各系统客户端的 `autoApproveScopes` 已放行 `read`），直接落地。RBAC 管理后台（5173）同样适用：先登录订单中心，再打开后台也不需要再登录。
 
 ### 6. 默认账号
 
@@ -310,9 +312,9 @@ cd audit-frontend     && npm install && npm run dev    # 审计日志系统：ht
 
 | 模块 | 方法 | 路径 | 说明 |
 |---|---|---|---|
-| 认证 | POST | `/auth/login` | 登录，返回 Access Token + Refresh Token |
-| 认证 | POST | `/auth/refresh` | 用 Refresh Token 换取新的 Access Token（Access 过期时前端自动调用） |
-| 认证 | POST | `/auth/logout` | 登出，删除会话 |
+| 认证 | GET | `/auth/sso-login` | 无（白名单）：拼接统一授权地址并 **302** 过去（前端只导航，地址里不含客户端密钥） |
+| 认证 | POST | `/auth/code` | 无（白名单）：授权码模式，用回调带回来的 code + state 换令牌并建立 BFF 会话；state 一次性（Redis），重放返回 1032 |
+| 认证 | POST | `/auth/logout` | 登出：销毁授权服务的 SSO 会话与本系统的 BFF 会话，并写操作日志 |
 | 认证 | GET | `/auth/info` | 当前用户信息 + 权限 + 菜单树 |
 | 认证 | DELETE | `/auth/kick/{userId}` | 强制用户下线（`system:user:edit`；禁止踢自己 1019，目标不存在 1003） |
 | 认证 | PUT | `/auth/password` | 自助修改密码（校验原密码，**保留当前会话**，不会把自己踢下线） |
@@ -493,9 +495,9 @@ IDP_DIRECTORY_SYNC_PUSH_TOKEN=test-token \
 | 模块 | 方法 | 路径 | 权限点 |
 |---|---|---|---|
 | 登录 | POST | `/auth/login` | 无（白名单）：密码模式，账号密码转交 rbac-oauth 校验 |
-| 登录 | POST | `/auth/code` | 无（白名单）：授权码模式，用回调带回来的 code 换令牌 |
-| 登录 | GET | `/auth/sso-login` | 无（白名单）：拼接授权地址并 **302** 过去（前端只导航，拿不到 client_secret） |
-| 登录 | POST | `/auth/refresh` | 无（白名单）：刷新令牌 |
+| 登录 | POST | `/auth/code` | 无（白名单）：授权码模式，用回调带回来的 code + state 换令牌；state 一次性（Redis），重放返回 2020 |
+| 登录 | GET | `/auth/sso-login` | 无（白名单）：拼接授权地址并 **302** 过去（前端只导航，地址里不含客户端密钥） |
+| 登录 | POST | `/auth/logout` | 无（白名单）：销毁授权服务的 SSO 会话、删除本系统 BFF 会话并清 Cookie |
 | 登录 | GET | `/auth/info` | 需登录：返回身份 + 角色 + 权限点 + 菜单树 |
 | 订单 | GET | `/order/page` | `order:order:list` |
 | 订单 | GET | `/order/{id}` | `order:order:query` |
@@ -511,9 +513,9 @@ IDP_DIRECTORY_SYNC_PUSH_TOKEN=test-token \
 
 | 模块 | 方法 | 路径 | 权限点 |
 |---|---|---|---|
-| 登录 | POST | `/auth/code` | 无（白名单）：授权码模式换令牌（**不提供密码模式**） |
+| 登录 | POST | `/auth/code` | 无（白名单）：授权码模式换令牌（**不提供密码模式**）；code + state，state 一次性（Redis），重放返回 2020 |
 | 登录 | GET | `/auth/sso-login` | 无（白名单）：拼接授权地址并 302 |
-| 登录 | POST | `/auth/refresh` | 无（白名单）：刷新令牌 |
+| 登录 | POST | `/auth/logout` | 无（白名单）：销毁授权服务的 SSO 会话、删除本系统 BFF 会话并清 Cookie |
 | 登录 | GET | `/auth/info` | 需登录：身份 + 角色 + 权限点 + 菜单树 |
 | 审计 | GET | `/audit/page` | `audit:log:list`：分页查询，支持 `source` / `module` / `action` / `operatorName` / `success` / `startTime` / `endTime` |
 | 审计 | GET | `/audit/{id}` | `audit:log:query`：单条详情（含完整 `requestParams`） |
@@ -524,24 +526,19 @@ IDP_DIRECTORY_SYNC_PUSH_TOKEN=test-token \
 
 ### 1. 无感知续期
 
-Access Token 有效期短（默认 15 分钟），过期后前端拦截 401，自动用 Refresh Token 换新并重放原请求，用户无感知。
+> 四个系统统一采用 BFF：令牌保存在各自后端 Redis（`{system}:bff-session:*`），浏览器只有 HttpOnly 会话 Cookie。Access Token 过期后由后端用 Refresh Token 静默续期，前端与浏览器都不接触令牌；并发请求由后端用 Redis 锁做「单飞」，保证同一张一次性 Refresh Token 只提交一次。登录后可在 DevTools 中确认 Cookie 带 `HttpOnly`、`localStorage` 里没有任何令牌。
 
-1. 用 admin 登录，打开开发者工具 Network，此时 `localStorage` 中会有 `rbac_access_token` 与 `rbac_refresh_token`。
-2. 等 Access Token 过期后点击任意菜单：该请求先返回 401，紧接着自动发起一次 `POST /auth/refresh`，随后原请求被重放并成功——页面无跳转、无提示。
-3. 并发多个请求同时 401 时只会触发一次刷新（单例 Promise 队列）。
-
-> 快速验证（不必等 15 分钟）：
-> ```bash
-> mvn spring-boot:run -Dspring-boot.run.arguments=--jwt.access-token-expire=30000
-> ```
-> 登录后等 30 秒再点菜单，Network 中即可看到 401 → `/auth/refresh` → 重放 的完整链路。
+> 快速验证：把 `clientdetails` 里某个客户端的 `access_token_validity` 临时改成 30 秒，
+> 重新登录后等 30 秒再点菜单：请求仍然成功（后端已静默续期），
+> Redis 里对应的 `{system}:bff-session:*` 记录中 `accessToken` / `refreshToken` 已换成新值。
+> 改完记得改回 3600。
 
 ### 2. 离职立刻失效
 
 1. 用 zhangsan 在浏览器 A 登录，能正常访问仪表盘。
 2. 用 admin 在浏览器 B 的「用户管理」中点击 zhangsan 的**离职**（也可点**停用**）。
 3. 回到浏览器 A 点击任意菜单，请求立即返回 401 并跳转登录页——无需等 Token 过期。
-4. 即使拿旧的 refreshToken 调 `/auth/refresh` 也会被拒绝（会话已删除）。
+4. 各系统手里的旧 access token 下一次请求即被拒绝，刷新令牌也换不出新的（SSO 会话已删除）。
 5. zhangsan 再尝试登录，会分别提示「该用户已离职」或「账号已停用」；把状态改回**在职**后即可重新登录。
 
 ### 3. 动态修改角色权限
@@ -616,10 +613,10 @@ SELECT COUNT(*) FROM sys_role_menu rm JOIN sys_role r ON rm.role_id = r.id WHERE
 
 3. **授权码模式** —— 需要浏览器：
 
-   1. 打开下面的地址（注意 `client_secret` 是本项目要求在授权地址上携带并校验的，标准 OAuth2 不需要）：
+   1. 打开下面的地址（授权端点按标准只认 `client_id`，不接收 `client_secret`）：
 
       ```
-      http://localhost:7071/oauth/authorize?response_type=code&client_id=rbac-third-party&client_secret=client123&redirect_uri=http://localhost:7071/oauth/test-callback&scope=read&state=abc
+      http://localhost:7071/oauth/authorize?response_type=code&client_id=rbac-third-party&redirect_uri=http://localhost:7071/oauth/test-callback&scope=read&state=abc
       ```
 
    2. 未登录时会 302 到 rbac-oauth-web 的登录页（`http://localhost:5174/login`），用 admin / admin123 登录。
@@ -702,7 +699,7 @@ SELECT COUNT(*) FROM sys_role_menu rm JOIN sys_role r ON rm.role_id = r.id WHERE
 
 **统一登出（核心）**
 
-4. 在订单中心点「退出登录」→ 停在授权服务的登录页；`sso:session:admin`、`sso:browser:admin`、`oauth2:auth:*` 都被删掉了。
+4. 在订单中心点「退出登录」→ 停在授权服务的登录页；`sso:session:admin`、`sso:browser:admin`、`oauth2:auth:*` 都被删掉了，待授权请求缓存（`oauth2:reqcache:*` 与 `RBAC_OAUTH2_REQ` Cookie）也一并清理。
 5. **旧令牌下一请求即失效**：
 
    ```bash
@@ -718,7 +715,7 @@ SELECT COUNT(*) FROM sys_role_menu rm JOIN sys_role r ON rm.role_id = r.id WHERE
    # 400 invalid_grant：登录会话已结束，请重新登录
    ```
 
-7. **登录态也一起没了**：直接打开 `http://localhost:7071/oauth/authorize?response_type=code&client_id=order-center&client_secret=order123&redirect_uri=http://localhost:5176/oauth/callback&scope=read` → 会被要求重新登录（若登录态还在，这里会直接发码）。
+7. **登录态也一起没了**：直接打开 `http://localhost:7071/oauth/authorize?response_type=code&client_id=order-center&redirect_uri=http://localhost:5176/oauth/callback&scope=read` → 会被要求重新登录（若登录态还在，这里会直接发码）。
 8. **跨浏览器**：两个浏览器各登录一次同一个账号，在其中一个登出 —— 另一个的令牌**立刻 401**（SSO 会话按**用户**存，与浏览器无关）。另一个浏览器里那份 Cookie 不会被物理删除，但它指向的登录态已经不存在，无法再静默登录。
 9. **跨标签页**：把订单中心与营销系统各开一个标签页，在营销那边登出，再**切回订单中心的标签页** —— 会被拦到登录页（靠切回时的惰性校验），不用等你去点下一个按钮。
 10. **两种登录方式都试一遍**：子系统的授权码登录（唯一入口）与第三方直接调密码模式，登出链路对两者都必须生效。密码模式那条尤其容易漏 —— 浏览器里没有授权服务的登录态，登出请求只能靠前端那一步「带令牌的 fetch」认人（见下文第 2 条）。
@@ -726,7 +723,7 @@ SELECT COUNT(*) FROM sys_role_menu rm JOIN sys_role r ON rm.role_id = r.id WHERE
 **不受影响的流程**
 
 11. `client_credentials` 令牌照常可用，且**不受统一登出影响**（没有用户，也就没有 SSO 会话）：`curl -u rbac-third-party:client123 -d grant_type=client_credentials http://localhost:7071/oauth/token` 得到的令牌，调 `/openapi/userinfo` 仍返回 200。
-12. RBAC 管理后台自身的登录态（`login:session:*`）与 SSO 完全独立：后台「退出登录」只影响后台，不再连带清 SSO 会话。
+12. RBAC 管理后台自身也走统一 SSO（`rbac-admin` 客户端）：后台「退出登录」会先写操作日志，再调用 rbac-oauth 的统一登出删除 SSO 会话 —— 后台与所有子系统一起下线，不再是与 SSO 相互独立的第二套登录态。
 
 ### 9. 审计日志系统端到端
 
@@ -790,9 +787,9 @@ RBAC 授权服务器签发的 access token 是**自包含 JWT**（RSA 签名，�
 在令牌之外加一层 Redis **SSO 会话**，把令牌绑到会话上：
 
 ```
-sso:session:{username}   SSO 会话 JSON，存在 = 令牌可用                TTL 7 天
-sso:browser:{username}   该用户浏览器登录态的 token                     TTL 7 天
-sso:uid:{userId}         userId → username 反查索引                    TTL 7 天
+sso:session:{username}   SSO 会话 JSON，存在 = 令牌可用                TTL = min(空闲超时, 绝对上限剩余)
+sso:browser:{username}   该用户浏览器登录态的 token                     同上
+sso:uid:{userId}         userId → username 反查索引                    同上
 oauth2:auth:{token}      授权服务的登录态（精简认证信息，见下）           TTL 30 分钟
 oauth2:code:{code}       未兑换的授权码（OAuth2Authentication 序列化）   TTL 默认 300 秒（oauth2.authorization-code-ttl-seconds）
 ```
@@ -813,7 +810,7 @@ oauth2:code:{code}       未兑换的授权码（OAuth2Authentication 序列化�
 | 每个授权请求 | 凭 Cookie 还原登录态 | `OauthAuthCookieFilter` |
 | 统一登出 | 删 SSO 会话 + 删登录态 | `SsoLogoutController` / `OauthAuthStore` |
 
-「删会话即下线」这套做法沿用了 rbac-backend 管理端登录态（`login:session:*`）的既有模式，只是把作用域从「一个系统」放大到「所有子系统」。
+「删会话即下线」这套做法最初来自 rbac-backend 管理端自签令牌时代的会话模型（该后台现已并入统一 SSO），这里把作用域从「一个系统」放大到「所有系统」。
 
 **为什么会话键用 username 而不是 userId**：令牌里唯一权威的身份就是 `user_name` 声明 —— 服务端每次校验只拿得到令牌本身，而 `user_name` 在访问令牌与刷新令牌里**始终存在**。用它作键，校验路径就是一次 Redis GET、不查库；刷新路径也能直接从刷新令牌的认证对象取到同一个值，不必反查 `sys_user` 补 userId。子系统本来就按 `user_name` 认人，键与之一致也避免了「会话按 userId、业务按 username」两套身份对不上。
 
@@ -843,7 +840,7 @@ oauth2:code:{code}       未兑换的授权码（OAuth2Authentication 序列化�
 
 5. **`client_credentials` 令牌不受影响。** 它没有用户、没有 SSO 会话，统一登出管不着它 —— 这是期望行为：机器身份不该因为某个人的登录状态变化而失效。
 
-6. **跨源的子系统不会「被告知」登出，靠惰性校验补上体感。** 服务端是**立即**失效的，但各子系统跑在不同的源（5175 / 5176）上，彼此之间没有任何通道（localStorage / BroadcastChannel 都按源隔离）。默认表现是「下次请求才被踢回登录页」—— 用户切回订单中心、只是看着不点任何东西的话，看到的还是登录状态的页面，很容易以为登出没生效。所以各子系统前端都在布局里挂了 `utils/sessionWatch.js`：**切回本标签页（`visibilitychange` 变可见，或用 `focus` 兜住两窗口并排的情况）时，悄悄请求一次登录态接口**。请求走同一个 axios 实例，因此复用了既有的处理链 —— access token 只是过期时静默续期（用户无感），会话已结束则清凭证跳登录页。
+6. **跨源的子系统不会「被告知」登出，靠惰性校验补上体感。** 服务端是**立即**失效的，但各子系统跑在不同的源（5175 / 5176）上，彼此之间没有任何通道（localStorage / BroadcastChannel 都按源隔离）。默认表现是「下次请求才被踢回登录页」—— 用户切回订单中心、只是看着不点任何东西的话，看到的还是登录状态的页面，很容易以为登出没生效。所以各系统前端都在布局里挂了 `utils/sessionWatch.js`：**切回本标签页（`visibilitychange` 变可见，或用 `focus` 兜住两窗口并排的情况）时，悄悄请求一次登录态接口**。请求走同一个 axios 实例，因此复用了既有的处理链 —— 令牌过期由后端静默续期（用户无感），会话已结束则清 Cookie 跳登录页。
    - 为什么不用轮询：定时轮询会在用户根本没看这个页面时也持续发请求，而「切回标签页」这个时机已经覆盖了绝大多数会产生「怎么还登录着」疑问的场景，代价却是零。
    - 同一轮 `visibilitychange` + `focus` 会用 1 秒节流折叠成一次请求。
 
@@ -866,7 +863,7 @@ oauth2:code:{code}       未兑换的授权码（OAuth2Authentication 序列化�
 
 三个设计取舍：
 
-- **授权地址只由后端持有**：子系统用 `GET /auth/sso-login`，由后端拼好地址并 302；前端只做一次导航，**接口不返回任何带 `client_secret` 的地址**，密钥只存在于服务端与那一次 302 响应头里。
+- **授权地址只由后端生成**：子系统用 `GET /auth/sso-login`，由后端拼好地址并 302；前端只做一次导航。地址里只有 `client_id / redirect_uri / scope / state`，**不含 `client_secret`** —— 密钥只用于后端调令牌端点时的 HTTP Basic 认证。
 - **没有登录页意味着出错时可能「无落脚点」**，所以取授权地址失败时会停在跳转页给出原因与「重试」按钮，而不是白屏或跳到一个空地址。
 - **登出只有点登出的那个标签页会立刻跳走**；其他标签页要等下一次请求（或切回来时的惰性校验）才发现自己已被踢，然后同样落到 5174/login。
 
@@ -905,13 +902,13 @@ oauth2:code:{code}       未兑换的授权码（OAuth2Authentication 序列化�
 ```
 未登录访问 5176
   → 子系统的 /login（不是表单，是个跳转页）
-  → 导航到后端 GET /auth/sso-login：由后端拼好授权地址并 302（地址带 client_secret，只能服务端持有）
+  → 导航到后端 GET /auth/sso-login：由后端拼好授权地址并 302（只有 client_id / redirect_uri / scope / state）
   → 授权端点发现没登录 → 302 到授权服务的登录页 http://localhost:5174/login
   → 输入账号密码 → 302 回刚才那次授权 → 凭会话直接发码（autoApproveScopes 已放行 read）
-  → 订单中心 /oauth/callback 用 code 换令牌并存 localStorage → 落地在订单中心
+  → 订单中心 /oauth/callback 用 code 换令牌（令牌保存在子系统后端 Redis，浏览器只拿 HttpOnly 会话 Cookie）→ 落地在订单中心
 ```
 
-**前端全程不接触 `client_id` / `client_secret`**：授权地址由后端拼接、由后端发 302，前端只做一次「导航」。以前那个「把授权地址作为 JSON 返回给前端」的接口（`/auth/authorize-url`）已经下线 —— 那会把密钥交给前端代码、浏览器网络面板和前端日志。
+**前端全程不接触授权地址**：它由后端拼接、由后端发 302，前端只做一次「导航」。地址里不含客户端密钥，密钥只用于后端调令牌端点；以前那个「把授权地址作为 JSON 返回给前端」的接口（`/auth/authorize-url`）已经下线。
 
 已经登录过（浏览器里还有授权服务的会话）时，第二步之后的登录页**根本不会出现**：授权端点直接发码，用户就静默落进子系统 —— 「登录一次，进第二个子系统免登录」靠的就是这个会话。
 
@@ -923,7 +920,7 @@ oauth2:code:{code}       未兑换的授权码（OAuth2Authentication 序列化�
 > 密码模式为什么从子系统前端撤掉：那个流程是「子系统后端带客户端凭证去换令牌」，**浏览器全程没参与**，因此浏览器里不会留下授权服务的登录态。这让统一登出多出一整类特例（纯跳转式登出认不出密码模式登录的用户，详见下文「SSO 会话与统一登出」第 2 条）。所有子系统登录都走授权码后，浏览器一定有登录态，登出链路只剩一种形态。
 > 后端的密码模式与 `/auth/login` 仍然保留，供第三方接入与联调使用。
 
-子系统前端把令牌存在 `localStorage`（键名带子系统前缀，互不覆盖）。之后每个请求带 `Authorization: Bearer`，子系统后端取令牌调 `/oauth/check_token` 换回 `user_name`，**仅凭用户名**去本地的同步表找用户与权限 —— 令牌本身不携带权限。
+子系统采用 **BFF**：后端换到的令牌只写进本服务的 Redis（`{system}:bff-session:{sessionId}`），浏览器拿到的是一个 HttpOnly 会话 Cookie（`{system}_bff_session`）。之后每个请求带 Cookie，子系统后端从会话里取 access token **本地验签**（公钥来自 `/oauth/token_key`），**仅凭用户名**去本地的同步表找用户与权限 —— 令牌本身不携带权限；令牌过期时由后端用同一会话里的 refresh token 静默续期。
 
 > 换回用户名之后还有一道校验：这个用户名必须存在于本子系统的同步表里且状态为在职，否则直接拒掉（2004）。令牌有效只说明「他是 RBAC 的合法用户」，不等于「他被授权使用本子系统」。
 
@@ -954,7 +951,7 @@ RBAC (rbac-backend)                               子系统 (order-backend)
 ### 判权：每个请求实时查同步表
 
 ```
-Bearer 令牌 → /oauth/check_token → user_name → order_user
+HttpOnly Cookie → 会话里的 AT → 本地验签 → user_name → order_user
            → order_role_menu ⋈ order_user_role ⋈ order_menu.perms
            → @PreAuthorize("@ss.hasPerm('order:order:add')")
 ```
@@ -990,18 +987,18 @@ Bearer 令牌 → /oauth/check_token → user_name → order_user
 2. 中枢库里登记 OAuth2 客户端：`clientdetails` 一行（appId、AES 密文密钥、grantTypes、**redirectUrl 必须与前端回调页完全一致**）。
 3. 新库：`*-schema.sql` 建 4 张同步表（结构照抄 `order-schema.sql`，表名前缀换掉）+ 自己的业务表。
 4. 新后端：照抄 `order-backend` —— 改包名、库名、端口、`oauth2.client-id/client-secret/redirect-uri`、`SUBSYSTEM_CODE`、消费组名，以及权限点前缀；同步消费需要重建 4 张同步表，权限查询使用「用户角色 ⋈ 角色菜单」。
-5. 新前端：照抄 `order-frontend` —— 改端口、`/api` 代理目标、`localStorage` 键名、`VITE_OAUTH_SERVER_URL`、品牌文案；业务页的目录路径必须与 `sys_subsystem_menu.component` 一一对应。登录相关三块照抄即可，不用自己实现：
+5. 新前端：照抄 `order-frontend` —— 改端口、`/api` 代理目标、`VITE_OAUTH_SERVER_URL`、品牌文案；业务页的目录路径必须与 `sys_subsystem_menu.component` 一一对应。登录相关三块照抄即可，不用自己实现：
    - `views/login/index.vue` —— 不是表单，是「导航到后端 `/auth/sso-login`（由它 302 到授权服务登录页）」的页面；
-   - `views/oauth/callback.vue` —— 用 code 换令牌；
+   - `views/oauth/callback.vue` —— 用 code 建立 BFF 会话；
    - `utils/sso.js` / `utils/sessionWatch.js` —— 统一登出与「切回标签页校验登录态」。
 6. （可选）接入审计日志：照抄任一上报端（`marketing-backend` 或 `order-backend`）的 `common/OperLog`、`aspect/OperLogAspect`、`mq/AuditLogMessage`、`mq/AuditLogPublisher`、`util/AuditParamUtils` 与 `util/WebUtils`，改包名并把 `AuditLogPublisher.SOURCE` 设为本系统的来源标识；给 CRUD 接口加 `@OperLog(module, action, description)`；配置 `rocketmq.producer.group`。登录/登出接口**不要**加注解。审计系统侧无需改动，`source` 直接按新值落库。
 
 ## 拆分后的共享约定
 
-中枢两个后端是独立的 Spring Boot 进程，但**共用同一个 MySQL 库与同一套 Redis**；子系统则各自独立一个库、不连 Redis，只通过 **MQ 与授权服务器**与中枢发生关系。跨进程的耦合点只有下面几处，改动时需两边同步：
+中枢两个后端是独立的 Spring Boot 进程，但**共用同一个 MySQL 库与同一套 Redis**；子系统则各自独立一个库，只通过 **MQ 与授权服务器**与中枢发生关系（Redis 只放本系统自己的数据：授权 state、登录用户/权限快照、撤权标记与 BFF 会话，键名按系统前缀隔离）。跨进程的耦合点只有下面几处，改动时需两边同步：
 
 - **客户端密钥**：`clientdetails.appSecret` 在库里是 AES 密文，中枢两服务都用 `oauth2.client-secret-key` 加解密 —— rbac-backend 写入时加密、回显时解密（页面要展示明文给第三方），rbac-oauth 解密以校验客户端身份。**两处配置必须一致**，否则客户端会全部认证失败。子系统不需要这个配置项（它们只持有自己的明文密钥）。
-- **Redis 键**：`login:session:{userId}`（当前会话）、`login:refresh:{sessionId}`、`login:perm:{sessionId}`（权限快照）由 rbac-backend 维护。rbac-oauth 只读 `login:session:*`，并在第三方经 `/openapi` 停用/离职用户时删除这三个键（立即下线）。键名变更需两边同步。子系统不使用 Redis —— 它的「会话」就是授权服务器签发的令牌。
+- **Redis 键**：`login:perm:user:{username}`（权限快照，由 rbac-backend 独占维护）只在本系统内使用。登录态本身在 rbac-oauth 的 `sso:session:*` 里；第三方经 `/openapi` 停用/离职用户时，rbac-oauth 直接删除该用户的 SSO 会话（同时兜底关闭 `sys_sso_session` 在线记录），后台与所有子系统即刻下线。子系统只把 Redis 用于授权 state —— 它的「会话」仍然是授权服务器签发的令牌。
 - **SSO 会话键（全部由 rbac-oauth 自己维护）**：`sso:session:{username}`（会话本体，存在=令牌可用）、`sso:browser:{username}`（该用户浏览器登录态的 token）、`sso:uid:{userId}`（userId → username 反查）、`oauth2:auth:{token}`（登录态本体，精简 JSON）、`oauth2:code:{code}`（未兑换的授权码，默认 5 分钟 TTL）。rbac-backend 不读写这批键 —— 统一登出只由授权服务负责，细节见「SSO 会话与统一登出」一节。
 - **库表**：`clientdetails` 由 rbac-backend 读写（客户端管理），rbac-oauth 只读（加载客户端做认证）；`sys_user` 两边都读 —— rbac-oauth 用它做密码模式的身份校验与开放接口的用户访问。子系统**不读中枢的任何表**。
 - **MQ 下发契约**：topic `RBAC_SUBSYSTEM_SYNC`、tag = 子系统编码、消息体字段名（`subsystemCode` / `menus` / `roleMenus` / `users` / `userRoles`）。中枢的生产者（`SubsystemSyncService`）与子系统的消费者（`SubsystemSyncConsumer` + `*-SyncService`）是**两份各自独立的代码**，字段名或语义变更必须两边同步改 —— 这里没有共享库或共享 DTO 来兜住。见「子系统接入」。
@@ -1012,8 +1009,10 @@ Bearer 令牌 → /oauth/check_token → user_name → order_user
 
 ## 说明与注意事项
 
-- **两个有效期**：`jwt.access-token-expire`（默认 15 分钟）是 Access Token 的轮换周期，过期后由前端调 `/auth/refresh` 续期；`jwt.refresh-token-expire`（默认 7 天）既是 Refresh Token 的有效期，也是 Redis 会话的有效期 —— 即登录态的真正上限。JWT 的 `exp` 只决定「该续期了」，真正的准入判断是 Redis 会话，所以删除会话（离职/停用/踢下线）能立即生效，而不必等 Token 过期。
-- **登录快照与失效**：用户信息、权限、角色在登录时固化为会话快照（`login:perm:{sessionId}`，TTL 与 Refresh Token 一致），之后每个请求直接由快照重建认证主体，不再访问数据库。为保证「改了立刻生效」，以下操作会**精准失效**受影响用户的快照，使其下一次请求重建：角色授权变更（失效该角色下全部用户）、用户资料修改、用户角色变更，以及会话删除（登出/停用/离职/踢下线/重置密码，随会话一并清理）。只有菜单树仍实时查库，因此改菜单名称立即反映。
+- **两个有效期**：Access Token 与 Refresh Token 的有效期都登记在 `clientdetails`（`access_token_validity` 默认 30 分钟、`refresh_token_validity` 默认 7 天），由 rbac-oauth 签发时决定。四个系统的 Access Token 过期后都由后端静默续期（BFF，浏览器不接触令牌）。真正的准入判断是 SSO 会话 `sso:session:{username}`（空闲超时默认 7 天、绝对上限默认 30 天，见 `rbac.sso.session-*`），所以删除会话（登出/停用/离职/踢下线）能立即生效，而不必等 Token 过期。各系统的 BFF 会话另有自己的空闲 7 天 + 绝对 7 天上限（`rbac.bff.session-*`）。
+- **Refresh Token 一次性使用**：每次刷新都会换发新值，旧值立即作废（携带 sid 绑定的 `sso:refresh-sid:{sha256(token)}` 被原子消费，再提交即 `invalid_grant`）。Redis 里只存令牌的 SHA-256，不存令牌本身；`sso:refresh-sid:user:{username}` 记录该用户名下所有绑定，登出或会话轮换时一并清理，不会残留到 TTL。**旧的 Access Token 不受影响**，仍在自己的 `exp` 前可用 —— 这是 JWT 无状态校验的预期行为，缩小窗口靠短的有效期而非逐令牌撤销。多标签页并发刷新时，后端用 Redis 锁做「单飞」：只有一个请求真正去换令牌，其余请求复用结果，因此不会因为并发提交同一张一次性 Refresh Token 触发复用检测。
+- **授权 state 防重放**：`/auth/sso-login` 生成随机 state 写入 Redis（`oauth2:state:{clientId}:{state}`，30 分钟 TTL），**同时下发 HttpOnly、SameSite=Lax 的 `RBAC_OAUTH_STATE_{CLIENT}` Cookie**；回调页从地址栏取出 state 后随 `{code, state}` 提交给 `/auth/code`。服务端先要求请求体 state 与 Cookie 一致（防登录 CSRF：别人塞进受害者浏览器的 code+state 没有对应 Cookie），再用 Lua 原子消费 Redis 记录（防重放）；成功后立即清除 Cookie。过期、伪造、跨浏览器或重放一律拒绝（RBAC 1032 / 子系统 2020）。state 由后端生成，前端不参与生成。
+- **登录快照与失效**：用户信息、权限、角色在首次建立登录态时固化为快照（`login:perm:user:{username}`，TTL 7 天），之后每个请求直接由快照重建认证主体，不再访问数据库。为保证「改了立刻生效」，以下操作会**精准失效**受影响用户的快照，使其下一次请求重建：角色授权变更（失效该角色下全部用户）、用户资料修改、用户角色变更、强制下线、停用/离职、重置密码。只有菜单树仍实时查库，因此改菜单名称立即反映。
   **唯一的例外**：用 SQL 直接改 `sys_menu` / `sys_role_menu`（如执行增量脚本）绕过了失效逻辑，已登录用户读到的仍是旧快照，需重新登录，或按 [upgrade-2026-10-13-audit.sql](sql/upgrade-2026-10-13-audit.sql) 顶部的说明清一次 `login:perm:*`。
 - **密码散列不进快照**：`SysUser.password` 标注了 `@JsonIgnore`，快照里没有它。需要校验密码的场景（自助改密）因此单独查一次库 —— 顺带保证校验的是「库里此刻的散列」，而不是会话建立时的旧值。
 - **停用/离线的即时性靠删会话，不靠快照**：用户被停用或标记离职时删掉的是 Redis 会话，认证过滤器比对会话时就把请求挡在门外，所以即便快照里的 `status` 是登录时的旧值，也依然立刻下线。
@@ -1029,4 +1028,4 @@ Bearer 令牌 → /oauth/check_token → user_name → order_user
 - **MQ 下发是幂等的**：消息体是全量快照、消费语义是清空重建，所以重复投递、乱序投递都不会把数据搞乱 —— 最后一条消息就是最终状态。代价是每次下发都要重写整张同步表，菜单与用户规模大时应改为增量（当前规模下不值得）。
 - **子系统里的唯一键同样要「腾」**：`order_info.order_no`（以及营销侧的 `activity_code` / `task_code`）都是**逻辑删除**，删除时会把被占用的编号改名为 `原名_deleted_{id}`，否则那个编号永远无法再使用。机制与中枢一致，见 [UniqueKeyUtils](order-backend/src/main/java/com/example/order/util/UniqueKeyUtils.java)。
 - **登录页停留超时不会丢授权上下文**：授权请求缓存（Redis `oauth2:reqcache:*` + Cookie `RBAC_OAUTH2_REQ`）只有 30 分钟。用户若在登录页停留超过这个时间，缓存会过期；为此未登录入口点会把原始授权地址作为 `returnTo` 交给登录页（`http://localhost:5174/login?returnTo=...`），登录页提交表单时原样带回，成功处理器在缓存为空时据此跳回 `/oauth/authorize`，因此等待多久都能回到子系统。`returnTo` 在服务端只接受以 `/oauth/` 开头的相对路径，绝对地址、`//host` 与 CRLF 一律拒绝，避免开放重定向；登录失败跳回 `?error=1` 时前端用 `sessionStorage` 保留该值。
-- **授权码模式的 `state` 目前只在发起时写入 `sessionStorage`，回调页未做校验**：订单中心、营销系统、审计日志系统三处实现相同（见各自 `views/login/index.vue` 与 `views/oauth/callback.vue`）。由于本项目在授权地址上额外强制校验 `client_secret`，实际风险有限，但标准做法应在回调页比对 `state` 再换令牌 —— 要收紧的话各前端需一起改。
+- **授权码模式的 state 已做一次性校验与浏览器绑定**：`/auth/sso-login` 由后端生成 state（Redis 30 分钟 TTL），并下发 HttpOnly、SameSite=Lax 的 `RBAC_OAUTH_STATE_{CLIENT}` Cookie；回调页把地址栏里的 state 随 `{code, state}` 提交给 `/auth/code`，服务端先比对 Cookie 再用 Lua 原子消费 Redis 记录，成功后清除 Cookie。伪造、跨浏览器、过期与重放一律拒绝（RBAC 1032 / 子系统 2020）。

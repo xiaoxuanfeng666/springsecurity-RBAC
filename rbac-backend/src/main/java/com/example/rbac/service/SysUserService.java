@@ -15,7 +15,6 @@ import com.example.rbac.mapper.SysUserRoleMapper;
 import com.example.rbac.mq.SsoKickPublisher;
 import com.example.rbac.mq.SubsystemSyncService;
 import com.example.rbac.security.PermissionSnapshotStore;
-import com.example.rbac.security.TokenStore;
 import com.example.rbac.util.UniqueKeyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +47,6 @@ public class SysUserService {
     private final SysUserRoleMapper userRoleMapper;
     private final SysUserPostMapper userPostMapper;
     private final PasswordEncoder passwordEncoder;
-    private final TokenStore tokenStore;
     private final PermissionSnapshotStore snapshotStore;
     private final SysOperationLogService logService;
     private final SubsystemSyncService subsystemSyncService;
@@ -226,14 +224,14 @@ public class SysUserService {
     }
 
     /**
-     * 停用/离职导致的下线：删除本系统会话、通知授权服务删除 SSO 会话，并写入审计
+     * 停用/离职导致的下线：失效权限快照、通知授权服务删除 SSO 会话，并写入审计
      * <p>
-     * 只删本系统的 Redis 会话不够 —— 用户在订单中心、营销系统等子系统手里的令牌仍会有效，
+     * 只删本系统的快照不够 —— 用户在订单中心、营销系统等子系统手里的令牌仍会有效，
      * 必须由 rbac-oauth 删掉 SSO 会话，各子系统的下一次 check_token 才会失败。
      */
     private void offlineUser(SysUser user, int status) {
         boolean resigned = status == STATUS_RESIGNED;
-        tokenStore.removeSession(user.getId());
+        snapshotStore.invalidateUser(user.getId());
         ssoKickPublisher.publish(
                 resigned ? SsoKickPublisher.TYPE_RESIGNED : SsoKickPublisher.TYPE_DISABLED,
                 null, user.getId(), user.getUsername(),
@@ -253,14 +251,14 @@ public class SysUserService {
         // 删除前先记下角色：之后要靠它们决定通知哪些子系统
         List<Long> roleIds = getRoleIds(id);
         idpOutboundService.autoEnqueueUser("DELETE", exist);
-        // 先失效登录凭证，再删除数据
-        tokenStore.removeSession(id);
+        // 先失效权限快照，再删除数据
+        snapshotStore.invalidateUser(id);
         ssoKickPublisher.publish(SsoKickPublisher.TYPE_DELETE, null, id, exist.getUsername(), "账号已删除");
         releaseUsername(exist);
         userMapper.deleteById(id);
         sysUserDeptService.deleteByUser(id);
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, id));
-        log.info("用户已删除并失效登录凭证: {}", exist.getUsername());
+        log.info("用户已删除并失效权限快照: {}", exist.getUsername());
         subsystemSyncService.syncForRoles(roleIds);
     }
 
@@ -301,8 +299,8 @@ public class SysUserService {
         update.setId(userId);
         update.setPassword(passwordEncoder.encode(password));
         userMapper.updateById(update);
-        // 重置密码后强制重新登录（本系统会话 + 所有子系统的 SSO 会话）
-        tokenStore.removeSession(userId);
+        // 重置密码后强制重新登录（本系统快照 + 所有子系统的 SSO 会话）
+        snapshotStore.invalidateUser(userId);
         ssoKickPublisher.publish(SsoKickPublisher.TYPE_RESET_PWD, null, userId, user.getUsername(), "密码已重置");
         logService.record(MODULE_USER, AuditAction.RESET_PWD, userId, user.getUsername(), "重置密码，强制下线");
     }

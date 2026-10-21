@@ -24,7 +24,8 @@ public enum ResultCode {
     CODE_INVALID(2005, "授权码无效或已过期，请重新授权"),
     REFRESH_TOKEN_INVALID(2006, "刷新凭证无效，请重新登录"),
     ORDER_NO_EXISTS(2007, "订单编号已存在"),
-    ORDER_NOT_EXIST(2008, "订单不存在");
+    ORDER_NOT_EXIST(2008, "订单不存在"),
+    STATE_INVALID(2020, "登录状态已失效或已被使用，请重新发起登录");
 
     private final Integer code;
     private final String message;

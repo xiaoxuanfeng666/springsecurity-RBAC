@@ -1286,3 +1286,220 @@ JDBC Connection [HikariProxyConnection@391751338 wrapping com.mysql.cj.jdbc.Conn
 <==      Total: 0
 Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@21f62825]
 2026-10-19 09:01:02.429  INFO 43908 --- [nio-7071-exec-1] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=N-slQPcXj6qH, expireAt=2026-10-19T09:06:02.428
+2026-10-19 09:01:13.551  INFO 43908 --- [nio-7071-exec-3] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=LPd59o3XFZtq, expireAt=2026-10-19T09:06:13.551
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@388b0e23] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1656591214 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@388b0e23]
+2026-10-19 09:02:02.155  INFO 43908 --- [nio-7071-exec-8] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=-h_DlvP2gkya, expireAt=2026-10-19T09:07:02.154
+2026-10-19 09:02:13.545  INFO 43908 --- [nio-7071-exec-9] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=TrdZYCNbNint, expireAt=2026-10-19T09:07:13.545
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65c5bd5b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@90136022 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@65c5bd5b]
+2026-10-19 09:03:02.137  INFO 43908 --- [nio-7071-exec-2] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=h-OLvfQttgnn, expireAt=2026-10-19T09:08:02.135
+2026-10-19 09:03:13.574  INFO 43908 --- [nio-7071-exec-7] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=V_pxM8jmkt6Z, expireAt=2026-10-19T09:08:13.573
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@13abe9a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1230894211 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@13abe9a]
+2026-10-19 09:04:02.151  INFO 43908 --- [nio-7071-exec-6] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=bagKqW5LFxtC, expireAt=2026-10-19T09:09:02.151
+2026-10-19 09:04:13.501  INFO 43908 --- [nio-7071-exec-5] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=5iZ7SRSP-qxv, expireAt=2026-10-19T09:09:13.500
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1149fb9] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1426993007 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1149fb9]
+2026-10-19 09:05:02.120  INFO 43908 --- [nio-7071-exec-4] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=1yr4UfYXN_f5, expireAt=2026-10-19T09:10:02.119
+2026-10-19 09:05:13.558  INFO 43908 --- [io-7071-exec-10] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=VqhvbDLZv76i, expireAt=2026-10-19T09:10:13.557
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58650861] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2108272003 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@58650861]
+2026-10-19 09:06:02.172  INFO 43908 --- [nio-7071-exec-1] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=qALKm_d2rgHe, expireAt=2026-10-19T09:11:02.172
+2026-10-19 09:06:13.527  INFO 43908 --- [nio-7071-exec-3] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=guW6JWxhgHGw, expireAt=2026-10-19T09:11:13.526
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@235667a8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1400919459 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@235667a8]
+2026-10-19 09:07:02.198  INFO 43908 --- [nio-7071-exec-8] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=S_GSnh8ZYs1g, expireAt=2026-10-19T09:12:02.198
+2026-10-19 09:07:13.517  INFO 43908 --- [nio-7071-exec-9] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=B2ewXzJVDssM, expireAt=2026-10-19T09:12:13.517
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7e90ab75] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1860958248 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7e90ab75]
+2026-10-19 09:08:02.124  INFO 43908 --- [nio-7071-exec-2] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=mlM5impk-TUU, expireAt=2026-10-19T09:13:02.123
+2026-10-19 09:08:13.616  INFO 43908 --- [nio-7071-exec-7] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=osFXAjNBolbF, expireAt=2026-10-19T09:13:13.615
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@75571f0b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@250071511 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@75571f0b]
+2026-10-19 09:09:02.155  INFO 43908 --- [nio-7071-exec-6] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=y6wMmS4xeATk, expireAt=2026-10-19T09:14:02.154
+2026-10-19 09:09:13.544  INFO 43908 --- [nio-7071-exec-5] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=S_Q8tQgQ2fVL, expireAt=2026-10-19T09:14:13.542
+2026-10-19 09:09:19.939  INFO 43908 --- [nio-7071-exec-4] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=sJLgQgmyPZvN, expireAt=2026-10-19T09:14:19.938
+2026-10-19 09:09:22.484  INFO 43908 --- [nio-7071-exec-8] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=LOxHtR7CiJeR, expireAt=2026-10-19T09:14:22.482
+2026-10-19 09:09:24.364  INFO 43908 --- [nio-7071-exec-9] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=XgcWviKFcoBr, expireAt=2026-10-19T09:14:24.363
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3cc0af32] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1898070246 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3cc0af32]
+2026-10-19 09:10:13.597  INFO 43908 --- [nio-7071-exec-5] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=o7B_RCCurW-a, expireAt=2026-10-19T09:15:13.597
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1cce344a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@625914334 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1cce344a]
+2026-10-19 09:11:13.528  INFO 43908 --- [nio-7071-exec-4] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=GV81i8OZlAx_, expireAt=2026-10-19T09:16:13.527
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b9dd6f2] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@916247983 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5b9dd6f2]
+2026-10-19 09:12:13.546  INFO 43908 --- [io-7071-exec-10] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=y4RxEF7AJGEA, expireAt=2026-10-19T09:17:13.545
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6702b92b] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1386076543 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6702b92b]
+2026-10-19 09:13:13.535  INFO 43908 --- [nio-7071-exec-1] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=aArz2dHTNcV8, expireAt=2026-10-19T09:18:13.534
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e38ec8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1952097502 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6e38ec8]
+2026-10-19 09:14:13.603  INFO 43908 --- [nio-7071-exec-3] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=XEYwFWv6u44J, expireAt=2026-10-19T09:19:13.602
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@28557e0c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@853159936 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@28557e0c]
+2026-10-19 09:15:13.588  INFO 43908 --- [nio-7071-exec-8] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=k3J7M-763I7l, expireAt=2026-10-19T09:20:13.588
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5d11513f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1589113231 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5d11513f]
+2026-10-19 09:16:13.616  INFO 43908 --- [nio-7071-exec-9] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=-Qk9WkXHsVao, expireAt=2026-10-19T09:21:13.615
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6905b84f] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1558216184 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6905b84f]
+2026-10-19 09:17:13.588  INFO 43908 --- [nio-7071-exec-2] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=sJz4RZcOglNf, expireAt=2026-10-19T09:22:13.587
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@685ff73c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@752676280 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@685ff73c]
+2026-10-19 09:18:13.610  INFO 43908 --- [nio-7071-exec-7] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=YEv3EoviA6yG, expireAt=2026-10-19T09:23:13.610
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@45832523] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1383259320 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@45832523]
+2026-10-19 09:19:13.536  INFO 43908 --- [nio-7071-exec-6] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=cyD7pmOtYEG0, expireAt=2026-10-19T09:24:13.535
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8c6ec4e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1412459080 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@8c6ec4e]
+2026-10-19 09:20:13.565  INFO 43908 --- [nio-7071-exec-5] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=pHExs-3pDec9, expireAt=2026-10-19T09:25:13.565
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4be37057] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1962426873 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4be37057]
+2026-10-19 09:21:13.599  INFO 43908 --- [nio-7071-exec-4] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=1nHsQrw7M2Lj, expireAt=2026-10-19T09:26:13.599
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2c7a10bc] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2085334188 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@2c7a10bc]
+2026-10-19 09:22:13.552  INFO 43908 --- [io-7071-exec-10] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=pyWKbJJPQKeg, expireAt=2026-10-19T09:27:13.551
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1349637] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2109184349 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1349637]
+2026-10-19 09:23:13.623  INFO 43908 --- [nio-7071-exec-1] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=LOEbd1UtG7PI, expireAt=2026-10-19T09:28:13.622
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4044ea3c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1701071149 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4044ea3c]
+2026-10-19 09:24:13.557  INFO 43908 --- [nio-7071-exec-3] c.e.oauth.identity.WeComQrLoginService   : 创建企业微信扫码票据: code=-pAy4fIEVUSc, expireAt=2026-10-19T09:29:13.557
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3b5bed91] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1546253772 wrapping com.mysql.cj.jdbc.ConnectionImpl@59127421] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@3b5bed91]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  12:06 h
+[INFO] Finished at: 2026-10-19T09:24:47+08:00
+[INFO] ------------------------------------------------------------------------
+[WARNING] The requested profile "global-plugins" could not be activated because it does not exist.
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:2.7.18:run (default-cli) on project rbac-oauth: Application finished with exit code: -1 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

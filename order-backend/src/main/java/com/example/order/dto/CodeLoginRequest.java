@@ -15,4 +15,8 @@ public class CodeLoginRequest implements Serializable {
 
     @NotBlank(message = "授权码不能为空")
     private String code;
+
+    /** 与发起授权时下发的 state 必须一致，且只能使用一次 */
+    @NotBlank(message = "授权状态不能为空")
+    private String state;
 }

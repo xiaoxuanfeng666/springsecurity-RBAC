@@ -25,9 +25,6 @@ public class LoginUser implements UserDetails {
 
     private SysUser user;
 
-    /** 当前会话 ID */
-    private String sessionId;
-
     /** 权限标识集合，如 system:user:list */
     private Set<String> permissions;
 

@@ -1,5 +1,6 @@
 package com.example.marketing.mq;
 
+import com.example.marketing.security.LoginUserCacheStore;
 import com.example.marketing.service.MarketingSyncService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Component;
 public class SubsystemSyncConsumer implements RocketMQListener<String> {
 
     private final MarketingSyncService syncService;
+    private final LoginUserCacheStore loginUserCacheStore;
     private final ObjectMapper objectMapper;
 
     @Override
@@ -44,5 +46,7 @@ public class SubsystemSyncConsumer implements RocketMQListener<String> {
             return;
         }
         syncService.rebuild(message);
+        // 重建已提交：用户/角色/菜单任一变化都会让缓存里的权限点失真，整体清空
+        loginUserCacheStore.evictAll();
     }
 }

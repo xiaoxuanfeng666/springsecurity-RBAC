@@ -12,32 +12,26 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { getAccessToken } from '@/utils/auth'
 
 /**
  * 登录入口：把浏览器导航到本系统后端的 {@code /auth/sso-login}
  * <p>
  * 授权地址由**后端**拼接，并由后端直接发 302 —— 前端不接收、也不拼接
- * {@code client_id} / {@code client_secret}。本项目定制的授权端点要求地址上带密钥，
- * 一旦把它作为接口数据返回给前端，密钥就会出现在前端代码、浏览器网络面板与前端日志里。
+ * {@code client_id} / {@code redirect_uri} / {@code state}。客户端密钥只在后端
+ * 调令牌端点时使用，不会出现在任何浏览器可见的地址里。
  * <p>
  * 跳转后的落点：
  * <pre>
  *   未登录：/api/auth/sso-login → 302 → 5174/oauth/authorize → 302 → http://localhost:5174/login
- *   已登录：/api/auth/sso-login → 302 → 5174/oauth/authorize → 凭会话静默发码 → 回调换令牌 → 落地
+ *   已登录：/api/auth/sso-login → 302 → 5174/oauth/authorize → 凭会话静默发码 → 回调建立会话 → 落地
  * </pre>
  * 第二种情况登录页根本不出现 —— 「登录一次，进第二个子系统免登录」靠的就是授权服务的会话。
+ * 登录态在 HttpOnly Cookie 里，前端读不到，所以这里不做「是否已登录」的判断，
+ * 统一交给授权服务：已登录时它会直接静默发码。
  */
-const router = useRouter()
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api'
 
 onMounted(() => {
-  // 已登录（例如用户手敲 /login）就直接回首页，没必要再走一趟授权
-  if (getAccessToken()) {
-    router.replace('/')
-    return
-  }
   window.location.replace(`${API_BASE}/auth/sso-login`)
 })
 </script>

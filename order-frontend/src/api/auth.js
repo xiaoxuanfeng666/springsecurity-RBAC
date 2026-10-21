@@ -1,16 +1,24 @@
 import request from './request'
 
 /**
- * 授权码模式登录：把 rbac-oauth 回调带回来的 code 换成令牌
+ * 授权码模式登录：把 rbac-oauth 回调带回来的 code 交给后端建立会话
  * <p>
- * 本系统没有账号密码登录接口了 —— 用户凭据只在 rbac-oauth 的登录页输入。
- * 后端 {@code /auth/login}（密码模式）仍然保留，供第三方接入与联调使用，只是本前端不再调它。
+ * 返回的是用户信息（身份 + 角色 + 权限 + 菜单），不是令牌 —— 令牌由后端保管，
+ * 浏览器只拿到一个 HttpOnly 会话 Cookie。
  */
-export function loginByCode(code) {
+export function loginByCode(code, state) {
   return request({
     url: '/auth/code',
     method: 'post',
-    data: { code }
+    data: { code, state }
+  })
+}
+
+/** 登出：由后端销毁授权服务的 SSO 会话与本系统的 BFF 会话 */
+export function logout() {
+  return request({
+    url: '/auth/logout',
+    method: 'post'
   })
 }
 

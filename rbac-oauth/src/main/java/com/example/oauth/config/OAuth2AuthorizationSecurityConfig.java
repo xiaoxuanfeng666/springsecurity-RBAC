@@ -1,22 +1,15 @@
 package com.example.oauth.config;
 
-import com.example.oauth.oauth.AuthorizeClientSecretFilter;
-import com.example.oauth.oauth.ClientSecretCipher;
-import com.example.oauth.oauth.MybatisClientDetailsService;
+import com.example.oauth.identity.IdpSessionService;
 import com.example.oauth.oauth.OAuth2LoginEntryPoint;
 import com.example.oauth.oauth.OauthAuthCookieFilter;
 import com.example.oauth.oauth.SsoLoginSuccessHandler;
-import com.example.oauth.security.OauthAuthStore;
 import com.example.oauth.security.RedisRequestCache;
-import com.example.oauth.security.SsoSessionStore;
-import com.example.oauth.service.SsoSessionRecordService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -41,7 +34,8 @@ import javax.servlet.http.HttpServletResponse;
  * 多节点：本链的登录态是 HTTP 会话（已由 Spring Session 存到 Redis），
  * 「登录后跳回授权页」的地址由 {@link RedisRequestCache} 存 Redis —— 两者都不再依赖节点亲和。
  * <p>
- * 另按项目要求，本链在授权端点上校验 {@code client_secret}（见 {@link AuthorizeClientSecretFilter}）。
+ * 另按标准做法，授权端点只认 {@code client_id}（并校验回调地址是否已登记），
+ * 客户端密钥只在令牌端点使用。
  */
 @Configuration
 @RequiredArgsConstructor
@@ -58,26 +52,21 @@ public class OAuth2AuthorizationSecurityConfig {
     @Value("${oauth2.login-page-url}")
     private String loginPageUrl;
 
-    private final StringRedisTemplate stringRedisTemplate;
-    private final MybatisClientDetailsService clientDetailsService;
-    private final ClientSecretCipher clientSecretCipher;
-    private final ObjectMapper objectMapper;
-    private final SsoSessionStore ssoSessionStore;
-    private final OauthAuthStore oauthAuthStore;
+    private final RedisRequestCache requestCache;
     private final OauthAuthCookieFilter oauthAuthCookieFilter;
-    private final SsoSessionRecordService ssoSessionRecordService;
+    private final IdpSessionService idpSessionService;
 
     @Bean
     @Order(2)
     public SecurityFilterChain oauth2AuthorizationFilterChain(HttpSecurity http) throws Exception {
         // 跳回地址的存取必须用同一个实例：保存发生在 ExceptionTranslationFilter（用链上配置的
-        // RequestCache），读取发生在下面这个成功处理器。成功处理器默认会自带一个
-        // HttpSessionRequestCache，若不给它显式设置，两边对不上就会读不到、只能退回默认首页。
-        RedisRequestCache requestCache = new RedisRequestCache(stringRedisTemplate);
+        // RequestCache），读取发生在下面这个成功处理器；统一登出也用这个 Bean 清理残留。
+        // 成功处理器默认会自带一个 HttpSessionRequestCache，若不给它显式设置，
+        // 两边对不上就会读不到、只能退回默认首页。
 
         // 登录成功后跳回此前被缓存的 /oauth/authorize
         SavedRequestAwareAuthenticationSuccessHandler successHandler =
-                new SsoLoginSuccessHandler(oauthAuthStore, ssoSessionStore, ssoSessionRecordService);
+                new SsoLoginSuccessHandler(idpSessionService);
         successHandler.setRequestCache(requestCache);
         // 缓存里存的就是相对地址（路径 + 查询串），原样发出即可 —— 浏览器按当前源解析，
         // 因此不会把用户带离前端源。切勿在此再「绝对转相对」：地址的查询串里嵌套了
@@ -95,12 +84,7 @@ public class OAuth2AuthorizationSecurityConfig {
                     .antMatchers("/oauth/login").permitAll()
                     .anyRequest().authenticated()
                 .and()
-                // 按项目要求校验授权请求上的 client_secret（标准 OAuth2 不做这一步，
-                // 详见 AuthorizeClientSecretFilter 的类注释与其中的风险提示）。
-                // 放在表单登录之前：密钥不对就没必要先让用户去登录。
-                .addFilterBefore(
-                        new AuthorizeClientSecretFilter(clientDetailsService, clientSecretCipher, objectMapper),
-                        UsernamePasswordAuthenticationFilter.class)
+                // 授权端点按标准只认 client_id：密钥只在令牌端点使用，不进浏览器地址栏
                 // 登录态从 Redis 里的精简记录还原（Cookie: RBAC_OAUTH2_AUTH）。
                 // 不再依赖 HTTP 会话保存 SecurityContext —— 见 OauthAuthStore 的类注释。
                 .addFilterBefore(oauthAuthCookieFilter, UsernamePasswordAuthenticationFilter.class)

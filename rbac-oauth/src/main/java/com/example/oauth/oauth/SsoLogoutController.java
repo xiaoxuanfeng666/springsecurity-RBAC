@@ -6,6 +6,7 @@ import com.example.oauth.entity.SsoSessionRecord;
 import com.example.oauth.mapper.ClientDetailsMapper;
 import com.example.oauth.security.LoginUser;
 import com.example.oauth.security.OauthAuthStore;
+import com.example.oauth.security.RedisRequestCache;
 import com.example.oauth.security.SsoSessionStore;
 import com.example.oauth.service.SsoSessionRecordService;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,9 @@ import java.util.Set;
  *       只做第 1 步是不够的：浏览器里那个 SESSION 还在，拿它就能静默重走一遍授权码流程、
  *       换出一张新令牌，而签发新令牌会<b>重建</b> SSO 会话 —— 统一登出当场被绕过。</li>
  * </ol>
+ * <p>
+ * 另外顺手清掉这次登录流程的临时状态：待授权请求缓存（Redis {@code oauth2:reqcache:*}）
+ * 及其索引 Cookie {@code RBAC_OAUTH2_REQ} —— 它记录着「要授权哪个客户端」，登出后没有保留的意义。
  *
  * <h3>两种调用方式</h3>
  * <ul>
@@ -75,6 +79,7 @@ public class SsoLogoutController {
     private final SsoSessionStore ssoSessionStore;
     private final OauthAuthStore oauthAuthStore;
     private final SsoSessionRecordService ssoSessionRecordService;
+    private final RedisRequestCache requestCache;
     private final TokenStore jwtTokenStore;
     private final ClientDetailsMapper clientDetailsMapper;
 
@@ -123,6 +128,10 @@ public class SsoLogoutController {
             loginStateRemoved = true;
         }
         OauthAuthStore.clearCookie(response);
+
+        // 待授权请求的缓存（Redis oauth2:reqcache:* + Cookie RBAC_OAUTH2_REQ）属于这次登录流程的
+        // 临时状态，登出后一并清掉：否则它会带着「要授权哪个客户端」的信息残留到 TTL 到期
+        requestCache.removeRequest(request, response);
 
         // 落库：把这次登录对应的会话记录标成「已登出」（没有对应记录时是空操作）
         if (StringUtils.hasText(username)) {

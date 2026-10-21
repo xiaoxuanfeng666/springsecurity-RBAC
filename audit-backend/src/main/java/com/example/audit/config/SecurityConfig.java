@@ -26,8 +26,8 @@ import java.util.Collections;
  * 本系统**不做登录**：没有登录页、没有用户表密码。令牌由 rbac-oauth 签发，
  * 这里只负责校验令牌并按 RBAC 下发的权限点判权。
  * <p>
- * {@code /auth/code}、{@code /auth/sso-login}、{@code /auth/refresh}
- * 必须放行 —— 它们正是"还没有令牌"的时候要调的接口。
+ * {@code /auth/code}、{@code /auth/sso-login}、{@code /auth/logout}
+ * 必须放行 —— 它们正是"还没有令牌"（或正要结束会话）的时候要调的接口。
  */
 @Configuration
 @EnableWebSecurity
@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .antMatchers("/auth/code", "/auth/sso-login", "/auth/refresh").permitAll()
+                    .antMatchers("/auth/code", "/auth/sso-login", "/auth/logout").permitAll()
                     .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

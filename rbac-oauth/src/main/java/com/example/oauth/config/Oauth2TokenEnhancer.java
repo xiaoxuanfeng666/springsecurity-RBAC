@@ -1,11 +1,13 @@
 package com.example.oauth.config;
 
+import com.example.oauth.oauth.SsoTokenServices;
 import com.example.oauth.security.LoginUser;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +31,13 @@ public class Oauth2TokenEnhancer implements TokenEnhancer {
         additionalInfo.put("userId", loginUser.getUser().getId());
         additionalInfo.put("nickName", loginUser.getUser().getNickname());
         retMap.put("additionalInfo", additionalInfo);
+        // 顶层 sid：check_token / 刷新时与当前活跃会话比对，实现严格单浏览器登录。
+        // 刷新路径不经过可覆写的 createAccessToken，sid 由 SsoTokenServices 的 ThreadLocal 提供。
+        String sid = StringUtils.hasText(loginUser.getSessionId())
+                ? loginUser.getSessionId() : SsoTokenServices.currentRefreshSessionId();
+        if (StringUtils.hasText(sid)) {
+            retMap.put("sid", sid);
+        }
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(retMap);
         return accessToken;
     }

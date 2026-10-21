@@ -75,7 +75,7 @@ public class SysUserController {
      * 停用与离职都会立即失效其登录凭证，把已登录用户踢下线。
      */
     @PutMapping("/{id}/status")
-    @PreAuthorize("@ss.hasPerm('system:user:edit')")
+    @PreAuthorize("@ss.hasAnyPerm('system:user:status', 'system:user:resign')")
     public Result<Void> updateStatus(@PathVariable Long id, @RequestParam Integer status) {
         userService.updateStatus(id, status);
         String message;

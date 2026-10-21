@@ -27,6 +27,14 @@ public class SsoSession implements Serializable {
     /** 会话主键，与 Redis 键后缀一致 */
     private String username;
 
+    /**
+     * 当前活跃的浏览器会话标识（JWT 的 sid 声明）。
+     * <p>
+     * 浏览器登录时它就是 {@code oauth2:auth:{token}} 的 token；密码模式直接取令牌时
+     * 是服务端生成的随机值。新登录会轮换它，旧浏览器令牌的 sid 随即对不上。
+     */
+    private String sessionId;
+
     /** 仅供管理端展示与按 userId 踢人时比对；不参与令牌校验 */
     private Long userId;
 
@@ -34,6 +42,14 @@ public class SsoSession implements Serializable {
 
     /** 登录时间，已格式化好的 {@code yyyy-MM-dd HH:mm:ss} —— 用字符串存，免去两个服务的时区/格式配置差异 */
     private String loginTime;
+
+    /**
+     * 会话绝对过期时间（epoch 秒），登录时写入，之后续期（touch）不会延长。
+     * <p>
+     * Redis 里的实际 TTL 取「空闲超时」与「距该时刻的剩余时间」的较小值，
+     * 因此会话最长不会超过配置的绝对上限。
+     */
+    private Long expireAt;
 
     /** 本次会话登录过的客户端 id 列表，如 [portal, order-center, marketing] */
     private List<String> clients;

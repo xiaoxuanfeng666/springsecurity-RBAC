@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
  * <p>
  * 授权模式（{@code grantTypes}）取值为 OAuth2 标准的逗号分隔字符串，五种模式全部受支持：
  * {@code authorization_code} / {@code password} / {@code implicit} / {@code client_credentials} / {@code refresh_token}。
- * 客户端密钥按 BCrypt 存储，由 {@code AuthorizationServerSecurityConfigurer} 上配置的
- * {@code PasswordEncoder} 校验（见 AuthorizationServerConfig）。
+ * 客户端密钥按 AES 密文存储，由令牌端点安全链上的 {@code PasswordEncoder} 解密比对（见
+ * OAuth2TokenEndpointSecurityConfig）。
  */
 @Slf4j
 @Component
@@ -41,9 +41,17 @@ public class MybatisClientDetailsService implements ClientDetailsService {
     private final ClientDetailsMapper clientDetailsMapper;
     private final ObjectMapper objectMapper;
     private final ClientSecretCipher clientSecretCipher;
+    private final ClientDetailsCacheStore cacheStore;
 
     @Override
     public BaseClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
+        // 先读 Redis：令牌端点每次请求都会走这里，而客户端配置极少变化
+        ClientDetails cached = cacheStore.get(clientId);
+        if (cached != null) {
+            // 缓存只写入通过校验的客户端（见下），命中时无需重复解密
+            return toClientDetails(cached);
+        }
+
         ClientDetails client = clientDetailsMapper.selectById(clientId);
         if (client == null) {
             throw new ClientRegistrationException("客户端不存在: " + clientId);
@@ -53,6 +61,11 @@ public class MybatisClientDetailsService implements ClientDetailsService {
         if (!StringUtils.hasText(client.getAppSecret())) {
             throw new ClientRegistrationException("客户端未配置密钥，请先在「客户端管理」中设置: " + clientId);
         }
+        // 空 scope 不是「最严格」而是「完全不受限」：授权服务器的范围校验在客户端 scope
+        // 为空时会跳过逐项比对（见 DefaultOAuth2RequestValidator），任何 scope 都能申请到
+        if (!StringUtils.hasText(client.getScope())) {
+            throw new ClientRegistrationException("客户端未配置授权范围(scope)，请先在「客户端管理」中设置: " + clientId);
+        }
         // 密钥在库中是 AES 密文。解不开说明它不是当前密钥加密的（例如更换过
         // oauth2.client-secret-key，或遗留的旧格式数据），此时认证必然失败，
         // 提前给出可操作的原因，而不是让用户看到含糊的「用户名或密码错误」。
@@ -60,6 +73,8 @@ public class MybatisClientDetailsService implements ClientDetailsService {
             throw new ClientRegistrationException(
                     "客户端密钥无法解密，请重新设置密钥（配置项 oauth2.client-secret-key 变更后需重设）: " + clientId);
         }
+        // 只缓存通过校验的客户端；管理端改/删后会经 MQ 删除该键
+        cacheStore.save(client);
         return toClientDetails(client);
     }
 

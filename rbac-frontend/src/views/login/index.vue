@@ -1,109 +1,52 @@
 <template>
-  <div class="login-page">
-    <el-card class="login-card">
-      <div class="login-title">RBAC 权限管理后台</div>
-      <el-form ref="formRef" :model="form" :rules="rules" size="large" @keyup.enter="handleLogin">
-        <el-form-item prop="username">
-          <el-input v-model="form.username" placeholder="请输入用户名" :prefix-icon="User" clearable />
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            v-model="form.password"
-            type="password"
-            placeholder="请输入密码"
-            :prefix-icon="Lock"
-            show-password
-            clearable
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" :loading="loading" class="login-button" @click="handleLogin">
-            登 录
-          </el-button>
-        </el-form-item>
-      </el-form>
-      <div class="login-tip">
-        <div>测试账号：</div>
-        <div>超级管理员 admin / admin123</div>
-        <div>普通用户 zhangsan / admin123</div>
-      </div>
+  <div class="jump-page">
+    <el-card class="jump-card" shadow="always">
+      <el-result
+        icon="info"
+        title="正在跳转到登录页"
+        sub-title="本系统没有独立登录页，正带你去统一登录…"
+      />
     </el-card>
   </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
-import { User, Lock } from '@element-plus/icons-vue'
-import { useUserStore } from '@/store/user'
+import { onMounted } from 'vue'
 
-const router = useRouter()
-const userStore = useUserStore()
+/**
+ * 登录入口：把浏览器导航到本系统后端的 {@code /auth/sso-login}
+ * <p>
+ * 授权地址由**后端**拼接，并由后端直接发 302 —— 前端不接收、也不拼接
+ * client_id / redirect_uri / state。客户端密钥只在后端调令牌端点时使用，
+ * 不会出现在任何浏览器可见的地址里。
+ * <p>
+ * 跳转后的落点：
+ * <pre>
+ *   未登录：/api/auth/sso-login → 302 → 5174/oauth/authorize → 302 → 5174/login
+ *   已登录：/api/auth/sso-login → 302 → 5174/oauth/authorize → 凭会话静默发码 → 5173/oauth/callback 建立会话
+ * </pre>
+ * 第二种情况登录页根本不出现 —— 「登录一次，进第二个系统免登录」靠的就是授权服务的会话。
+ * 登录态在 HttpOnly Cookie 里，前端读不到，所以这里不做「是否已登录」的判断，
+ * 统一交给授权服务：已登录时它会直接静默发码。
+ */
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '/api'
 
-const formRef = ref()
-const loading = ref(false)
-const form = reactive({
-  username: 'admin',
-  password: 'admin123'
+onMounted(() => {
+  window.location.replace(`${API_BASE}/auth/sso-login`)
 })
-
-const rules = {
-  username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-}
-
-async function handleLogin() {
-  try {
-    await formRef.value.validate()
-  } catch (e) {
-    return
-  }
-
-  loading.value = true
-  try {
-    await userStore.login({ ...form })
-    ElMessage.success('登录成功')
-    await router.push('/')
-  } catch (e) {
-    // 错误提示已由 axios 拦截器统一处理
-  } finally {
-    loading.value = false
-  }
-}
 </script>
 
 <style scoped>
-.login-page {
+.jump-page {
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
   background: linear-gradient(135deg, #1f3a5f 0%, #2b5876 50%, #4e4376 100%);
 }
 
-.login-card {
-  width: 400px;
-  padding: 12px 8px;
-}
-
-.login-title {
-  text-align: center;
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 24px;
-  color: #303133;
-}
-
-.login-button {
-  width: 100%;
-}
-
-.login-tip {
-  margin-top: 8px;
-  font-size: 12px;
-  color: #909399;
-  line-height: 1.8;
-  text-align: center;
+.jump-card {
+  width: 460px;
+  padding: 8px 12px;
 }
 </style>

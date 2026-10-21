@@ -72,7 +72,8 @@ public class SsoTokenConfig {
         tokenServices.setTokenEnhancer(tokenEnhancerChain());
         tokenServices.setClientDetailsService(clientDetailsService);
         tokenServices.setSupportRefreshToken(true);
-        tokenServices.setReuseRefreshToken(true);
+        // 刷新令牌一次性使用：每次刷新换发新值，旧的立即作废（见 SsoTokenServices#refreshAccessToken）
+        tokenServices.setReuseRefreshToken(false);
         tokenServices.setAuthenticationManager(refreshAuthenticationManager());
         return tokenServices;
     }

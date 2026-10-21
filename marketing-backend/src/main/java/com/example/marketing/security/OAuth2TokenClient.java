@@ -26,12 +26,14 @@ import java.util.Map;
 /**
  * 与 rbac-oauth 授权服务交互（本系统没有 OAuth2 客户端依赖，全部靠 HTTP 调）
  * <p>
- * 三个端点：
+ * 这里只负责登录/刷新流程，都是低频调用：
  * <ul>
  *   <li>{@code POST /oauth/token} grant_type=password —— 密码模式换令牌</li>
  *   <li>{@code POST /oauth/token} grant_type=authorization_code —— 授权码换令牌</li>
- *   <li>{@code POST /oauth/check_token} —— 校验令牌并取回用户名（公开端点，不需要客户端凭证）</li>
+ *   <li>{@code POST /oauth/token} grant_type=refresh_token —— access token 过期后由后端静默续期</li>
+ *   <li>{@code POST /oauth/sso-logout} —— 登出时让授权服务销毁 SSO 会话</li>
  * </ul>
+ * <b>请求鉴权</b>不回调授权服务，改为本地验签（见 {@link JwtTokenVerifier}）。
  */
 @Slf4j
 @Component
@@ -68,7 +70,7 @@ public class OAuth2TokenClient {
     }
 
     /**
-     * 刷新令牌：Access Token 过期时由前端触发
+     * 刷新令牌：access token 过期后由本系统后端静默触发（浏览器不接触 refresh token）
      */
     public Map<String, Object> refreshTokenGrant(String refreshToken) {
         MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
@@ -78,32 +80,18 @@ public class OAuth2TokenClient {
     }
 
     /**
-     * 校验令牌，返回授权服务给出的令牌信息
+     * 统一登出：用会话里的 access token 让授权服务销毁 SSO 会话。
      * <p>
-     * 本系统只取其中的 {@code user_name} —— 它是令牌里唯一可靠的用户身份
-     * （令牌里没有 userId，昵称等自定义字段在 JWT 序列化时会丢）。
-     * 令牌无效或已过期时返回 null。
+     * 登出必须是幂等的：授权服务不可达、令牌已过期都只记日志，本地会话照常清理。
      */
-    public Map<String, Object> checkToken(String token) {
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
-        form.add("token", token);
-
+    public void ssoLogout(String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
+        headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
         try {
-            ResponseEntity<Map> response = restTemplate.postForEntity(
-                    properties.getServerUrl() + "/oauth/check_token",
-                    new HttpEntity<>(form, headers), Map.class);
-            return response.getBody();
-        } catch (HttpClientErrorException e) {
-            // 令牌无效/过期时授权服务返回 400 invalid_token，属于正常的鉴权失败，不记 error
-            log.debug("令牌校验未通过: {}", e.getResponseBodyAsString());
-            return null;
+            restTemplate.postForEntity(properties.getServerUrl() + "/oauth/sso-logout",
+                    new HttpEntity<>(headers), Map.class);
         } catch (RestClientException e) {
-            log.error("调用授权服务校验令牌失败: {}", e.getMessage());
-            return null;
+            log.warn("调用授权服务登出失败，本地会话仍会清理: {}", e.getMessage());
         }
     }
 

@@ -20,8 +20,8 @@
     <properties>
         <java.version>8</java.version>
         <mybatis-plus.version>3.5.3.2</mybatis-plus.version>
-        <jjwt.version>0.11.5</jjwt.version>
         <knife4j.version>4.3.0</knife4j.version>
+        <jjwt.version>0.11.5</jjwt.version>
         <rocketmq.version>2.2.3</rocketmq.version>
     </properties>
 
@@ -78,7 +78,10 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- JWT -->
+        <!--
+            JWT 本地验签：令牌是 rbac-oauth 用 RS256 签发的，公钥从 /oauth/token_key 取得。
+            这样每个请求不必再回调授权服务的 /oauth/check_token。
+        -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -90,8 +93,6 @@
             <version>${jjwt.version}</version>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- JJWT API -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>

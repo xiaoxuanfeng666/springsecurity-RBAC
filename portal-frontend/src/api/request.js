@@ -18,7 +18,7 @@ request.interceptors.request.use((config) => {
 /**
  * 响应拦截：只处理登录态失效
  * <p>
- * 门户令牌有效期 1 小时（clientdetails.access_token_validity=3600）。过期或用户在别处
+ * 门户令牌有效期 30 分钟（clientdetails.access_token_validity=1800）。过期或用户在别处
  * 统一登出之后，授权服务的 check_token 会拒绝它，这里就把本地令牌清掉、回登录页。
  * 回到登录页后点「统一登录」即可 —— 若授权服务的 SESSION 还在，会一路静默地重新拿到令牌。
  */

@@ -10,6 +10,12 @@ const staticRoutes = [
     meta: { title: '登录' }
   },
   {
+    path: '/oauth/callback',
+    name: 'OAuthCallback',
+    component: () => import('@/views/oauth/callback.vue'),
+    meta: { title: '登录中' }
+  },
+  {
     path: '/404',
     name: 'NotFound',
     component: () => import('@/views/error/404.vue'),
@@ -17,8 +23,8 @@ const staticRoutes = [
   }
 ]
 
-/** 免登录即可访问的路径：登录页 */
-const PUBLIC_PATHS = ['/login']
+/** 免登录即可访问的路径：登录页与授权回调（回调时还没有令牌） */
+const PUBLIC_PATHS = ['/login', '/oauth/callback']
 
 const router = createRouter({
   history: createWebHistory(),
@@ -47,15 +53,13 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
-  if (!userStore.accessToken) {
-    next('/login')
-    return
-  }
-
   if (permissionStore.routesGenerated) {
     next()
     return
   }
+
+  // 登录态是 HttpOnly Cookie，脚本看不到，只能靠一次 /auth/info 来判断：
+  // 没有会话时请求返回 401，由响应拦截器跳登录页。
 
   // 已有 token 但未加载用户信息与动态路由
   try {

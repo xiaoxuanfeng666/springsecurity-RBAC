@@ -43,7 +43,10 @@ public enum ResultCode {
     SUBSYSTEM_NOT_EXIST(1026, "子系统不存在"),
     SUBSYSTEM_HAS_MENUS(1027, "该子系统下还有菜单，无法删除"),
     SUPER_ADMIN_NO_GRANT(1028, "超级管理员隐式拥有全部权限，无需分配"),
-    SSO_SESSION_NOT_EXIST(1029, "SSO 会话记录不存在");
+    SSO_SESSION_NOT_EXIST(1029, "SSO 会话记录不存在"),
+    OAUTH_UNAVAILABLE(1030, "授权服务暂时不可用，请稍后重试"),
+    CODE_INVALID(1031, "授权码无效或已过期，请重新授权"),
+    STATE_INVALID(1032, "登录状态已失效或已被使用，请重新发起登录");
 
     private final Integer code;
     private final String message;

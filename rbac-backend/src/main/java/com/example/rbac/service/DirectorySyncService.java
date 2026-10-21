@@ -22,7 +22,7 @@ import com.example.rbac.mapper.SysUserIdentityMapper;
 import com.example.rbac.mapper.SysUserMapper;
 import com.example.rbac.mapper.SysUserRoleMapper;
 import com.example.rbac.mq.SsoKickPublisher;
-import com.example.rbac.security.TokenStore;
+import com.example.rbac.security.PermissionSnapshotStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -63,7 +63,7 @@ public class DirectorySyncService {
     private final SysRoleMapper roleMapper;
     private final SysUserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
-    private final TokenStore tokenStore;
+    private final PermissionSnapshotStore snapshotStore;
     private final SsoKickPublisher ssoKickPublisher;
     private final SysUserDeptService sysUserDeptService;
 
@@ -197,7 +197,7 @@ public class DirectorySyncService {
         identity.setUpdateTime(LocalDateTime.now());
         userIdentityMapper.updateById(identity);
 
-        tokenStore.removeSession(user.getId());
+        snapshotStore.invalidateUser(user.getId());
         ssoKickPublisher.publish(SsoKickPublisher.TYPE_DISABLED, null, user.getId(),
                 user.getUsername(), "通讯录同步：成员已删除/停用");
         log.info("通讯录同步停用用户: provider={}, username={}", provider, user.getUsername());

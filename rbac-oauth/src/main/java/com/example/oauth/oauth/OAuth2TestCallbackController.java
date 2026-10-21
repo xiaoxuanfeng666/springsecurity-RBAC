@@ -38,13 +38,13 @@ import java.util.Map;
  * 授权码模式需要一个能接收 {@code ?code=...} 的第三方回调地址才能真正跑通。本项目自身
  * 提供了一个，把「接收 code → 换令牌 → 解析用户信息」串成一步，便于在浏览器里直接验证：
  * <pre>
- * GET /oauth/authorize?response_type=code&amp;client_id=rbac-third-party&amp;client_secret=client123
+ * GET /oauth/authorize?response_type=code&amp;client_id=rbac-third-party
  *     &amp;redirect_uri=http://localhost:7071/oauth/test-callback&amp;scope=read&amp;state=abc
  * </pre>
  * 登录授权后浏览器会回到本端点，直接返回换到的令牌与令牌中的用户信息。
  * <p>
- * 注意 {@code client_secret} 是**本项目要求在授权地址上携带并校验**的（标准 OAuth2 不需要，
- * 见 {@code AuthorizeClientSecretFilter}），因此授权地址必须带上它。
+ * 授权地址不需要带 {@code client_secret}：按 OAuth2 标准，密钥只在令牌端点使用，
+ * 本端点换令牌时才用配置里的客户端密钥做 HTTP Basic 认证。
  * <p>
  * 使用前提：回调地址必须已登记在客户端的 {@code clientdetails.redirectUrl} 中，否则授权端点
  * 会以「回调地址不匹配」拒绝。示例客户端已内置该地址。

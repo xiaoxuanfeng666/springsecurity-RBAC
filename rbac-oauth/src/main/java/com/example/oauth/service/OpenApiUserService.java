@@ -4,9 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.oauth.common.BusinessException;
 import com.example.oauth.common.ResultCode;
+import com.example.oauth.entity.SsoSessionRecord;
 import com.example.oauth.entity.SysUser;
 import com.example.oauth.mapper.SysUserMapper;
-import com.example.oauth.security.SessionStore;
+import com.example.oauth.security.SsoSessionStore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,8 @@ public class OpenApiUserService {
     private static final int STATUS_RESIGNED = 2;
 
     private final SysUserMapper userMapper;
-    private final SessionStore sessionStore;
+    private final SsoSessionStore ssoSessionStore;
+    private final SsoSessionRecordService recordService;
 
     public Page<SysUser> page(long pageNum, long pageSize, String username, Integer status) {
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<SysUser>()
@@ -41,8 +43,8 @@ public class OpenApiUserService {
     }
 
     /**
-     * 修改用户状态。停用(0)与离职(2)都会删除该用户的登录会话，使其立即下线
-     * （本系统是单会话模型）—— 第三方调用前请确认业务影响。
+     * 修改用户状态。停用(0)与离职(2)都会删除该用户的 SSO 会话，使其立即下线
+     * —— 后台与所有子系统手里的令牌都在下一次 check_token 时失效。
      */
     @Transactional(rollbackFor = Exception.class)
     public void updateStatus(Long id, Integer status) {
@@ -56,7 +58,9 @@ public class OpenApiUserService {
         userMapper.updateById(update);
 
         if (status != null && (status == STATUS_DISABLED || status == STATUS_RESIGNED)) {
-            sessionStore.removeSession(id);
+            ssoSessionStore.delete(exist.getUsername());
+            recordService.closeOnlineRows(exist.getUsername(), SsoSessionRecord.STATUS_KICKED,
+                    status == STATUS_RESIGNED ? "第三方接口标记离职" : "第三方接口停用");
             log.info("第三方接口将用户置为{}, 已立即失效登录凭证: {}", status, exist.getUsername());
         }
     }

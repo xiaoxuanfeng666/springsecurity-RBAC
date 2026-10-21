@@ -69,7 +69,11 @@ VALUES (1001, 100, '用户查询', NULL, NULL, 'system:user:query', 3, NULL, 1, 
        (1003, 100, '用户修改', NULL, NULL, 'system:user:edit', 3, NULL, 3, 1, 1, NOW(), NOW()),
        (1004, 100, '用户删除', NULL, NULL, 'system:user:remove', 3, NULL, 4, 1, 1, NOW(), NOW()),
        (1005, 100, '重置密码', NULL, NULL, 'system:user:resetPwd', 3, NULL, 5, 1, 1, NOW(), NOW()),
-       (1006, 100, '分配角色', NULL, NULL, 'system:user:role', 3, NULL, 6, 1, 1, NOW(), NOW());
+       (1006, 100, '分配角色', NULL, NULL, 'system:user:role', 3, NULL, 6, 1, 1, NOW(), NOW()),
+       (1007, 100, '用户停用/启用', NULL, NULL, 'system:user:status', 3, NULL, 7, 1, 1, NOW(), NOW()),
+       (1008, 100, '用户离职/复职', NULL, NULL, 'system:user:resign', 3, NULL, 8, 1, 1, NOW(), NOW()),
+       (1009, 100, '身份绑定', NULL, NULL, 'system:user:identity', 3, NULL, 9, 1, 1, NOW(), NOW()),
+       (1010, 100, '推送外部用户', NULL, NULL, 'system:user:sync', 3, NULL, 10, 1, 1, NOW(), NOW());
 
 -- 按钮权限：角色管理
 INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
@@ -106,6 +110,15 @@ VALUES (1071, 107, '客户端查询', NULL, NULL, 'system:client:query', 3, NULL
        (1072, 107, '客户端新增', NULL, NULL, 'system:client:add', 3, NULL, 2, 1, 1, NOW(), NOW()),
        (1073, 107, '客户端修改', NULL, NULL, 'system:client:edit', 3, NULL, 3, 1, 1, NOW(), NOW()),
        (1074, 107, '客户端删除', NULL, NULL, 'system:client:remove', 3, NULL, 4, 1, 1, NOW(), NOW());
+
+-- 二级菜单：SSO 会话
+INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
+VALUES (110, 1, 'SSO 会话', 'sso-session', 'system/sso-session/index', 'system:sso:list', 2, 'Connection', 10, 1, 1, NOW(), NOW());
+
+-- 按钮权限：SSO 会话
+INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `path`, `component`, `perms`, `type`, `icon`, `sort`, `visible`, `status`, `create_time`, `update_time`)
+VALUES (1095, 110, '会话查询', NULL, NULL, 'system:sso:query', 3, NULL, 1, 1, 1, NOW(), NOW()),
+       (1096, 110, '强制下线', NULL, NULL, 'system:sso:kick', 3, NULL, 2, 1, 1, NOW(), NOW());
 
 -- ---------- 子系统菜单权限（RBAC 给子系统配菜单）----------
 -- 这里挂的是「管理子系统菜单」这个后台功能本身，与 sys_subsystem_menu（被管理的子系统菜单）是两回事
@@ -159,7 +172,7 @@ INSERT INTO `clientdetails` (`appId`, `resourceIds`, `appSecret`, `scope`, `gran
 VALUES ('rbac-third-party', NULL, 'cnZXzMbXqybU6Pwk0x4XTbHWZOgE8o9GCrb4JKkrLIHxu84jyQ==',
         'read,write', 'authorization_code,password,implicit,client_credentials,refresh_token',
         'http://localhost:8080/callback,http://localhost:5173/oauth/callback,http://localhost:7071/oauth/test-callback',
-        'ROLE_CLIENT', 3600, 604800, NULL, NULL);
+        'ROLE_CLIENT', 1800, 604800, NULL, NULL);
 
 -- ---------- 营销系统（真实接入的独立子系统）----------
 -- 营销系统有自己的独立库（marketing）、独立前后端，没有自己的权限管理：
@@ -171,7 +184,7 @@ INSERT INTO `clientdetails` (`appId`, `resourceIds`, `appSecret`, `scope`, `gran
 VALUES ('marketing', NULL, 'a/oSsMCdauFQuChaDN2gkKH5lebhgGHFUJ2GQWzgmFaDLBpq/jYbfg==',
         'read,write', 'authorization_code,password,refresh_token',
         'http://localhost:5175/oauth/callback',
-        'ROLE_CLIENT', 3600, 604800, NULL, 'read');
+        'ROLE_CLIENT', 1800, 604800, NULL, 'read');
 
 -- ---------- 订单中心（真实接入的独立子系统）----------
 -- 与营销系统同样的模式：独立库（order_center）、独立前后端，没有自己的权限管理。
@@ -180,7 +193,7 @@ INSERT INTO `clientdetails` (`appId`, `resourceIds`, `appSecret`, `scope`, `gran
 VALUES ('order-center', NULL, 'yIBwx+lZmE1+AWObckeSg200SjEGeNXqms+f7p8BB3ZigJhE',
         'read,write', 'authorization_code,password,refresh_token',
         'http://localhost:5176/oauth/callback',
-        'ROLE_CLIENT', 3600, 604800, NULL, 'read');
+        'ROLE_CLIENT', 1800, 604800, NULL, 'read');
 
 -- ---------- 统一门户（企业级 SSO 的入口，5177）----------
 -- 与子系统客户端的关键差别：
@@ -193,7 +206,7 @@ INSERT INTO `clientdetails` (`appId`, `resourceIds`, `appSecret`, `scope`, `gran
 VALUES ('portal', NULL, 'Rxo21XV1MhryGGFp6DCuXtwIU2fEF3RVmNimrWfS53BrYqubCg==',
         'read', 'authorization_code,refresh_token',
         'http://localhost:5177/oauth/callback',
-        'ROLE_CLIENT', 3600, 604800, NULL, 'read');
+        'ROLE_CLIENT', 1800, 604800, NULL, 'read');
 
 -- ---------- 子系统及其菜单 ----------
 -- sys_subsystem_menu 里的菜单只用于「下发给子系统」，与 RBAC 后台自己的 sys_menu 无关：

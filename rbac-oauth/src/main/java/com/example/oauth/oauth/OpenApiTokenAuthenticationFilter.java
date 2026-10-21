@@ -39,9 +39,9 @@ import java.util.stream.Collectors;
  *   <li>身份放进 {@link OpenApiCaller}，<b>不加载 RBAC 权限</b> —— 这条路径与「本系统登录用户」完全隔离。</li>
  * </ul>
  * <p>
- * 与 {@code OauthJwtAuthenticationFilter} 的关键区别：后者要求令牌带 {@code tokenType=access} 且
- * 在 Redis 有 {@code login:session:*} 会话（rbac-backend 签发的登录令牌），而 OAuth2 令牌两者都没有。
- * 两者互补：本过滤器只装在 {@code /openapi/**} 链上，不会让 OAuth2 令牌流到管理接口。
+ * 与授权码/密码模式签发的用户令牌的关键区别：本过滤器信任的是「客户端凭证换来的令牌」，
+ * 身份是 {@link OpenApiCaller}（客户端），而不是登录用户。
+ * 本过滤器只装在 {@code /openapi/**} 链上，不会让 OAuth2 用户令牌流到开放接口。
  * <p>
  * 校验失败不抛异常，直接放行交给本链的入口点返回 401 —— 避免把令牌细节泄露给调用方。
  */

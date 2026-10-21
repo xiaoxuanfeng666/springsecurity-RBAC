@@ -12,7 +12,6 @@ import com.example.rbac.service.IdpOutboundService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -39,7 +38,9 @@ public class IdpOutboxProcessor {
     private final IdpOutboundService outboundService;
     private final ObjectMapper objectMapper;
 
-    @Scheduled(fixedDelayString = "${idp.outbound.process-interval-ms:5000}")
+    /**
+     * 处理一批待发送的记录（由 {@code IdpOutboxProcessTask} 定时驱动）
+     */
     public void processPending() {
         LocalDateTime now = LocalDateTime.now();
         List<SysIdpOutbox> rows = outboxMapper.selectList(

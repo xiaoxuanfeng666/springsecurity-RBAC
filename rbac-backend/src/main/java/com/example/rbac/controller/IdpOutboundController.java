@@ -36,7 +36,7 @@ public class IdpOutboundController {
      * 全量推送：先部门后用户，已存在的按更新处理
      */
     @PostMapping("/sync-all")
-    @PreAuthorize("@ss.hasPerm('system:user:edit')")
+    @PreAuthorize("@ss.hasPerm('system:user:sync')")
     public Result<java.util.Map<String, Object>> syncAll(@RequestParam String provider) {
         return Result.success("已加入同步队列", outboundService.pushAll(provider));
     }
@@ -45,7 +45,7 @@ public class IdpOutboundController {
      * 手动把一个用户同步到指定外部提供方（创建或更新）
      */
     @PostMapping("/user/{userId}")
-    @PreAuthorize("@ss.hasPerm('system:user:edit')")
+    @PreAuthorize("@ss.hasPerm('system:user:sync')")
     public Result<Void> syncUser(@PathVariable Long userId,
                                  @RequestParam String provider) {
         outboundService.manualSyncUser(userId, provider);

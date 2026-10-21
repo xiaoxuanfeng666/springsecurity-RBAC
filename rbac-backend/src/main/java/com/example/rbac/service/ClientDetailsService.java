@@ -7,6 +7,8 @@ import com.example.rbac.common.ResultCode;
 import com.example.rbac.dto.ClientForm;
 import com.example.rbac.entity.ClientDetails;
 import com.example.rbac.mapper.ClientDetailsMapper;
+import com.example.rbac.mq.ClientChangeMessage;
+import com.example.rbac.mq.ClientChangePublisher;
 import com.example.rbac.security.ClientSecretCipher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ public class ClientDetailsService {
 
     private final ClientDetailsMapper clientDetailsMapper;
     private final ClientSecretCipher clientSecretCipher;
+    private final ClientChangePublisher clientChangePublisher;
 
     /**
      * 分页查询
@@ -66,12 +69,15 @@ public class ClientDetailsService {
         // 密钥留空时 copy 会置 null，updateById 跳过该列，即保持原密钥不变
         copy(form, client);
         clientDetailsMapper.updateById(client);
+        // 事务提交后通知 rbac-oauth 删缓存，避免它继续用旧配置校验客户端
+        clientChangePublisher.publish(ClientChangeMessage.TYPE_UPDATE, form.getAppId());
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void delete(String appId) {
         requireExists(appId);
         clientDetailsMapper.deleteById(appId);
+        clientChangePublisher.publish(ClientChangeMessage.TYPE_DELETE, appId);
     }
 
     private void requireExists(String appId) {

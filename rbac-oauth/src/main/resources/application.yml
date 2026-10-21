@@ -11,8 +11,8 @@ spring:
     url: jdbc:mysql://localhost:3306/rbac?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
     password: 123456
-  # 【必须与 rbac-backend 一致】共享 Redis：管理端登录态（login:session:*）由那边写入、这边校验，
-  # 因此停用/离职删除会话后，本服务持有的令牌也会立即失效。
+  # 共享 Redis：SSO 会话（sso:session:{username}）是本服务判定的登录态，
+  # rbac-backend 与各子系统每个请求都靠 check_token 回到这里确认；删会话即全体下线。
   redis:
     host: localhost
     port: 6379
@@ -104,6 +104,27 @@ rbac:
     kick-consumer-group: rbac-oauth-session-consumer
     # 库里 sso 会话「在线」记录与 Redis 实际会话的对齐周期（毫秒）
     reconcile-interval-ms: 60000
+    # 会话空闲超时（秒）：每次刷新令牌（touch）续期，不用就自然过期
+    session-idle-ttl-seconds: ${SSO_SESSION_IDLE_TTL:604800}
+    # 会话绝对上限（秒）：从登录时刻算起，永不延长，防止「一直用就永不重登」
+    session-max-ttl-seconds: ${SSO_SESSION_MAX_TTL:2592000}
+    # 刷新令牌「已用」墓碑的保留秒数：对齐 clientdetails.refresh_token_validity（7 天），
+    # 保证刷新令牌整个有效期内被重放都能识别为复用并撤销会话
+    refresh-reuse-ttl-seconds: ${SSO_REFRESH_REUSE_TTL:604800}
+  # 客户端配置缓存（clientdetails）
+  client:
+    # 客户端变更的 topic：rbac-backend 生产，本服务消费后删 oauth2:client:{clientId}
+    change-topic: RBAC_CLIENT_CHANGE
+    change-consumer-group: rbac-oauth-client-consumer
+    # 缓存 TTL（秒）。正常失效靠 MQ，这里只是兜底，避免消息丢失时缓存永远陈旧
+    cache-ttl-seconds: 3600
+  # 会话撤销广播：子系统本地验签看不到会话是否存活，销毁会话时由本服务把作废的 sid 推给它们
+  # 【必须与各子系统的 rbac.session.revoke-topic 一致】
+  session:
+    revoke-topic: RBAC_SESSION_REVOKE
+    # 撤销记录兜底保留秒数：只有在无法从 clientdetails 读到客户端有效期时才使用；
+    # 正常按会话涉及客户端的 access_token_validity 最大值计算后随消息下发
+    revoke-default-ttl-seconds: 43200
 
 # 企业微信扫码登录（MVP）
 # enabled 置为 true 并填好 CorpID / AgentId / Secret / Callback 后，登录页会出现「企业微信扫码登录」。

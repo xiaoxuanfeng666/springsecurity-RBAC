@@ -23,7 +23,8 @@ public enum ResultCode {
     USER_NOT_SYNCED(2004, "账号尚未同步到审计日志系统，请稍后重试"),
     CODE_INVALID(2005, "授权码无效或已过期，请重新授权"),
     REFRESH_TOKEN_INVALID(2006, "刷新凭证无效，请重新登录"),
-    AUDIT_NOT_EXIST(2007, "审计日志不存在");
+    AUDIT_NOT_EXIST(2007, "审计日志不存在"),
+    STATE_INVALID(2020, "登录状态已失效或已被使用，请重新发起登录");
 
     private final Integer code;
     private final String message;

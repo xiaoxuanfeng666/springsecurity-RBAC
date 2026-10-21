@@ -50,15 +50,16 @@ onMounted(async () => {
   }
 
   const code = params.get('code')
-  if (!code) {
+  const state = params.get('state')
+  if (!code || !state) {
     status.value = 'error'
-    title.value = '缺少授权码'
-    message.value = '回调地址上没有 code 参数，请重新发起授权'
+    title.value = '缺少授权参数'
+    message.value = '回调地址上没有 code 或 state 参数，请重新发起授权'
     return
   }
 
   try {
-    await userStore.loginByCode(code)
+    await userStore.loginByCode(code, state)
     status.value = 'success'
     title.value = '登录成功'
     message.value = '正在进入订单中心…'

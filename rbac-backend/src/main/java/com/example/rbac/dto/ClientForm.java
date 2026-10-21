@@ -22,6 +22,8 @@ public class ClientForm {
     /** 新增必填（不允许为空）；修改留空表示保持原密钥不变 */
     private String appSecret;
 
+    /** 授权范围：不能为空 —— 空 scope 会让授权服务器的范围校验整段跳过，等于不设限 */
+    @NotBlank(message = "授权范围不能为空")
     private String scope;
 
     @NotBlank(message = "授权模式不能为空")

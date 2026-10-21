@@ -4,32 +4,48 @@ import com.example.marketing.common.BusinessException;
 import com.example.marketing.common.ResultCode;
 import com.example.marketing.config.OAuth2ClientProperties;
 import com.example.marketing.dto.LoginInfoResponse;
-import com.example.marketing.dto.TokenResponse;
 import com.example.marketing.entity.MarketingMenu;
 import com.example.marketing.entity.MarketingUser;
 import com.example.marketing.mapper.MarketingMenuMapper;
 import com.example.marketing.mapper.MarketingUserMapper;
+import com.example.marketing.security.BffSession;
+import com.example.marketing.security.BffSessionCookie;
+import com.example.marketing.security.BffSessionStore;
+import com.example.marketing.security.JwtTokenVerifier;
 import com.example.marketing.security.LoginUser;
+import com.example.marketing.security.OAuth2StateStore;
 import com.example.marketing.security.OAuth2TokenClient;
 import com.example.marketing.security.SecurityUtils;
 import com.example.marketing.security.SuperAdmin;
 import com.example.marketing.util.TreeUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
- * 登录授权
+ * 登录授权（BFF 模式）
  * <p>
  * 本系统没有登录页与用户体系：账号密码由 rbac-oauth 校验（密码模式），
- * 或由用户在 rbac-oauth 完成授权（授权码模式）。两种方式最终都拿到同一个 OAuth2 令牌，
- * 令牌里的 user_name 就是本系统识别用户的唯一依据。
+ * 或由用户在 rbac-oauth 完成授权（授权码模式）。两种方式拿到的令牌都<b>只留在服务端</b>：
+ * 写进 Redis 的 BFF 会话，浏览器只拿到一个 HttpOnly 的会话 Cookie。
+ * <p>
+ * 令牌里的 user_name 是识别用户的唯一依据；refresh token 只由 {@code OAuth2TokenAuthenticationFilter}
+ * 在 access token 过期时使用，前端无从接触。
  */
 @Slf4j
 @Service
@@ -38,55 +54,75 @@ public class AuthService {
 
     private final OAuth2TokenClient tokenClient;
     private final OAuth2ClientProperties properties;
+    private final OAuth2StateStore stateStore;
     private final MarketingUserMapper userMapper;
     private final MarketingMenuMapper menuMapper;
+    private final JwtTokenVerifier jwtTokenVerifier;
+    private final BffSessionStore sessionStore;
+    private final BffSessionCookie sessionCookie;
+
+    /** 会话绝对有效期（秒）：从登录时刻算起，到点必须重新授权 */
+    @Value("${rbac.bff.session-max-ttl-seconds:604800}")
+    private long sessionMaxTtlSeconds;
 
     /**
      * 密码模式登录
      */
-    public TokenResponse loginByPassword(String username, String password) {
-        Map<String, Object> token = tokenClient.passwordGrant(username, password);
-        return toTokenResponse(token);
+    public LoginInfoResponse loginByPassword(String username, String password, HttpServletResponse response) {
+        return establishSession(tokenClient.passwordGrant(username, password), response);
     }
 
     /**
      * 授权码模式登录：用回调地址上的 code 换取令牌
+     * <p>
+     * 先消费 state 再换令牌：state 必须来自本次 {@code /auth/sso-login} 签发，
+     * 且只能使用一次。这样重放回调地址（或伪造回调）在换取令牌之前就被拒绝。
      */
-    public TokenResponse loginByCode(String code) {
-        Map<String, Object> token = tokenClient.authorizationCodeGrant(code);
-        return toTokenResponse(token);
+    public LoginInfoResponse loginByCode(String code, String state,
+                                         HttpServletRequest request, HttpServletResponse response) {
+        if (!stateStore.consume(state, request, response)) {
+            throw new BusinessException(ResultCode.STATE_INVALID);
+        }
+        return establishSession(tokenClient.authorizationCodeGrant(code), response);
     }
 
     /**
-     * 刷新令牌
+     * 登出：先用会话里的 access token 让授权服务销毁 SSO 会话（所有子系统立即失效），
+     * 再删本地会话、清 Cookie。没有会话时也正常返回（登出是幂等的）。
      */
-    public TokenResponse refresh(String refreshToken) {
-        Map<String, Object> token = tokenClient.refreshTokenGrant(refreshToken);
-        return toTokenResponse(token);
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        String sessionId = sessionCookie.read(request);
+        if (StringUtils.hasText(sessionId)) {
+            BffSession session = sessionStore.get(sessionId);
+            sessionStore.delete(sessionId);
+            if (session != null && StringUtils.hasText(session.getAccessToken())) {
+                tokenClient.ssoLogout(session.getAccessToken());
+            }
+            log.info("已退出 BFF 会话: username={}, sessionId={}",
+                    session == null ? null : session.getUsername(), sessionId);
+        }
+        sessionCookie.clear(response);
     }
 
     /**
      * 授权码模式的授权地址（由本系统**后端**拼装，并由后端直接发起跳转）
      * <p>
-     * 为什么不让前端拼、也不把地址返回给前端：授权地址上必须带 {@code client_secret}
-     * （本项目对授权端点的定制要求）。一旦把它作为接口数据交给前端，密钥就会出现在
-     * 前端代码、浏览器网络面板与前端日志里。现在前端只做一次「导航」到本系统的
-     * {@code /auth/sso-login}，URL 由后端拼、302 由后端发 —— 客户端标识与密钥全程只在服务端。
+     * 地址里只有 {@code client_id / redirect_uri / scope / state}。按 OAuth2 标准，
+     * {@code client_secret} 不进入浏览器地址栏：它只在本系统后端调 {@code /oauth/token}
+     * 换令牌时通过 HTTP Basic 提交。前端只做一次「导航」到 {@code /auth/sso-login}，
+     * URL 由后端拼、302 由后端发。
      * <p>
      * 浏览器访问的地址走 {@code oauth2.browser-authorize-base-url}（授权前端 5174，与登录页同源）；
      * 后端自己调令牌端点仍用 {@code serverUrl}（7071），那条是服务端到服务端。
      */
-    public String buildAuthorizeUrl(String state) {
+    public String buildAuthorizeUrl(HttpServletResponse response) {
         String base = StringUtils.hasText(properties.getBrowserAuthorizeBaseUrl())
                 ? properties.getBrowserAuthorizeBaseUrl()
                 : properties.getServerUrl();
-        String effectiveState = StringUtils.hasText(state)
-                ? state
-                : UUID.randomUUID().toString().replace("-", "");
+        String effectiveState = stateStore.issue(response);
         return UriComponentsBuilder.fromHttpUrl(base + "/oauth/authorize")
                 .queryParam("response_type", "code")
                 .queryParam("client_id", properties.getClientId())
-                .queryParam("client_secret", properties.getClientSecret())
                 .queryParam("redirect_uri", properties.getRedirectUri())
                 .queryParam("scope", properties.getScope())
                 .queryParam("state", effectiveState)
@@ -102,8 +138,60 @@ public class AuthService {
         if (loginUser == null) {
             throw new BusinessException(ResultCode.UNAUTHORIZED);
         }
-        MarketingUser user = loginUser.getUser();
-        List<MarketingMenu> menus = SuperAdmin.matches(loginUser.getRoles())
+        return buildInfo(loginUser.getUser(), loginUser.getRoles(), loginUser.getPermissions());
+    }
+
+    /**
+     * 换到令牌后建立服务端会话，并把会话 id 写进 HttpOnly Cookie。
+     * <p>
+     * 令牌有效只说明「他是 RBAC 的合法用户」，不代表「他被授权使用营销系统」——
+     * 后者取决于 RBAC 是否给他配了本子系统的菜单/权限（经 MQ 下发）。
+     * 同步表里没有他就直接拒掉，不建立一个用不了的会话。
+     */
+    private LoginInfoResponse establishSession(Map<String, Object> token, HttpServletResponse response) {
+        String accessToken = asString(token.get("access_token"));
+        String refreshToken = asString(token.get("refresh_token"));
+        if (!StringUtils.hasText(accessToken)) {
+            throw new BusinessException(ResultCode.OAUTH_UNAVAILABLE);
+        }
+
+        JwtTokenVerifier.VerifyResult verified = jwtTokenVerifier.verify(accessToken);
+        if (!verified.isValid()) {
+            log.warn("授权服务签发的令牌无法通过本地验签，拒绝建立会话");
+            throw new BusinessException(ResultCode.OAUTH_UNAVAILABLE);
+        }
+        String username = verified.getUsername();
+        MarketingUser user = userMapper.selectByUsername(username);
+        if (user == null || user.getStatus() == null || user.getStatus() != 1) {
+            log.warn("账号已通过授权服务认证，但不在本系统的同步用户表中: username={}", username);
+            throw new BusinessException(ResultCode.USER_NOT_SYNCED);
+        }
+
+        long now = System.currentTimeMillis();
+        BffSession session = new BffSession();
+        session.setSessionId(UUID.randomUUID().toString());
+        session.setUsername(username);
+        session.setAccessToken(accessToken);
+        session.setRefreshToken(refreshToken);
+        session.setLoginTime(now);
+        session.setExpireAt(now + sessionMaxTtlSeconds * 1000L);
+        sessionStore.save(session);
+        sessionCookie.write(response, session.getSessionId());
+        log.info("已建立 BFF 会话: username={}, sessionId={}", username, session.getSessionId());
+
+        return buildInfo(user);
+    }
+
+    private LoginInfoResponse buildInfo(MarketingUser user) {
+        Set<String> roleKeys = splitRoleKeys(user.getRoleKeys());
+        Set<String> permissions = SuperAdmin.matches(roleKeys)
+                ? new HashSet<>(Collections.singletonList(SuperAdmin.WILDCARD_PERMISSION))
+                : new LinkedHashSet<>(menuMapper.selectPermsByUserId(user.getId()));
+        return buildInfo(user, roleKeys, permissions);
+    }
+
+    private LoginInfoResponse buildInfo(MarketingUser user, Set<String> roles, Set<String> permissions) {
+        List<MarketingMenu> menus = SuperAdmin.matches(roles)
                 ? menuMapper.selectAllEnabledMenus()
                 : menuMapper.selectMenusByUserId(user.getId());
 
@@ -111,47 +199,20 @@ public class AuthService {
         response.setUserId(user.getId());
         response.setUsername(user.getUsername());
         response.setNickname(user.getNickname());
-        response.setRoles(loginUser.getRoles());
-        response.setPermissions(loginUser.getPermissions());
+        response.setRoles(roles);
+        response.setPermissions(permissions);
         response.setMenus(TreeUtils.buildTree(menus));
         return response;
     }
 
-    /**
-     * 授权服务已签出令牌，还要确认这个人在本系统的同步表里、且在职。
-     * <p>
-     * 令牌有效只说明「他是 RBAC 的合法用户」，不代表「他被授权使用营销系统」——
-     * 后者取决于 RBAC 是否给他配了本子系统的菜单/权限（经 MQ 下发）。
-     * 同步表里没有他，就直接拒掉，不把一个用不了的令牌发给前端。
-     */
-    private TokenResponse toTokenResponse(Map<String, Object> token) {
-        String accessToken = asString(token.get("access_token"));
-        if (accessToken == null) {
-            throw new BusinessException(ResultCode.OAUTH_UNAVAILABLE);
+    private Set<String> splitRoleKeys(String roleKeys) {
+        if (roleKeys == null || roleKeys.trim().isEmpty()) {
+            return new LinkedHashSet<>();
         }
-        requireSyncedUser(accessToken);
-
-        TokenResponse response = new TokenResponse();
-        response.setAccessToken(accessToken);
-        response.setRefreshToken(asString(token.get("refresh_token")));
-        response.setTokenType(asString(token.get("token_type")));
-        response.setScope(asString(token.get("scope")));
-        Object expiresIn = token.get("expires_in");
-        response.setExpiresIn(expiresIn instanceof Number ? ((Number) expiresIn).longValue() : null);
-        return response;
-    }
-
-    private void requireSyncedUser(String accessToken) {
-        Map<String, Object> info = tokenClient.checkToken(accessToken);
-        Object username = info == null ? null : info.get("user_name");
-        if (username == null) {
-            throw new BusinessException(ResultCode.OAUTH_UNAVAILABLE);
-        }
-        MarketingUser user = userMapper.selectByUsername(username.toString());
-        if (user == null || user.getStatus() == null || user.getStatus() != 1) {
-            log.warn("账号已通过授权服务认证，但不在本系统的同步用户表中: username={}", username);
-            throw new BusinessException(ResultCode.USER_NOT_SYNCED);
-        }
+        return Arrays.stream(roleKeys.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private String asString(Object value) {

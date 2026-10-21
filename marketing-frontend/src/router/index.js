@@ -56,15 +56,13 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
-  if (!userStore.accessToken) {
-    next('/login')
-    return
-  }
-
   if (permissionStore.routesGenerated) {
     next()
     return
   }
+
+  // 登录态是 HttpOnly Cookie，脚本看不到，只能靠一次 /auth/info 来判断：
+  // 没有会话时请求返回 401，由响应拦截器跳登录页。
 
   // 已有 token 但未加载用户信息与动态路由
   try {

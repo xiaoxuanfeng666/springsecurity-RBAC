@@ -31,6 +31,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // del_flag 由 @TableLogic 自动附加（实际 SQL 为 WHERE del_flag=0 AND username=?）。
+        // 这里刻意**不**过滤 status：必须把停用/离职的行读出来，交给框架的账号状态检查
+        // （登录走 DaoAuthenticationProvider，刷新走 PreAuthenticatedAuthenticationProvider
+        // 默认的 AccountStatusUserDetailsChecker）抛 DisabledException，
+        // 前端才能提示「账号已停用」；若在 SQL 里加 status=1，会退化成笼统的「用户名或密码错误」。
         SysUser user = userMapper.selectOne(
                 new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, username));
         if (user == null) {

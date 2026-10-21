@@ -39,26 +39,26 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
-# 自定义 JWT 配置
-jwt:
-  # 生产环境请替换为随机密钥，长度至少 32 字节（HS256 要求）
-  secret: rbac-jwt-secret-key-please-change-in-production-0123456789
-  # Access Token 有效期（毫秒）：15 分钟。短有效期由 Refresh Token 兜底，
-  # 过期后前端自动调用 /auth/refresh 换取新的 Access Token。
-  access-token-expire: 900000
-  # Refresh Token 有效期（毫秒）：7 天。也是 Redis 会话的有效期，
-  # 停用/离职用户时删除会话即刻失效。
-  refresh-token-expire: 604800000
-  header: Authorization
-  token-prefix: "Bearer "
-
-# OAuth2 客户端密钥的加解密配置
-# 客户端密钥（clientdetails.appSecret）需要能在「客户端管理」页面上展示明文供复制给第三方，
-# 因此用可逆加密存储：库里是 AES 密文，本服务负责写入时加密、展示时解密。
-# 【必须与 rbac-oauth 一致】授权服务器要用同一把密钥解密 appSecret 才能校验客户端身份；
-# 两边配置不一致时，客户端会认证失败。
-# 【重要】此值一旦变更，库中已有的客户端密钥将无法解密，需要在「客户端管理」页面重新设置密钥。
+# OAuth2 统一登录（rbac-oauth 授权服务）
+# 本服务不再自签令牌：登录/刷新走 rbac-oauth，请求鉴权改为本地验签 JWT（公钥来自 /oauth/token_key），
+# 令牌有效期由 clientdetails.access_token_validity / refresh_token_validity 决定。
 oauth2:
+  # 后端到后端调用（换令牌、启动时拉取验签公钥）直连授权服务
+  server-url: http://localhost:7071
+  # 浏览器跳转授权页用的地址（授权前端，与登录页同源）
+  browser-authorize-base-url: http://localhost:5174
+  client-id: rbac-admin
+  client-secret: rbac123
+  # 必须与 clientdetails.redirectUrl 完全一致
+  redirect-uri: http://localhost:5173/oauth/callback
+  scope: read
+
+  # 客户端密钥的加解密配置
+  # 客户端密钥（clientdetails.appSecret）需要能在「客户端管理」页面上展示明文供复制给第三方，
+  # 因此用可逆加密存储：库里是 AES 密文，本服务负责写入时加密、展示时解密。
+  # 【必须与 rbac-oauth 一致】授权服务器要用同一把密钥解密 appSecret 才能校验客户端身份；
+  # 两边配置不一致时，客户端会认证失败。
+  # 【重要】此值一旦变更，库中已有的客户端密钥将无法解密，需要在「客户端管理」页面重新设置密钥。
   client-secret-key: rbac-client-secret-key-please-change-in-production-0123456789
 
 # RocketMQ：把子系统菜单与用户角色权限下发给对应子系统（消费方订阅 topic RBAC_SUBSYSTEM_SYNC）
@@ -76,6 +76,27 @@ rbac:
   # 强制下线 SSO 会话的通知 topic：本服务生产，rbac-oauth 消费
   sso:
     kick-topic: RBAC_OAUTH_SESSION
+  # 客户端配置变更的通知 topic：本服务生产，rbac-oauth 消费后删客户端缓存
+  client:
+    change-topic: RBAC_CLIENT_CHANGE
+  # 消费 rbac-oauth 广播的「会话已撤销」：本地验签看不到会话是否存活，
+  # 靠这条消息把作废的 sid 写入 Redis（多实例共享，故用默认集群模式消费）
+  # 【必须与 rbac-oauth 的 rbac.session.revoke-topic 一致】
+  session:
+    revoke-topic: RBAC_SESSION_REVOKE
+    # 撤销记录兜底保留秒数：仅在消息未带 TTL 时使用。正常由 rbac-oauth 按客户端
+    # access_token_validity 计算后随消息下发，令牌有效期改长时不需要改这里
+    revoke-ttl-seconds: 43200
+  # BFF：浏览器只持一个 HttpOnly 会话 Cookie，OAuth 令牌全部存在本服务 Redis
+  bff:
+    # 与授权服务共用同一个 Redis，键名必须带前缀避免冲撞
+    cookie-name: rbac_bff_session
+    # 生产环境走 HTTPS 时置为 true（开发环境是 http，加了浏览器会丢弃 Cookie）
+    cookie-secure: false
+    # 空闲有效期：会话在这段时间内没有续期就过期
+    session-idle-ttl-seconds: 604800
+    # 绝对有效期：从登录时刻算起，到点必须重新授权
+    session-max-ttl-seconds: 604800
 
 # 外部通讯录 / 部门同步
 # 默认关闭；provider=mock + mock-enabled=true 可用于本地联调。

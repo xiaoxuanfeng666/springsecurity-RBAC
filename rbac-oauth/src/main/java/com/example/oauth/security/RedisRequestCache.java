@@ -4,6 +4,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.security.web.savedrequest.SimpleSavedRequest;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
@@ -32,6 +33,7 @@ import java.util.Base64;
  * <p>
  * 注意这不是会话共享的替代品：登录态本身仍存在 HTTP 会话中，需由 Spring Session 或粘性会话保证跨节点可见。
  */
+@Component
 public class RedisRequestCache implements RequestCache {
 
     private static final String KEY_PREFIX = "oauth2:reqcache:";
@@ -79,6 +81,12 @@ public class RedisRequestCache implements RequestCache {
         if (cacheId != null) {
             stringRedisTemplate.delete(KEY_PREFIX + cacheId);
         }
+        // 连同索引 Cookie 一起过期：只删 Redis 键的话，浏览器会继续带着一个指向空记录的 Cookie
+        Cookie expired = new Cookie(COOKIE_NAME, "");
+        expired.setPath("/");
+        expired.setHttpOnly(true);
+        expired.setMaxAge(0);
+        response.addCookie(expired);
     }
 
     /** 相对地址（路径 + 查询串），与源无关 */

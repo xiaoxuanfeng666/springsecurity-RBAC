@@ -30,8 +30,8 @@ import java.net.URLEncoder;
  * 只有 30 分钟。用户如果在登录页停留超过这个时间，缓存先过期，登录成功后成功处理器就找不到
  * 要跳回的授权地址，只能落到默认首页 —— 子系统再也回不去。把本次授权请求的相对地址一并交给
  * 登录页（表单再原样带回），成功处理器在缓存为空时据此恢复，等待多久都不受影响。
- * 地址里虽然包含 client_secret，但浏览器此前已经访问过同一个 {@code /oauth/authorize} 地址，
- * 且 {@code returnTo} 在服务端严格限制为以 {@code /oauth/} 开头的相对路径，避免开放重定向。
+ * 地址里只含 client_id / redirect_uri / scope / state，不含客户端密钥；{@code returnTo}
+ * 在服务端严格限制为以 {@code /oauth/} 开头的相对路径，避免开放重定向。
  */
 public class OAuth2LoginEntryPoint implements AuthenticationEntryPoint {
 

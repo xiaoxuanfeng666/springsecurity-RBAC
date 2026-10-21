@@ -1,5 +1,4 @@
 import { getInfo } from '@/api/auth'
-import { getAccessToken } from '@/utils/auth'
 
 /** 切换标签页时 visibilitychange 与 focus 会连着触发，这里把同一轮折叠成一次 */
 const THROTTLE_MILLIS = 1000
@@ -54,10 +53,6 @@ export function stopSessionWatch() {
 }
 
 function revalidate() {
-  // 登录页（或已登出）没有令牌可校验，也就不该发这个请求
-  if (!getAccessToken()) {
-    return
-  }
   const now = Date.now()
   if (now - lastCheckedAt < THROTTLE_MILLIS) {
     return

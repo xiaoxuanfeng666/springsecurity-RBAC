@@ -9,7 +9,6 @@ import com.example.oauth.security.SsoSessionStore;
 import com.example.oauth.util.DeviceInfoUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -97,14 +96,13 @@ public class SsoSessionRecordService {
     }
 
     /**
-     * 定时对齐库里的「在线」与 Redis 里的真实会话
+     * 对齐库里的「在线」与 Redis 里的真实会话（由 {@code SsoSessionReconcileTask} 定时驱动）
      * <p>
      * 用户直接关掉浏览器、或者会话到 7 天自然过期时，没有任何请求会来触发登出，
      * 库里那条「在线」就会一直挂着。这里定期核对：Redis 里已经没有这个会话的，就把记录标成「会话过期」。
      * 一次只扫 status=1 的行（同一时刻一个人最多一条），开销可以忽略。
      */
-    @Scheduled(fixedDelayString = "${rbac.sso.reconcile-interval-ms:60000}")
-    public void reconcile() {
+    public void reconcileExpiredSessions() {
         List<SsoSessionRecord> online = recordMapper.selectList(
                 new LambdaQueryWrapper<SsoSessionRecord>()
                         .eq(SsoSessionRecord::getStatus, SsoSessionRecord.STATUS_ONLINE));
@@ -114,13 +112,17 @@ public class SsoSessionRecordService {
             }
             LocalDateTime now = LocalDateTime.now();
             SsoSessionRecord update = new SsoSessionRecord();
-            update.setId(record.getId());
             update.setStatus(SsoSessionRecord.STATUS_OFFLINE);
             update.setLogoutTime(now);
             update.setLogoutReason("会话过期");
             update.setUpdateTime(now);
-            recordMapper.updateById(update);
-            log.info("SSO 会话已过期，回填记录状态: username={}", record.getUsername());
+            // 条件更新：查询与更新之间若发生强制下线/主动登出，不要把它们改写成「会话过期」
+            int rows = recordMapper.update(update, new LambdaUpdateWrapper<SsoSessionRecord>()
+                    .eq(SsoSessionRecord::getId, record.getId())
+                    .eq(SsoSessionRecord::getStatus, SsoSessionRecord.STATUS_ONLINE));
+            if (rows > 0) {
+                log.info("SSO 会话已过期，回填记录状态: username={}", record.getUsername());
+            }
         }
     }
 }

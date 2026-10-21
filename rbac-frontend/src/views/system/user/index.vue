@@ -22,11 +22,11 @@
 
         <div>
           <el-button
-            v-permission="'system:user:edit'"
+            v-permission="'system:user:sync'"
             :icon="Upload"
             @click="handleSyncAll"
           >
-            推送全部到企业微信
+            推送全部到外部通讯录
           </el-button>
           <el-button v-permission="'system:user:add'" type="primary" :icon="Plus" @click="openCreate">
             新增用户
@@ -82,7 +82,7 @@
             </el-button>
             <el-button
               v-if="row.status !== 2"
-              v-permission="'system:user:edit'"
+              v-permission="'system:user:status'"
               link
               :type="row.status === 1 ? 'warning' : 'success'"
               @click="toggleStatus(row)"
@@ -90,7 +90,7 @@
               {{ row.status === 1 ? '停用' : '启用' }}
             </el-button>
             <el-button
-              v-permission="'system:user:edit'"
+              v-permission="'system:user:resign'"
               link
               :type="row.status === 2 ? 'success' : 'danger'"
               @click="toggleResigned(row)"
@@ -100,11 +100,11 @@
             <el-button v-permission="'system:user:resetPwd'" link type="info" @click="openResetPwd(row)">
               重置密码
             </el-button>
-            <el-button v-permission="'system:user:edit'" link type="success" @click="openIdentity(row)">
+            <el-button v-permission="'system:user:identity'" link type="success" @click="openIdentity(row)">
               身份绑定
             </el-button>
-            <el-button v-permission="'system:user:edit'" link type="primary" @click="handleSyncUser(row)">
-              推送企微
+            <el-button v-permission="'system:user:sync'" link type="primary" @click="handleSyncUser(row)">
+              推送外部
             </el-button>
             <el-button v-permission="'system:user:remove'" link type="danger" @click="handleDelete(row)">
               删除
@@ -355,9 +355,11 @@ import {
   createUserIdentity,
   deleteUserIdentity
 } from '@/api/userIdentity'
-import { syncAllToProvider, syncUserToProvider } from '@/api/idpOutbound'
+import { listOutboundProviders, syncAllToProvider, syncUserToProvider } from '@/api/idpOutbound'
 
 const OUTBOUND_PROVIDER = 'wecom'
+/** 已启用的外部通讯录（企业微信/钉钉…），用于按钮与确认框中的名称展示 */
+const outboundProviders = ref([])
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -415,6 +417,21 @@ async function loadProviderOptions() {
   }
   const res = await listIdentityProviders()
   providerOptions.value = res.data || []
+}
+
+async function loadOutboundProviders() {
+  try {
+    const res = await listOutboundProviders()
+    outboundProviders.value = res.data || []
+  } catch (e) {
+    outboundProviders.value = []
+  }
+}
+
+/** 当前推送目标的外部通讯录名称（企业微信 / 钉钉…），取不到时用通用说法 */
+function outboundLabel() {
+  const found = outboundProviders.value.find((p) => p.code === OUTBOUND_PROVIDER)
+  return found ? found.label : '外部通讯录'
 }
 
 /** 用户状态：1 在职 / 0 停用 / 2 离职 */
@@ -716,11 +733,11 @@ async function handleDelete(row) {
   loadData()
 }
 
-/** 全量推送：先部门后用户，已存在的企业微信账号按更新处理 */
+/** 全量推送：先部门后用户，已存在的账号按更新处理 */
 async function handleSyncAll() {
   try {
     await ElMessageBox.confirm(
-      '将把全部部门和用户推送到企业微信，已存在的账号会被更新。确定继续吗？',
+      `将把全部部门和用户推送到${outboundLabel()}，已存在的账号会被更新。确定继续吗？`,
       '推送确认',
       { confirmButtonText: '确定推送', cancelButtonText: '取消', type: 'warning' }
     )
@@ -732,11 +749,11 @@ async function handleSyncAll() {
   ElMessage.success(`已加入同步队列：部门 ${data.departments || 0} 个，用户 ${data.users || 0} 个`)
 }
 
-/** 单个用户推送到企业微信 */
+/** 单个用户推送到外部通讯录 */
 async function handleSyncUser(row) {
   try {
     await ElMessageBox.confirm(
-      `确定把用户「${row.username}」推送到企业微信吗？`,
+      `确定把用户「${row.username}」推送到${outboundLabel()}吗？`,
       '推送确认',
       { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
     )
@@ -806,6 +823,7 @@ onMounted(() => {
   loadRoles()
   loadDepts()
   loadPosts()
+  loadOutboundProviders()
 })
 </script>
 

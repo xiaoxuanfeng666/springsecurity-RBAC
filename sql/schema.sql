@@ -179,6 +179,22 @@ CREATE TABLE `sys_operation_log` (
     KEY `idx_create_time` (`create_time`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='操作日志';
 
+-- ---------- 定时任务分布式锁（租约）----------
+-- rbac-oauth 多实例部署时，会话对账任务通过本表的一行选举执行者：
+-- 只有把 locked_until 从「过期/未加锁」原子更新成功的实例才执行本轮。
+DROP TABLE IF EXISTS `sys_job_lock`;
+CREATE TABLE `sys_job_lock` (
+    `job_name`     VARCHAR(64)  NOT NULL COMMENT '任务名（每个任务一行）',
+    `locked_until` DATETIME     DEFAULT NULL COMMENT '租约到期时间，NULL 表示未加锁',
+    `holder`       VARCHAR(128) DEFAULT NULL COMMENT '持锁实例标识，便于排查',
+    `update_time`  DATETIME     DEFAULT NULL COMMENT '最后更新时间',
+    PRIMARY KEY (`job_name`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='定时任务分布式锁（租约）';
+
+-- 种子：会话对账任务（租约 55 秒，调度周期 60 秒）
+INSERT INTO `sys_job_lock` (`job_name`, `locked_until`, `holder`, `update_time`)
+VALUES ('sso-session-reconcile', NULL, NULL, NOW());
+
 -- ---------- OAuth2 客户端配置 ----------
 -- 沿用 Spring Security OAuth 的 clientdetails 约定：主键为非自增的 appId，列名为驼峰，
 -- grantTypes / scope / redirectUrl / authorities / autoApproveScopes 均为逗号分隔多值
@@ -190,7 +206,7 @@ CREATE TABLE `clientdetails` (
     `appId`                  VARCHAR(128)  NOT NULL COMMENT '客户端标识，唯一',
     `resourceIds`            VARCHAR(255)  DEFAULT NULL COMMENT '资源ID，逗号分隔',
     `appSecret`              VARCHAR(255)  NOT NULL COMMENT '客户端密钥（AES 密文，不允许为空）',
-    `scope`                  VARCHAR(255)  DEFAULT NULL COMMENT '授权范围，逗号分隔',
+    `scope`                  VARCHAR(255)  NOT NULL COMMENT '授权范围，逗号分隔（不允许为空：空 scope 会让授权校验跳过范围检查）',
     `grantTypes`             VARCHAR(255)  DEFAULT NULL COMMENT '授权模式，逗号分隔：authorization_code/client_credentials/password/refresh_token/implicit',
     `redirectUrl`            VARCHAR(255)  DEFAULT NULL COMMENT '回调地址，逗号分隔',
     `authorities`            VARCHAR(255)  DEFAULT NULL COMMENT '客户端本身拥有的权限，逗号分隔',
@@ -198,7 +214,9 @@ CREATE TABLE `clientdetails` (
     `refresh_token_validity` INT           DEFAULT NULL COMMENT '刷新令牌有效期（秒）',
     `additionalInformation`  VARCHAR(4096) DEFAULT NULL COMMENT '扩展信息（JSON）',
     `autoApproveScopes`      VARCHAR(255)  DEFAULT NULL COMMENT '自动放行的授权范围，逗号分隔',
-    PRIMARY KEY (`appId`)
+    PRIMARY KEY (`appId`),
+    -- NOT NULL 允许空字符串，而空 scope 同样会让授权校验跳过范围检查，这里一并挡住
+    CONSTRAINT `chk_clientdetails_scope` CHECK (TRIM(`scope`) <> '')
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT ='OAuth2 客户端配置';
 
 -- ============================================================

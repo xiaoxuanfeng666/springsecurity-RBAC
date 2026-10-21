@@ -1,11 +1,8 @@
 import { defineStore } from 'pinia'
 import { loginByCode as loginByCodeApi, getInfo as getInfoApi } from '@/api/auth'
-import { getAccessToken, getRefreshToken, setTokens, clearTokens } from '@/utils/auth'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    accessToken: getAccessToken() || '',
-    refreshToken: getRefreshToken() || '',
     userInfo: null,
     roles: [],
     permissions: []
@@ -15,26 +12,15 @@ export const useUserStore = defineStore('user', {
     /**
      * 授权码模式登录（本系统唯一的登录方式）
      * <p>
-     * 登录入口在统一门户：未登录访问本系统会先跳到门户，由门户完成认证后把浏览器送回
-     * 本系统的授权地址，本系统回调页拿到 code 再调这里换令牌。之前那条「账号密码登录」
-     * （密码模式）已经去掉 —— 那种方式浏览器里不会留下授权服务的 SESSION，
-     * 会让统一登出多出一整类特例（详见 utils/sso.js 的说明）。
+     * 后端用 code 换到令牌后自己保管，只返回用户信息；浏览器不接触任何令牌。
      */
-    async loginByCode(code) {
-      const res = await loginByCodeApi(code)
-      this.applyTokens(res.data)
+    async loginByCode(code, state) {
+      const res = await loginByCodeApi(code, state)
+      this.applyInfo(res.data)
       return res
     },
 
-    applyTokens({ accessToken, refreshToken }) {
-      setTokens({ accessToken, refreshToken })
-      this.accessToken = accessToken
-      this.refreshToken = refreshToken
-    },
-
-    async getInfo() {
-      const res = await getInfoApi()
-      const info = res.data
+    applyInfo(info) {
       this.userInfo = {
         userId: info.userId,
         username: info.username,
@@ -42,24 +28,25 @@ export const useUserStore = defineStore('user', {
       }
       this.roles = info.roles || []
       this.permissions = info.permissions || []
-      return info
+    },
+
+    async getInfo() {
+      const res = await getInfoApi()
+      this.applyInfo(res.data)
+      return res.data
     },
 
     /**
-     * 登出（仅清本地凭证）
+     * 登出（仅清本地状态）
      * <p>
-     * 真正的「登出」在服务端：令牌由 rbac-oauth 签发、自包含，本系统删不掉它，
-     * 删除 SSO 会话才会让它立刻失效。因此登出按钮走的是 {@code utils/sso.js} 的整页跳转，
-     * 这里只负责把本地登录态抹掉 —— 也供路由守卫等「令牌已失效、需要安静地清掉」的场景使用。
+     * 真正的登出在服务端：按钮走的是 {@code utils/sso.js}（后端销毁会话 + 整页跳转）。
+     * 这里只把前端状态抹掉 —— 也供路由守卫等「会话已失效」的场景使用。
      */
     logout() {
       this.resetState()
     },
 
     resetState() {
-      clearTokens()
-      this.accessToken = ''
-      this.refreshToken = ''
       this.userInfo = null
       this.roles = []
       this.permissions = []

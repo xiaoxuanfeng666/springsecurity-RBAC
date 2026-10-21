@@ -1,6 +1,8 @@
 package com.example.rbac.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.rbac.entity.SysUser;
+import com.example.rbac.mapper.SysUserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -8,45 +10,41 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
  * 权限快照存储（Redis）
  * <p>
- * Key：{@code login:perm:{sessionId}} -> 该会话的权限快照 JSON。
+ * Key：{@code login:perm:user:{username}} -> 该用户的权限快照 JSON。
  * <p>
- * 快照在登录时建立，之后每个请求直接读取，省掉「用户-角色-菜单」的三表联查。
- * 两种失效时机：
- * <ul>
- *   <li>会话删除（登出 / 停用 / 离职 / 强制下线 / 重置密码）——由 {@link TokenStore} 一并清理；</li>
- *   <li>角色授权或用户角色变更——按 userId 精准失效，用户下一次请求即重建并拿到新权限。</li>
- * </ul>
- * 由于 sessionId 每次登录都会重新生成，失效后的旧快照不可能再被读到。
+ * 快照在首次请求（登录换令牌）时建立，之后每个请求直接读取，省掉「用户-角色-菜单」的三表联查。
+ * 角色授权或用户资料/角色变更时按 userId 精准失效，用户下一次请求即重建并拿到新权限。
+ * 用户被停用/离职时，SSO 会话由 rbac-oauth 删除，令牌校验本身就会失败，快照不再被读到。
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class PermissionSnapshotStore {
 
-    private static final String KEY_PREFIX = "login:perm:";
+    private static final String KEY_PREFIX = "login:perm:user:";
 
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
-    private final TokenStore tokenStore;
+    private final SysUserMapper userMapper;
 
-    /** 供 TokenStore 删除会话时清理同一 sessionId 的快照 */
-    static String key(String sessionId) {
-        return KEY_PREFIX + sessionId;
+    static String key(String username) {
+        return KEY_PREFIX + username;
     }
 
     /**
      * 读取快照，不存在或反序列化失败返回 null（调用方回退为查库重建）
      */
-    public PermissionSnapshot get(String sessionId) {
-        if (sessionId == null) {
+    public PermissionSnapshot get(String username) {
+        if (username == null) {
             return null;
         }
-        String json = stringRedisTemplate.opsForValue().get(key(sessionId));
+        String json = stringRedisTemplate.opsForValue().get(key(username));
         if (json == null) {
             return null;
         }
@@ -58,12 +56,12 @@ public class PermissionSnapshotStore {
         }
     }
 
-    public void save(String sessionId, PermissionSnapshot snapshot, long ttlMillis) {
-        if (sessionId == null || snapshot == null) {
+    public void save(String username, PermissionSnapshot snapshot, long ttlMillis) {
+        if (username == null || snapshot == null) {
             return;
         }
         try {
-            stringRedisTemplate.opsForValue().set(key(sessionId),
+            stringRedisTemplate.opsForValue().set(key(username),
                     objectMapper.writeValueAsString(snapshot), ttlMillis, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             log.warn("权限快照写入失败，本次请求直接使用查库结果: {}", e.getMessage());
@@ -75,7 +73,7 @@ public class PermissionSnapshotStore {
     }
 
     /**
-     * 批量失效用户快照：先由 userId 找到其当前 sessionId，再删除该会话的快照。
+     * 批量失效用户快照：先由 userId 查到 username，再删除对应快照。
      * 用户下一次请求读不到快照，会重新查库并重建。
      */
     public void invalidateUsers(Collection<Long> userIds) {
@@ -87,12 +85,12 @@ public class PermissionSnapshotStore {
             if (userId == null) {
                 continue;
             }
-            String sessionId = tokenStore.getSessionId(userId);
-            if (sessionId != null) {
-                stringRedisTemplate.delete(key(sessionId));
+            SysUser user = userMapper.selectById(userId);
+            if (user != null && user.getUsername() != null) {
+                stringRedisTemplate.delete(key(user.getUsername()));
                 affected++;
             }
         }
-        log.info("权限快照已失效: 用户数={}, 命中在线会话={}", userIds.size(), affected);
+        log.info("权限快照已失效: 用户数={}, 命中={}", userIds.size(), affected);
     }
 }

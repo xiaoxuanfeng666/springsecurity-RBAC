@@ -74,7 +74,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import SidebarItem from './components/SidebarItem.vue'
@@ -82,11 +82,18 @@ import { useUserStore } from '@/store/user'
 import { usePermissionStore } from '@/store/permission'
 import { changePassword } from '@/api/auth'
 import { resetDynamicRoutes } from '@/router'
+import { ssoLogout } from '@/utils/sso'
+import { startSessionWatch, stopSessionWatch } from '@/utils/sessionWatch'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const permissionStore = usePermissionStore()
+
+// 本组件只在已登录时渲染，因此在这里挂「切回标签页校验登录态」最合适：
+// 在别的系统登出/被踢后，用户切回来的那一刻就会被带回登录页，而不是等他点下一个按钮
+onMounted(startSessionWatch)
+onUnmounted(stopSessionWatch)
 
 const activeMenu = computed(() => route.path)
 
@@ -165,10 +172,16 @@ async function handleCommand(command) {
   } catch (e) {
     return
   }
+  // 先调后台写操作日志（还需要令牌认人），再走统一登出。
+  // 统一登出成功时会整页跳转，下面的本地清理只在其失败兜底时起作用。
   await userStore.logout()
+  const navigated = await ssoLogout()
+  userStore.resetState()
   resetDynamicRoutes()
   permissionStore.reset()
-  router.push('/login')
+  if (!navigated) {
+    router.push('/login')
+  }
 }
 </script>
 

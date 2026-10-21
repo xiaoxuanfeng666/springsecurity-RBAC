@@ -29,7 +29,8 @@ public enum ResultCode {
     TASK_NOT_EXIST(2010, "积分任务不存在"),
     PRIZE_NOT_EXIST(2011, "奖品不存在"),
     PRIZE_IN_USE(2012, "奖品已被活动使用，无法删除"),
-    ACTIVITY_PRIZE_INVALID(2013, "奖品概率之和不合法（需大于 0 且不超过 100%）");
+    ACTIVITY_PRIZE_INVALID(2013, "奖品概率之和不合法（需大于 0 且不超过 100%）"),
+    STATE_INVALID(2020, "登录状态已失效或已被使用，请重新发起登录");
 
     private final Integer code;
     private final String message;

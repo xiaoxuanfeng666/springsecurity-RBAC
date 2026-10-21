@@ -1,20 +1,16 @@
 package com.example.rbac.config;
 
-import com.example.rbac.security.JwtAuthenticationFilter;
+import com.example.rbac.security.OAuth2TokenAuthenticationFilter;
 import com.example.rbac.security.RestAccessDeniedHandler;
 import com.example.rbac.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,7 +29,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuth2TokenAuthenticationFilter oauth2TokenAuthenticationFilter;
     private final RestAuthenticationEntryPoint authenticationEntryPoint;
     private final RestAccessDeniedHandler accessDeniedHandler;
 
@@ -42,22 +38,11 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService,
-                                                       PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder);
-        // 隐藏 "User not found" 细节，统一提示
-        provider.setHideUserNotFoundExceptions(true);
-        return new ProviderManager(provider);
-    }
-
     /**
-     * 本系统自身的接口链（JWT + 无状态）
+     * 本系统自身的接口链（OAuth2 令牌 + 无状态）
      * <p>
      * 只处理 RBAC 业务接口与 {@code /auth/**}。
-     * OAuth2 授权服务器与第三方开放接口（{@code /openapi/**}）已拆到 rbac-oauth 服务。
+     * 登录态由 rbac-oauth 统一管理：令牌保存在本服务的 BFF 会话里，请求凭 HttpOnly Cookie 认证。
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -67,7 +52,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .antMatchers("/auth/login", "/auth/refresh").permitAll()
+                    .antMatchers("/auth/sso-login", "/auth/code", "/auth/logout").permitAll()
                     // 外部通讯录推送：由 X-Directory-Token 共享密钥鉴权（见 DirectorySyncController）
                     .antMatchers("/idp/directory/events/**").permitAll()
                     .anyRequest().authenticated()
@@ -76,7 +61,7 @@ public class SecurityConfig {
                     .authenticationEntryPoint(authenticationEntryPoint)
                     .accessDeniedHandler(accessDeniedHandler)
                 .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(oauth2TokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
