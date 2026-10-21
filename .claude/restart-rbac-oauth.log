@@ -316,3 +316,19 @@ JDBC Connection [HikariProxyConnection@1312355551 wrapping com.mysql.cj.jdbc.Con
 <==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
 <==      Total: 1
 Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1a27e66f]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@33e71d8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@646970190 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: UPDATE sys_job_lock SET locked_until = DATE_ADD(NOW(), INTERVAL ? SECOND), holder = ?, update_time = NOW() WHERE job_name = ? AND (locked_until IS NULL OR locked_until < NOW())
+==> Parameters: 55(Integer), xiaoxuanfeng:88a0f997(String), sso-session-reconcile(String)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@33e71d8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@235f359] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1920328310 wrapping com.mysql.cj.jdbc.ConnectionImpl@c2c955] will not be managed by Spring
+==>  Preparing: SELECT id,user_id,username,nickname,login_ip,user_agent,device,login_type,login_time,logout_time,status,logout_reason,create_time,update_time FROM sys_sso_session WHERE (status = ?)
+==> Parameters: 1(Integer)
+<==    Columns: id, user_id, username, nickname, login_ip, user_agent, device, login_type, login_time, logout_time, status, logout_reason, create_time, update_time
+<==        Row: 77, 1, admin, Mock User, 0:0:0:0:0:0:0:1, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36, Chrome / Windows 10/11, PASSWORD, 2026-10-21 11:45:22, null, 1, null, 2026-10-21 11:45:22, 2026-10-21 11:45:22
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@235f359]
