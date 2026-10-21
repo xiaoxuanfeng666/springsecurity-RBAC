@@ -71,3 +71,4 @@ Initialization Sequence datacenterId:19 workerId:19
 2026-10-21 14:38:48.468  INFO 20944 --- [           main] c.e.marketing.MarketingApplication       : Started MarketingApplication in 5.652 seconds (JVM running for 6.07)
 2026-10-21 14:38:48.469 DEBUG 20944 --- [   scheduling-1] c.e.marketing.security.JwtTokenVerifier  : 授权服务公钥未变化: http://localhost:7071/oauth/token_key
 2026-10-21 14:39:48.489 DEBUG 20944 --- [   scheduling-1] c.e.marketing.security.JwtTokenVerifier  : 授权服务公钥未变化: http://localhost:7071/oauth/token_key
+2026-10-21 14:40:48.503 DEBUG 20944 --- [   scheduling-1] c.e.marketing.security.JwtTokenVerifier  : 授权服务公钥未变化: http://localhost:7071/oauth/token_key
