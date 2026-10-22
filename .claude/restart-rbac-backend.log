@@ -17083,3 +17083,74 @@ JDBC Connection [HikariProxyConnection@539281315 wrapping com.mysql.cj.jdbc.Conn
 ==> Parameters: 0(Integer), 2026-10-22T09:34:04.802(LocalDateTime)
 <==      Total: 0
 Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@444804ed]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@23814e37] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@661277126 wrapping com.mysql.cj.jdbc.ConnectionImpl@18eb449e] will not be managed by Spring
+==>  Preparing: SELECT id,provider,operation,target_type,target_id,payload,status,retry_count,next_retry_time,last_error,create_time,update_time FROM sys_idp_outbox WHERE (status = ? AND (next_retry_time IS NULL OR next_retry_time <= ?)) ORDER BY id ASC limit 20
+==> Parameters: 0(Integer), 2026-10-22T09:34:09.819(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@23814e37]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@325e197a] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@461838832 wrapping com.mysql.cj.jdbc.ConnectionImpl@18eb449e] will not be managed by Spring
+==>  Preparing: SELECT id,provider,operation,target_type,target_id,payload,status,retry_count,next_retry_time,last_error,create_time,update_time FROM sys_idp_outbox WHERE (status = ? AND (next_retry_time IS NULL OR next_retry_time <= ?)) ORDER BY id ASC limit 20
+==> Parameters: 0(Integer), 2026-10-22T09:34:14.837(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@325e197a]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@63f45681] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@564332108 wrapping com.mysql.cj.jdbc.ConnectionImpl@18eb449e] will not be managed by Spring
+==>  Preparing: SELECT id,provider,operation,target_type,target_id,payload,status,retry_count,next_retry_time,last_error,create_time,update_time FROM sys_idp_outbox WHERE (status = ? AND (next_retry_time IS NULL OR next_retry_time <= ?)) ORDER BY id ASC limit 20
+==> Parameters: 0(Integer), 2026-10-22T09:34:19.851(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@63f45681]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5efb03c8] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@528090824 wrapping com.mysql.cj.jdbc.ConnectionImpl@18eb449e] will not be managed by Spring
+==>  Preparing: SELECT id,provider,operation,target_type,target_id,payload,status,retry_count,next_retry_time,last_error,create_time,update_time FROM sys_idp_outbox WHERE (status = ? AND (next_retry_time IS NULL OR next_retry_time <= ?)) ORDER BY id ASC limit 20
+==> Parameters: 0(Integer), 2026-10-22T09:34:24.860(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@5efb03c8]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@62467d9d] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1688590174 wrapping com.mysql.cj.jdbc.ConnectionImpl@18eb449e] will not be managed by Spring
+==>  Preparing: SELECT id,provider,operation,target_type,target_id,payload,status,retry_count,next_retry_time,last_error,create_time,update_time FROM sys_idp_outbox WHERE (status = ? AND (next_retry_time IS NULL OR next_retry_time <= ?)) ORDER BY id ASC limit 20
+==> Parameters: 0(Integer), 2026-10-22T09:34:29.874(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@62467d9d]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1ad59cb7] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1261351141 wrapping com.mysql.cj.jdbc.ConnectionImpl@18eb449e] will not be managed by Spring
+==>  Preparing: SELECT id,provider,operation,target_type,target_id,payload,status,retry_count,next_retry_time,last_error,create_time,update_time FROM sys_idp_outbox WHERE (status = ? AND (next_retry_time IS NULL OR next_retry_time <= ?)) ORDER BY id ASC limit 20
+==> Parameters: 0(Integer), 2026-10-22T09:34:34.887(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1ad59cb7]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1c4adc63] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@709675897 wrapping com.mysql.cj.jdbc.ConnectionImpl@18eb449e] will not be managed by Spring
+==>  Preparing: SELECT id,provider,operation,target_type,target_id,payload,status,retry_count,next_retry_time,last_error,create_time,update_time FROM sys_idp_outbox WHERE (status = ? AND (next_retry_time IS NULL OR next_retry_time <= ?)) ORDER BY id ASC limit 20
+==> Parameters: 0(Integer), 2026-10-22T09:34:39.898(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1c4adc63]
+2026-10-22 09:34:41.579 DEBUG 32624 --- [   scheduling-1] c.e.rbac.security.JwtTokenVerifier       : 授权服务公钥未变化: http://localhost:7071/oauth/token_key
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@49f24066] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@51459327 wrapping com.mysql.cj.jdbc.ConnectionImpl@18eb449e] will not be managed by Spring
+==>  Preparing: SELECT id,provider,operation,target_type,target_id,payload,status,retry_count,next_retry_time,last_error,create_time,update_time FROM sys_idp_outbox WHERE (status = ? AND (next_retry_time IS NULL OR next_retry_time <= ?)) ORDER BY id ASC limit 20
+==> Parameters: 0(Integer), 2026-10-22T09:34:44.913(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@49f24066]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4a01fd4] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1594527318 wrapping com.mysql.cj.jdbc.ConnectionImpl@18eb449e] will not be managed by Spring
+==>  Preparing: SELECT id,provider,operation,target_type,target_id,payload,status,retry_count,next_retry_time,last_error,create_time,update_time FROM sys_idp_outbox WHERE (status = ? AND (next_retry_time IS NULL OR next_retry_time <= ?)) ORDER BY id ASC limit 20
+==> Parameters: 0(Integer), 2026-10-22T09:34:49.922(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4a01fd4]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4be530dd] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1329584330 wrapping com.mysql.cj.jdbc.ConnectionImpl@18eb449e] will not be managed by Spring
+==>  Preparing: SELECT id,provider,operation,target_type,target_id,payload,status,retry_count,next_retry_time,last_error,create_time,update_time FROM sys_idp_outbox WHERE (status = ? AND (next_retry_time IS NULL OR next_retry_time <= ?)) ORDER BY id ASC limit 20
+==> Parameters: 0(Integer), 2026-10-22T09:34:54.931(LocalDateTime)
+<==      Total: 0
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4be530dd]
