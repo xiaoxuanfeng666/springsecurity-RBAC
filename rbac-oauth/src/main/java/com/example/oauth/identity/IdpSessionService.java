@@ -29,7 +29,7 @@ public class IdpSessionService {
         if (previousToken != null) {
             oauthAuthStore.delete(previousToken);
         }
-        String token = oauthAuthStore.create(loginUser);
+        String token = oauthAuthStore.create(loginUser, request);
         OauthAuthStore.writeCookie(response, token);
         ssoSessionStore.bindBrowserSession(username, token);
         sessionRecordService.recordLogin(loginUser,

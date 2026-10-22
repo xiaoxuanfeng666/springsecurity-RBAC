@@ -209,7 +209,7 @@ public class SsoLogoutController {
      * 先看浏览器会话里的登录态，再退回令牌。返回 null 表示这次请求本来就带着「未登录」的身份。
      */
     private String resolveUsername(HttpServletRequest request, String cookieToken) {
-        LoginUser fromCookie = oauthAuthStore.read(cookieToken);
+        LoginUser fromCookie = oauthAuthStore.read(cookieToken, request);
         if (fromCookie != null) {
             return fromCookie.getUsername();
         }

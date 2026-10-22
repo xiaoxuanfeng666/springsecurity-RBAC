@@ -25,7 +25,9 @@ public enum ResultCode {
     REFRESH_TOKEN_INVALID(2006, "刷新凭证无效，请重新登录"),
     ORDER_NO_EXISTS(2007, "订单编号已存在"),
     ORDER_NOT_EXIST(2008, "订单不存在"),
-    STATE_INVALID(2020, "登录状态已失效或已被使用，请重新发起登录");
+    STATE_INVALID(2020, "登录状态已失效或已被使用，请重新发起登录"),
+    REAUTH_REQUIRED(2030, "该操作需要重新验证密码"),
+    REAUTH_PASSWORD_ERROR(2031, "密码不正确，二次验证未通过");
 
     private final Integer code;
     private final String message;

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -59,6 +60,14 @@ public class OauthAuthStore {
     /** 与原来的会话超时一致 */
     private static final long TTL_SECONDS = 30 * 60;
 
+    /** 生产环境走 HTTPS 时置为 true；开发环境是 http，加了 Secure 浏览器会丢弃 Cookie */
+    private static boolean secureCookie;
+
+    @Value("${rbac.cookie.secure:false}")
+    public void setSecureCookie(boolean secure) {
+        OauthAuthStore.secureCookie = secure;
+    }
+
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final StringRedisTemplate stringRedisTemplate;
@@ -66,8 +75,11 @@ public class OauthAuthStore {
 
     /**
      * 登录成功后写入，返回浏览器要保存的 token
+     * <p>
+     * 同时记录登录时的客户端摘要（User-Agent 的归一化哈希）：之后带着这个 Cookie 的请求
+     * 如果来自不同的浏览器/平台，登录态直接作废。
      */
-    public String create(LoginUser loginUser) {
+    public String create(LoginUser loginUser, HttpServletRequest request) {
         String token = UUID.randomUUID().toString().replace("-", "");
         SysUser user = loginUser.getUser();
         Map<String, Object> info = new LinkedHashMap<>();
@@ -75,6 +87,7 @@ public class OauthAuthStore {
         info.put("username", user.getUsername());
         info.put("nickname", user.getNickname());
         info.put("loginTime", LocalDateTime.now().format(TIME_FORMAT));
+        info.put("clientFingerprint", BffClientFingerprint.of(request));
         try {
             stringRedisTemplate.opsForValue()
                     .set(KEY_PREFIX + token, objectMapper.writeValueAsString(info),
@@ -92,6 +105,16 @@ public class OauthAuthStore {
      * 每次命中都续期 —— 与 HTTP 会话的滑动过期一致，用户在授权页停留不会突然失效。
      */
     public LoginUser read(String token) {
+        return read(token, null);
+    }
+
+    /**
+     * 读取登录态并校验客户端摘要。
+     *
+     * @param request 为 null 时只做存在性检查（内部调用）；传入时校验 User-Agent 摘要，
+     *                不一致说明 Cookie 被复制到了另一个客户端，删除登录态并按未登录处理
+     */
+    public LoginUser read(String token, HttpServletRequest request) {
         if (!StringUtils.hasText(token)) {
             return null;
         }
@@ -103,6 +126,12 @@ public class OauthAuthStore {
         stringRedisTemplate.expire(key, TTL_SECONDS, TimeUnit.SECONDS);
         try {
             JsonNode node = objectMapper.readTree(json);
+            if (request != null && fingerprintMismatch(node, request)) {
+                log.warn("登录态 Cookie 的客户端指纹不一致，销毁登录态: username={}",
+                        text(node, "username"));
+                delete(token);
+                return null;
+            }
             SysUser user = new SysUser();
             if (node.hasNonNull("userId")) {
                 user.setId(node.get("userId").asLong());
@@ -117,6 +146,18 @@ public class OauthAuthStore {
             log.warn("登录态反序列化失败，按未登录处理: {}", e.getMessage());
             return null;
         }
+    }
+
+    /**
+     * 摘要不一致视为 Cookie 被复制。老数据没有摘要时放行，下一次登录会补上。
+     */
+    private boolean fingerprintMismatch(JsonNode node, HttpServletRequest request) {
+        if (!node.hasNonNull("clientFingerprint")) {
+            return false;
+        }
+        String stored = node.get("clientFingerprint").asText();
+        return StringUtils.hasText(stored)
+                && !stored.equals(BffClientFingerprint.of(request));
     }
 
     public void delete(String token) {
@@ -140,20 +181,25 @@ public class OauthAuthStore {
     }
 
     public static void writeCookie(HttpServletResponse response, String token) {
-        Cookie cookie = new Cookie(COOKIE_NAME, token);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) TTL_SECONDS);
-        response.addCookie(cookie);
+        addCookie(response, token, (int) TTL_SECONDS);
     }
 
     /** 登出时让浏览器丢掉它（Max-Age=0） */
     public static void clearCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(COOKIE_NAME, "");
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        addCookie(response, "", 0);
+    }
+
+    /**
+     * Servlet 4.0 的 Cookie 不支持 SameSite，直接拼 Set-Cookie 头。
+     * Lax 足以覆盖授权页的顶级导航与同站表单提交，同时挡掉跨站 POST。
+     */
+    private static void addCookie(HttpServletResponse response, String value, int maxAge) {
+        StringBuilder header = new StringBuilder(COOKIE_NAME).append('=').append(value)
+                .append("; Path=/; HttpOnly; SameSite=Lax; Max-Age=").append(maxAge);
+        if (secureCookie) {
+            header.append("; Secure");
+        }
+        response.addHeader("Set-Cookie", header.toString());
     }
 
     private static String text(JsonNode node, String field) {

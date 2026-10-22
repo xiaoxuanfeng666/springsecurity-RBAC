@@ -3,6 +3,7 @@ package com.example.order.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.order.common.OperLog;
 import com.example.order.common.Result;
+import com.example.order.security.SensitiveOperation;
 import com.example.order.dto.OrderForm;
 import com.example.order.dto.OrderStatView;
 import com.example.order.entity.OrderInfo;
@@ -65,6 +66,7 @@ public class OrderController {
         return Result.success("修改成功", null);
     }
 
+    @SensitiveOperation
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('order:order:remove')")
     @OperLog(module = "订单管理", action = "DELETE", description = "删除订单")

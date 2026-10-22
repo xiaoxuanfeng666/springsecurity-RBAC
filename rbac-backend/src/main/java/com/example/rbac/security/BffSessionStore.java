@@ -29,6 +29,10 @@ public class BffSessionStore {
     private static final String REFRESH_LOCK_PREFIX = "rbac:bff-refresh-lock:";
     private static final String REFRESH_RESULT_PREFIX = "rbac:bff-refresh-result:";
 
+    /** 轮换后的旧 id -> 新 id：给还带着旧 Cookie 的并发请求一个短暂的过渡窗口 */
+    private static final String ALIAS_PREFIX = "rbac:bff-session-alias:";
+    private static final long ALIAS_SECONDS = 60;
+
     /** 刷新锁的持有时间：应大于一次令牌端点调用的超时，又不能太久导致刷新失败后长时间无法重试 */
     private static final long REFRESH_LOCK_SECONDS = 10;
 
@@ -65,7 +69,7 @@ public class BffSessionStore {
         try {
             return objectMapper.readValue(json, BffSession.class);
         } catch (Exception e) {
-            log.warn("BFF 会话解析失败，按不存在处理: sessionId={}, error={}", sessionId, e.getMessage());
+            log.warn("BFF 会话解析失败，按不存在处理: sessionId={}, error={}", BffSession.mask(sessionId), e.getMessage());
             delete(sessionId);
             return null;
         }
@@ -95,6 +99,54 @@ public class BffSessionStore {
     public void saveRefreshResult(String sessionId, String accessToken) {
         stringRedisTemplate.opsForValue().set(
                 REFRESH_RESULT_PREFIX + sessionId, accessToken, REFRESH_RESULT_SECONDS, TimeUnit.SECONDS);
+    }
+
+
+    /** 会话 id 可能是刚轮换掉的旧值：顺着别名找到当前会话，调用方负责把新 id 补回 Cookie */
+    public ResolvedSession resolve(String sessionId) {
+        BffSession direct = get(sessionId);
+        if (direct != null) {
+            return new ResolvedSession(sessionId, direct);
+        }
+        String currentId = stringRedisTemplate.opsForValue().get(ALIAS_PREFIX + sessionId);
+        if (!StringUtils.hasText(currentId)) {
+            return null;
+        }
+        BffSession session = get(currentId);
+        return session == null ? null : new ResolvedSession(currentId, session);
+    }
+
+    /**
+     * 续期时轮换会话 id：泄漏出去的旧 id 从这一刻起失效，
+     * 旧 id 保留 60 秒别名，避免同一浏览器的并发请求在过渡期被误判为未登录。
+     */
+    public void rotate(BffSession session, String newSessionId) {
+        String oldSessionId = session.getSessionId();
+        session.setSessionId(newSessionId);
+        save(session);
+        stringRedisTemplate.opsForValue().set(ALIAS_PREFIX + oldSessionId, newSessionId,
+                ALIAS_SECONDS, TimeUnit.SECONDS);
+        delete(oldSessionId);
+    }
+
+    /** 解析结果：可能因轮换而与浏览器 Cookie 里的 id 不同 */
+    public static final class ResolvedSession {
+
+        private final String sessionId;
+        private final BffSession session;
+
+        ResolvedSession(String sessionId, BffSession session) {
+            this.sessionId = sessionId;
+            this.session = session;
+        }
+
+        public String getSessionId() {
+            return sessionId;
+        }
+
+        public BffSession getSession() {
+            return session;
+        }
     }
 
     private String key(String sessionId) {

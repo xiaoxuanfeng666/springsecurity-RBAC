@@ -39,7 +39,7 @@ public class OauthAuthCookieFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             String token = OauthAuthStore.readToken(request);
-            LoginUser loginUser = oauthAuthStore.read(token);
+            LoginUser loginUser = oauthAuthStore.read(token, request);
             if (loginUser != null) {
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());

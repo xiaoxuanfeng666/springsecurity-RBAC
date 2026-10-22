@@ -5,6 +5,7 @@ import com.example.order.security.RestAccessDeniedHandler;
 import com.example.order.security.RestAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -18,6 +19,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.List;
 import java.util.Collections;
 
 /**
@@ -34,6 +37,11 @@ import java.util.Collections;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    /** 允许的前端源，逗号分隔；CORS 与非 GET 请求的 Origin 校验共用 */
+    @Value("${rbac.cors.allowed-origins:http://localhost:5176}")
+    private String allowedOrigins;
+
 
     private final OAuth2TokenAuthenticationFilter tokenAuthenticationFilter;
     private final RestAuthenticationEntryPoint authenticationEntryPoint;
@@ -58,10 +66,17 @@ public class SecurityConfig {
         return http.build();
     }
 
+    private List<String> allowedOriginList() {
+        return Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+    }
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(Collections.singletonList("*"));
+        config.setAllowedOrigins(allowedOriginList());
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(Collections.singletonList("*"));
         config.setAllowCredentials(true);

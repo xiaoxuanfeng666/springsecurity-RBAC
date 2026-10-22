@@ -6,6 +6,7 @@ com\example\order\common\Result.class
 com\example\order\service\AuthService.class
 com\example\order\config\RestTemplateConfig.class
 com\example\order\mq\SubsystemSyncMessage$RoleMenu.class
+com\example\order\security\BffClientFingerprint.class
 com\example\order\security\CachedLoginUser.class
 com\example\order\security\BffSession.class
 com\example\order\util\WebUtils.class
@@ -25,6 +26,7 @@ com\example\order\config\JacksonConfig.class
 com\example\order\mq\SubsystemSyncMessage$User.class
 com\example\order\dto\OrderStatusCount.class
 com\example\order\mq\SessionRevokeMessage.class
+com\example\order\security\BffSessionStore$ResolvedSession.class
 com\example\order\entity\OrderUserRole.class
 com\example\order\security\RestAccessDeniedHandler.class
 com\example\order\controller\AuthController.class
@@ -42,6 +44,7 @@ com\example\order\common\ResultCode.class
 com\example\order\util\TreeNode.class
 com\example\order\common\OperLog.class
 com\example\order\security\JwtTokenVerifier.class
+com\example\order\security\SensitiveOperation.class
 com\example\order\config\MyMetaObjectHandler.class
 com\example\order\mapper\OrderRoleMenuMapper.class
 com\example\order\entity\OrderUser.class
@@ -51,10 +54,14 @@ com\example\order\service\OrderService.class
 com\example\order\controller\OrderController.class
 com\example\order\util\TreeUtils.class
 com\example\order\entity\OrderRoleMenu.class
+com\example\order\security\SensitiveOperationInterceptor.class
+com\example\order\config\WebMvcConfig.class
 com\example\order\entity\OrderMenu.class
 com\example\order\security\PermissionService.class
 com\example\order\security\JwtTokenVerifier$VerifyResult.class
+com\example\order\security\OriginValidationFilter.class
 com\example\order\entity\OrderInfo.class
+com\example\order\dto\ElevateRequest.class
 com\example\order\security\TokenRevocationStore.class
 com\example\order\mapper\OrderMenuMapper.class
 com\example\order\OrderApplication.class

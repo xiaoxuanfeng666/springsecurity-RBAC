@@ -24,7 +24,9 @@ public enum ResultCode {
     CODE_INVALID(2005, "授权码无效或已过期，请重新授权"),
     REFRESH_TOKEN_INVALID(2006, "刷新凭证无效，请重新登录"),
     AUDIT_NOT_EXIST(2007, "审计日志不存在"),
-    STATE_INVALID(2020, "登录状态已失效或已被使用，请重新发起登录");
+    STATE_INVALID(2020, "登录状态已失效或已被使用，请重新发起登录"),
+    REAUTH_REQUIRED(2030, "该操作需要重新验证密码"),
+    REAUTH_PASSWORD_ERROR(2031, "密码不正确，二次验证未通过");
 
     private final Integer code;
     private final String message;

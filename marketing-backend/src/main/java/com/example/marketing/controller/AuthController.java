@@ -2,6 +2,7 @@ package com.example.marketing.controller;
 
 import com.example.marketing.common.Result;
 import com.example.marketing.dto.CodeLoginRequest;
+import com.example.marketing.dto.ElevateRequest;
 import com.example.marketing.dto.LoginInfoResponse;
 import com.example.marketing.dto.PasswordLoginRequest;
 import com.example.marketing.service.AuthService;
@@ -38,9 +39,10 @@ public class AuthController {
      */
     @PostMapping("/login")
     public Result<LoginInfoResponse> login(@Valid @RequestBody PasswordLoginRequest request,
+                                           HttpServletRequest httpRequest,
                                            HttpServletResponse response) {
         return Result.success("登录成功",
-                authService.loginByPassword(request.getUsername(), request.getPassword(), response));
+                authService.loginByPassword(request.getUsername(), request.getPassword(), httpRequest, response));
     }
 
     /**
@@ -61,6 +63,17 @@ public class AuthController {
     public Result<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
         return Result.success("已登出", null);
+    }
+
+
+    /**
+     * 敏感操作二次验证：重新输入登录密码
+     */
+    @PostMapping("/elevate")
+    public Result<Void> elevate(@Valid @RequestBody ElevateRequest request,
+                                HttpServletRequest httpRequest) {
+        authService.elevate(request.getPassword(), httpRequest);
+        return Result.success("验证通过", null);
     }
 
     /**

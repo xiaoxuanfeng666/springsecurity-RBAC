@@ -1,5 +1,6 @@
 package com.example.oauth.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -43,6 +44,10 @@ public class RedisRequestCache implements RequestCache {
     private final StringRedisTemplate stringRedisTemplate;
     private final SecureRandom random = new SecureRandom();
 
+    /** 生产环境走 HTTPS 时置为 true；开发环境是 http，加了 Secure 浏览器会丢弃 Cookie */
+    @Value("${rbac.cookie.secure:false}")
+    private boolean secure;
+
     public RedisRequestCache(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
     }
@@ -52,7 +57,7 @@ public class RedisRequestCache implements RequestCache {
         String cacheId = readCacheId(request);
         if (cacheId == null) {
             cacheId = newCacheId();
-            response.addCookie(buildCookie(cacheId));
+            addCookie(response, cacheId, (int) TTL.getSeconds());
         }
         stringRedisTemplate.opsForValue().set(KEY_PREFIX + cacheId, currentUrl(request), TTL);
     }
@@ -82,11 +87,7 @@ public class RedisRequestCache implements RequestCache {
             stringRedisTemplate.delete(KEY_PREFIX + cacheId);
         }
         // 连同索引 Cookie 一起过期：只删 Redis 键的话，浏览器会继续带着一个指向空记录的 Cookie
-        Cookie expired = new Cookie(COOKIE_NAME, "");
-        expired.setPath("/");
-        expired.setHttpOnly(true);
-        expired.setMaxAge(0);
-        response.addCookie(expired);
+        addCookie(response, "", 0);
     }
 
     /** 相对地址（路径 + 查询串），与源无关 */
@@ -114,11 +115,13 @@ public class RedisRequestCache implements RequestCache {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    private static Cookie buildCookie(String cacheId) {
-        Cookie cookie = new Cookie(COOKIE_NAME, cacheId);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) TTL.getSeconds());
-        return cookie;
+    /** Servlet 4.0 的 Cookie 不支持 SameSite，直接拼 Set-Cookie 头 */
+    private void addCookie(HttpServletResponse response, String value, int maxAge) {
+        StringBuilder header = new StringBuilder(COOKIE_NAME).append('=').append(value)
+                .append("; Path=/; HttpOnly; SameSite=Lax; Max-Age=").append(maxAge);
+        if (secure) {
+            header.append("; Secure");
+        }
+        response.addHeader("Set-Cookie", header.toString());
     }
 }

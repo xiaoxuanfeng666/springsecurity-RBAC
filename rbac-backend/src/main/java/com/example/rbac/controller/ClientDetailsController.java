@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.rbac.common.AuditAction;
 import com.example.rbac.common.OperLog;
 import com.example.rbac.common.Result;
+import com.example.rbac.security.SensitiveOperation;
 import com.example.rbac.dto.ClientForm;
 import com.example.rbac.entity.ClientDetails;
 import com.example.rbac.service.ClientDetailsService;
@@ -34,6 +35,7 @@ public class ClientDetailsController {
         return Result.success(clientDetailsService.getById(appId));
     }
 
+    @SensitiveOperation
     @PostMapping
     @PreAuthorize("@ss.hasPerm('system:client:add')")
     @OperLog(module = "客户端管理", action = AuditAction.CREATE, description = "新增客户端")
@@ -42,6 +44,7 @@ public class ClientDetailsController {
         return Result.success("新增成功", null);
     }
 
+    @SensitiveOperation
     @PutMapping
     @PreAuthorize("@ss.hasPerm('system:client:edit')")
     @OperLog(module = "客户端管理", action = AuditAction.UPDATE, description = "修改客户端")
@@ -50,6 +53,7 @@ public class ClientDetailsController {
         return Result.success("修改成功", null);
     }
 
+    @SensitiveOperation
     @DeleteMapping("/{appId}")
     @PreAuthorize("@ss.hasPerm('system:client:remove')")
     @OperLog(module = "客户端管理", action = AuditAction.DELETE, description = "删除客户端")

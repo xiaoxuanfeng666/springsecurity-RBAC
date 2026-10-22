@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.rbac.common.AuditAction;
 import com.example.rbac.common.OperLog;
 import com.example.rbac.common.Result;
+import com.example.rbac.security.SensitiveOperation;
 import com.example.rbac.dto.SubsystemForm;
 import com.example.rbac.entity.SysSubsystem;
 import com.example.rbac.service.SysSubsystemService;
@@ -43,6 +44,7 @@ public class SysSubsystemController {
         return Result.success(subsystemService.getById(id));
     }
 
+    @SensitiveOperation
     @PostMapping
     @PreAuthorize("@ss.hasPerm('system:subsystem:add')")
     @OperLog(module = "子系统管理", action = AuditAction.CREATE, description = "新增子系统")
@@ -51,6 +53,7 @@ public class SysSubsystemController {
         return Result.success("新增成功", null);
     }
 
+    @SensitiveOperation
     @PutMapping
     @PreAuthorize("@ss.hasPerm('system:subsystem:edit')")
     @OperLog(module = "子系统管理", action = AuditAction.UPDATE, description = "修改子系统")
@@ -59,6 +62,7 @@ public class SysSubsystemController {
         return Result.success("修改成功", null);
     }
 
+    @SensitiveOperation
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('system:subsystem:remove')")
     @OperLog(module = "子系统管理", action = AuditAction.DELETE, description = "删除子系统")

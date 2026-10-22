@@ -14,7 +14,10 @@
 [INFO] Copying 0 resource
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ marketing-backend ---
-[INFO] Nothing to compile - all classes are up to date
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 88 source files to D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\target\classes
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/marketing-backend/src/main/java/com/example/marketing/security/OAuth2TokenClient.java: D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\src\main\java\com\example\marketing\security\OAuth2TokenClient.java使用了未经检查或不安全的操作。
+[INFO] /D:/programs/ai/coding/springsecurity-RBAC/marketing-backend/src/main/java/com/example/marketing/security/OAuth2TokenClient.java: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
 [INFO] 
 [INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ marketing-backend ---
 [INFO] Using 'UTF-8' encoding to copy filtered resources.
@@ -38,38 +41,293 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::               (v2.7.18)
 
-2026-10-21 14:38:43.169  INFO 20944 --- [           main] c.e.marketing.MarketingApplication       : Starting MarketingApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 20944 (D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\marketing-backend)
-2026-10-21 14:38:43.172  INFO 20944 --- [           main] c.e.marketing.MarketingApplication       : No active profile set, falling back to 1 default profile: "default"
-2026-10-21 14:38:43.796  INFO 20944 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-10-21 14:38:43.798  INFO 20944 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-10-21 14:38:43.822  INFO 20944 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 12 ms. Found 0 Redis repository interfaces.
-2026-10-21 14:38:44.279  INFO 20944 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$43158e59] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2026-10-21 14:38:44.331  INFO 20944 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2026-10-21 14:38:44.352  INFO 20944 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2026-10-21 14:38:44.353  INFO 20944 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$9a4f84f5] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2026-10-21 14:38:44.752  INFO 20944 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7072 (http)
-2026-10-21 14:38:44.762  INFO 20944 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-10-21 14:38:44.762  INFO 20944 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
-2026-10-21 14:38:45.015  INFO 20944 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-10-21 14:38:45.016  INFO 20944 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1802 ms
-2026-10-21 14:38:45.565  INFO 20944 --- [           main] c.e.marketing.security.JwtTokenVerifier  : 已加载授权服务令牌公钥: http://localhost:7071/oauth/token_key
+2026-10-21 17:19:03.184  INFO 31756 --- [           main] c.e.marketing.MarketingApplication       : Starting MarketingApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 31756 (D:\programs\ai\coding\springsecurity-RBAC\marketing-backend\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\marketing-backend)
+2026-10-21 17:19:03.190  INFO 31756 --- [           main] c.e.marketing.MarketingApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-10-21 17:19:04.281  INFO 31756 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-21 17:19:04.283  INFO 31756 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-10-21 17:19:04.317  INFO 31756 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18 ms. Found 0 Redis repository interfaces.
+2026-10-21 17:19:04.935  INFO 31756 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$d1c04003] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 17:19:05.036  INFO 31756 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 17:19:05.077  INFO 31756 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 17:19:05.081  INFO 31756 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$28fa369f] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 17:19:06.099  INFO 31756 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7072 (http)
+2026-10-21 17:19:06.118  INFO 31756 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-21 17:19:06.118  INFO 31756 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-10-21 17:19:06.577  INFO 31756 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-21 17:19:06.578  INFO 31756 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3296 ms
+2026-10-21 17:19:10.017  WARN 31756 --- [           main] c.e.marketing.security.JwtTokenVerifier  : 拉取授权服务公钥失败，继续使用当前公钥: url=http://localhost:7071/oauth/token_key, error=I/O error on GET request for "http://localhost:7071/oauth/token_key": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
 Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
-Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@62f11ebb'
+Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@3e28fee1'
 Property 'mapperLocations' was not specified.
-Initialization Sequence datacenterId:19 workerId:19
+Initialization Sequence datacenterId:19 workerId:18
  _ _   |_  _ _|_. ___ _ |    _ 
 | | |\/|_)(_| | |_\  |_)||_|_\ 
      /               |         
                         3.5.3.2 
-2026-10-21 14:38:46.994  INFO 20944 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='marketing-session-revoke-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SESSION_REVOKE', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
-2026-10-21 14:38:46.994  INFO 20944 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:sessionRevokeConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
-2026-10-21 14:38:47.509  INFO 20944 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='marketing-sync-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SUBSYSTEM_SYNC', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='marketing', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
-2026-10-21 14:38:47.509  INFO 20944 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:subsystemSyncConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_2
-2026-10-21 14:38:47.613  INFO 20944 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@6a1568d6, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@11c88cca, org.springframework.security.web.context.SecurityContextPersistenceFilter@6af609ea, org.springframework.security.web.header.HeaderWriterFilter@42fc4ac4, org.springframework.web.filter.CorsFilter@1b37fbec, org.springframework.security.web.authentication.logout.LogoutFilter@69ed5ea2, com.example.marketing.security.OAuth2TokenAuthenticationFilter@500051c5, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@8840c98, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@273fa9e, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4a216eb4, org.springframework.security.web.session.SessionManagementFilter@11df2829, org.springframework.security.web.access.ExceptionTranslationFilter@3a3b10f4, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@756b2d90]
-2026-10-21 14:38:47.965  INFO 20944 --- [           main] o.a.r.s.a.RocketMQAutoConfiguration      : a producer (marketing-backend-producer) init on namesrv localhost:9876
-2026-10-21 14:38:48.456  INFO 20944 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7072 (http) with context path ''
-2026-10-21 14:38:48.468  INFO 20944 --- [           main] c.e.marketing.MarketingApplication       : Started MarketingApplication in 5.652 seconds (JVM running for 6.07)
-2026-10-21 14:38:48.469 DEBUG 20944 --- [   scheduling-1] c.e.marketing.security.JwtTokenVerifier  : 授权服务公钥未变化: http://localhost:7071/oauth/token_key
-2026-10-21 14:39:48.489 DEBUG 20944 --- [   scheduling-1] c.e.marketing.security.JwtTokenVerifier  : 授权服务公钥未变化: http://localhost:7071/oauth/token_key
-2026-10-21 14:40:48.503 DEBUG 20944 --- [   scheduling-1] c.e.marketing.security.JwtTokenVerifier  : 授权服务公钥未变化: http://localhost:7071/oauth/token_key
-2026-10-21 14:41:48.522 DEBUG 20944 --- [   scheduling-1] c.e.marketing.security.JwtTokenVerifier  : 授权服务公钥未变化: http://localhost:7071/oauth/token_key
+2026-10-21 17:19:13.981  INFO 31756 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='marketing-session-revoke-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SESSION_REVOKE', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-21 17:19:13.981  INFO 31756 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:sessionRevokeConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
+2026-10-21 17:19:15.215  INFO 31756 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='marketing-sync-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SUBSYSTEM_SYNC', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='marketing', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-21 17:19:15.215  INFO 31756 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:subsystemSyncConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_2
+2026-10-21 17:19:15.407  INFO 31756 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2bebd114, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@b379bc6, org.springframework.security.web.context.SecurityContextPersistenceFilter@5f395ce1, org.springframework.security.web.header.HeaderWriterFilter@30a9e3db, org.springframework.web.filter.CorsFilter@374c40ba, org.springframework.security.web.authentication.logout.LogoutFilter@15214920, com.example.marketing.security.OAuth2TokenAuthenticationFilter@306c7bf6, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@329dc214, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@64021427, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@18dcb8a7, org.springframework.security.web.session.SessionManagementFilter@265c1a7c, org.springframework.security.web.access.ExceptionTranslationFilter@28a6e171, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@395f52ed]
+2026-10-21 17:19:16.110  INFO 31756 --- [           main] o.a.r.s.a.RocketMQAutoConfiguration      : a producer (marketing-backend-producer) init on namesrv localhost:9876
+2026-10-21 17:19:16.943  INFO 31756 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7072 (http) with context path ''
+2026-10-21 17:19:16.958  INFO 31756 --- [           main] c.e.marketing.MarketingApplication       : Started MarketingApplication in 14.568 seconds (JVM running for 15.579)
+2026-10-21 17:19:17.104  INFO 31756 --- [   scheduling-1] c.e.marketing.security.JwtTokenVerifier  : 已加载授权服务令牌公钥: http://localhost:7071/oauth/token_key
+2026-10-21 17:19:18.867  INFO 31756 --- [nio-7072-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-21 17:19:18.867  INFO 31756 --- [nio-7072-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-21 17:19:18.868  INFO 31756 --- [nio-7072-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-10-21 17:19:21.188  INFO 31756 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-21 17:19:21.444  INFO 31756 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+Creating a new SqlSession
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+JDBC Connection [HikariProxyConnection@1161849268 wrapping com.mysql.cj.jdbc.ConnectionImpl@13fd248] will be managed by Spring
+==>  Preparing: DELETE FROM marketing_user_role
+==> Parameters: 
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: DELETE FROM marketing_role_menu
+==> Parameters: 
+<==    Updates: 10
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: DELETE FROM marketing_menu
+==> Parameters: 
+<==    Updates: 19
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: DELETE FROM marketing_user
+==> Parameters: 
+<==    Updates: 3
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 100(Long), 0(Long), 抽奖管理(String), 1(Integer), /lottery(String), Layout(String), Trophy(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 110(Long), 0(Long), 积分管理(String), 1(Integer), /points(String), Layout(String), Coin(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 101(Long), 100(Long), 抽奖活动(String), 2(Integer), marketing:activity:list(String), activity(String), lottery/activity/index(String), Tickets(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 106(Long), 100(Long), 抽奖记录(String), 2(Integer), marketing:record:list(String), record(String), lottery/record/index(String), Memo(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 117(Long), 100(Long), 奖品配置(String), 2(Integer), marketing:prize:list(String), prize(String), lottery/prize/index(String), Present(String), 3(Integer), 1(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 102(Long), 101(Long), 活动查询(String), 3(Integer), marketing:activity:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 103(Long), 101(Long), 活动新增(String), 3(Integer), marketing:activity:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 104(Long), 101(Long), 活动修改(String), 3(Integer), marketing:activity:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 105(Long), 101(Long), 活动删除(String), 3(Integer), marketing:activity:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 111(Long), 110(Long), 积分任务(String), 2(Integer), marketing:task:list(String), task(String), points/task/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 116(Long), 110(Long), 积分流水(String), 2(Integer), marketing:points:list(String), flow(String), points/flow/index(String), DataLine(String), 2(Integer), 1(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 112(Long), 111(Long), 任务查询(String), 3(Integer), marketing:task:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 113(Long), 111(Long), 任务新增(String), 3(Integer), marketing:task:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 114(Long), 111(Long), 任务修改(String), 3(Integer), marketing:task:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 115(Long), 111(Long), 任务删除(String), 3(Integer), marketing:task:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 118(Long), 117(Long), 奖品查询(String), 3(Integer), marketing:prize:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 119(Long), 117(Long), 奖品新增(String), 3(Integer), marketing:prize:add(String), 2(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 120(Long), 117(Long), 奖品修改(String), 3(Integer), marketing:prize:edit(String), 3(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
+==> Parameters: 121(Long), 117(Long), 奖品删除(String), 3(Integer), marketing:prize:remove(String), 4(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 100(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 101(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 102(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 106(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 110(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 111(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 112(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 116(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 117(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 118(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6] from current transaction
+==>  Preparing: INSERT INTO marketing_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
+==> Parameters: 2(Long), 2(Long), 2026-10-21T17:19:21.454(LocalDateTime)
+<==    Updates: 1
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+2026-10-21 17:19:21.625  INFO 31756 --- [sync-consumer_1] c.e.m.service.MarketingSyncService       : 已重建子系统同步数据: subsystemCode=marketing, menus=19, roleMenus=10, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@f06bd6]
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6efc1b2c] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@633896297 wrapping com.mysql.cj.jdbc.ConnectionImpl@13fd248] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ? AND status = 1
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-21 17:19:21
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@6efc1b2c]
+2026-10-21 17:19:28.044  INFO 31756 --- [nio-7072-exec-5] c.example.marketing.service.AuthService  : 已建立 BFF 会话: username=admin, sessionId=f539683f...
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f4ef567] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@2007031708 wrapping com.mysql.cj.jdbc.ConnectionImpl@13fd248] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@1f4ef567]
+2026-10-21 17:19:28.478  INFO 31756 --- [voke-consumer_1] c.e.m.security.TokenRevocationStore      : 已记录会话撤销: sid=d96bb740af6b406cb6dcf41f3f264aa5, ttl=1800s
+2026-10-21 17:19:28.480  INFO 31756 --- [voke-consumer_1] c.e.marketing.mq.SessionRevokeConsumer   : 已消费会话撤销: sid=d96bb740af6b406cb6dcf41f3f264aa5, username=admin
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@55d2a706] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1953060036 wrapping com.mysql.cj.jdbc.ConnectionImpl@13fd248] will not be managed by Spring
+==>  Preparing: SELECT * FROM marketing_user WHERE username = ? AND status = 1
+==> Parameters: admin(String)
+<==    Columns: id, username, nickname, status, role_keys, sync_time
+<==        Row: 1, admin, Mock User, 1, admin, 2026-10-21 17:19:21
+<==      Total: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@55d2a706]
+2026-10-21 17:19:28.505  INFO 31756 --- [nio-7072-exec-9] c.example.marketing.service.AuthService  : 已建立 BFF 会话: username=admin, sessionId=cea6e2a4...
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ed6ee7e] was not registered for synchronization because synchronization is not active
+JDBC Connection [HikariProxyConnection@1881623572 wrapping com.mysql.cj.jdbc.ConnectionImpl@13fd248] will not be managed by Spring
+==>  Preparing: SELECT id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status FROM marketing_menu WHERE status = 1 AND type IN (1, 2) ORDER BY parent_id, sort
+==> Parameters: 
+<==    Columns: id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status
+<==        Row: 100, 0, 抽奖管理, 1, null, /lottery, Layout, Trophy, 1, 1, 1
+<==        Row: 110, 0, 积分管理, 1, null, /points, Layout, Coin, 2, 1, 1
+<==        Row: 101, 100, 抽奖活动, 2, marketing:activity:list, activity, lottery/activity/index, Tickets, 1, 1, 1
+<==        Row: 106, 100, 抽奖记录, 2, marketing:record:list, record, lottery/record/index, Memo, 2, 1, 1
+<==        Row: 117, 100, 奖品配置, 2, marketing:prize:list, prize, lottery/prize/index, Present, 3, 1, 1
+<==        Row: 111, 110, 积分任务, 2, marketing:task:list, task, points/task/index, List, 1, 1, 1
+<==        Row: 116, 110, 积分流水, 2, marketing:points:list, flow, points/flow/index, DataLine, 2, 1, 1
+<==      Total: 7
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@4ed6ee7e]
+2026-10-21 18:37:14.093  WARN 31756 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h4m22s319ms238?s500ns).
+2026-10-21 19:14:18.314  WARN 31756 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m3s677ms877?s100ns).
+2026-10-21 19:47:15.989  WARN 31756 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m57s415ms176?s100ns).
+2026-10-21 19:56:47.004  WARN 31756 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4m30s921ms255?s700ns).
+2026-10-21 21:02:37.580  WARN 31756 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=13m19s634ms809?s200ns).
+2026-10-21 21:19:19.595  WARN 31756 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=11m41s934ms615?s400ns).
+2026-10-21 21:26:38.690  WARN 31756 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m19s35ms734?s900ns).
+2026-10-21 22:27:35.414  WARN 31756 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8m25s852ms58?s700ns).
+2026-10-21 22:53:19.299  WARN 31756 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m13s798ms474?s500ns).
+2026-10-22 09:33:01.999  WARN 31756 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=10h39m48s933ms304?s300ns).

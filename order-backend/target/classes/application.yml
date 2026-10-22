@@ -69,6 +69,10 @@ rocketmq:
     send-message-timeout: 3000
 
 rbac:
+  # 允许的前端源（逗号分隔）：CORS 与非 GET 请求的 Origin 校验共用这份清单。
+  # 生产环境改成实际域名，或用环境变量 CORS_ALLOWED_ORIGINS 覆盖。
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5176}
   session:
     # 消费 rbac-oauth 广播的「会话已撤销」：本地验签看不到会话是否存活，靠这条消息拒掉已登出/被踢的令牌
     # 【必须与 rbac-oauth 的 rbac.session.revoke-topic 一致】
@@ -85,7 +89,7 @@ rbac:
     # 生产环境走 HTTPS 时置为 true（开发环境是 http，加了浏览器会丢弃 Cookie）
     cookie-secure: false
     # 空闲有效期：会话在这段时间内没有续期就过期
-    session-idle-ttl-seconds: 604800
+    session-idle-ttl-seconds: 1800
     # 绝对有效期：从登录时刻算起，到点必须重新授权
-    session-max-ttl-seconds: 604800
+    session-max-ttl-seconds: 43200
 

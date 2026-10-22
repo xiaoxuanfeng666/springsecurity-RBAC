@@ -8,6 +8,7 @@ com\example\audit\util\TreeUtils.class
 com\example\audit\mq\SessionRevokeConsumer.class
 com\example\audit\controller\AuthController.class
 com\example\audit\security\JwtTokenVerifier$VerifyResult.class
+com\example\audit\security\BffSessionStore$ResolvedSession.class
 com\example\audit\security\CachedLoginUser.class
 com\example\audit\entity\AuditRoleMenu.class
 com\example\audit\security\SuperAdmin.class
@@ -23,6 +24,7 @@ com\example\audit\util\TreeNode.class
 com\example\audit\security\JwtTokenVerifier.class
 com\example\audit\common\ResultCode.class
 com\example\audit\service\AuthService.class
+com\example\audit\security\SensitiveOperation.class
 com\example\audit\config\RestTemplateConfig.class
 com\example\audit\task\TokenKeyRefreshTask.class
 com\example\audit\security\TokenRevocationStore.class
@@ -35,9 +37,12 @@ com\example\audit\mapper\AuditUserRoleMapper.class
 com\example\audit\config\SecurityConfig.class
 com\example\audit\mq\SubsystemSyncMessage.class
 com\example\audit\controller\AuditLogController.class
+com\example\audit\security\BffClientFingerprint.class
 com\example\audit\security\BffSessionStore.class
 com\example\audit\security\OAuth2StateStore.class
+com\example\audit\security\OriginValidationFilter.class
 com\example\audit\security\OAuth2TokenClient.class
+com\example\audit\security\SensitiveOperationInterceptor.class
 com\example\audit\security\BffSession.class
 com\example\audit\mapper\AuditLogMapper.class
 com\example\audit\mq\SubsystemSyncMessage$User.class
@@ -52,8 +57,10 @@ com\example\audit\entity\AuditLogRecord.class
 com\example\audit\AuditApplication.class
 com\example\audit\common\GlobalExceptionHandler.class
 com\example\audit\mapper\AuditMenuMapper.class
+com\example\audit\config\WebMvcConfig.class
 com\example\audit\mq\SubsystemSyncMessage$RoleMenu.class
 com\example\audit\config\OAuth2ClientProperties.class
+com\example\audit\dto\ElevateRequest.class
 com\example\audit\entity\AuditUser.class
 com\example\audit\config\JacksonConfig.class
 com\example\audit\mq\AuditLogMessage.class

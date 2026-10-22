@@ -10,6 +10,8 @@ export function loginByCode(code, state) {
   return request({
     url: '/auth/code',
     method: 'post',
+    // 失败信息由回调页自己展示（它可能自动重试）
+    silent: true,
     data: { code, state }
   })
 }

@@ -3,6 +3,7 @@ package com.example.marketing.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.marketing.common.OperLog;
 import com.example.marketing.common.Result;
+import com.example.marketing.security.SensitiveOperation;
 import com.example.marketing.dto.ActivityPrizeItem;
 import com.example.marketing.dto.ActivityPrizeView;
 import com.example.marketing.dto.LotteryActivityForm;
@@ -75,6 +76,7 @@ public class LotteryActivityController {
         return Result.success("修改成功", null);
     }
 
+    @SensitiveOperation
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('marketing:activity:remove')")
     @OperLog(module = "抽奖管理", action = "DELETE", description = "删除抽奖活动")
@@ -95,6 +97,7 @@ public class LotteryActivityController {
     /**
      * 保存活动的奖品配置（整体替换）
      */
+    @SensitiveOperation
     @PutMapping("/{id}/prizes")
     @PreAuthorize("@ss.hasPerm('marketing:activity:edit')")
     @OperLog(module = "抽奖管理", action = "UPDATE", description = "保存活动奖品配置")

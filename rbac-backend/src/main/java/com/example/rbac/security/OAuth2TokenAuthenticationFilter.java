@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * BFF 认证过滤器
@@ -66,9 +67,23 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
         if (sessionId == null) {
             return;
         }
-        BffSession session = sessionStore.get(sessionId);
-        if (session == null) {
+        BffSessionStore.ResolvedSession resolved = sessionStore.resolve(sessionId);
+        if (resolved == null) {
             // 浏览器还带着一个已经不存在的会话（过期、被撤权、服务端清理过）
+            sessionCookie.clear(response);
+            return;
+        }
+        BffSession session = resolved.getSession();
+        if (!resolved.getSessionId().equals(sessionId)) {
+            // 会话在别的标签页里刚完成轮换：把新 id 补发出去，旧 Cookie 只在这个过渡窗口内有效
+            sessionId = resolved.getSessionId();
+            sessionCookie.write(response, sessionId);
+        }
+        // 客户端软绑定：UA 归一化摘要不一致，说明 Cookie 被复制到了另一个客户端
+        if (!BffClientFingerprint.of(request).equals(session.getClientFingerprint())) {
+            log.warn("BFF 会话的客户端指纹不一致，销毁会话: username={}, sessionId={}",
+                    session.getUsername(), BffSession.mask(sessionId));
+            sessionStore.delete(sessionId);
             sessionCookie.clear(response);
             return;
         }
@@ -76,7 +91,7 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
         // 会话可以靠不断续期越过绝对上限
         if (System.currentTimeMillis() >= session.getExpireAt()) {
             log.info("BFF 会话已达绝对有效期，要求重新登录: username={}, sessionId={}",
-                    session.getUsername(), sessionId);
+                    session.getUsername(), BffSession.mask(sessionId));
             sessionStore.delete(sessionId);
             sessionCookie.clear(response);
             return;
@@ -104,7 +119,7 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
         }
         if (!result.isValid()) {
             log.info("BFF 会话的令牌无效，销毁会话: username={}, sessionId={}",
-                    session.getUsername(), session.getSessionId());
+                    session.getUsername(), BffSession.mask(session.getSessionId()));
             sessionStore.delete(session.getSessionId());
             sessionCookie.clear(response);
             return null;
@@ -147,7 +162,14 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
             }
             sessionStore.save(current);
             sessionStore.saveRefreshResult(sessionId, accessToken);
-            log.info("BFF 会话已静默续期: username={}, sessionId={}", current.getUsername(), sessionId);
+
+            // 轮换会话 id：泄漏出去的旧 Cookie 从这一刻起失效；并发请求靠 60 秒别名过渡
+            String newSessionId = UUID.randomUUID().toString();
+            sessionStore.rotate(current, newSessionId);
+            sessionCookie.write(response, newSessionId);
+
+            log.info("BFF 会话已静默续期并轮换 id: username={}, sessionId={}",
+                    current.getUsername(), BffSession.mask(newSessionId));
             return jwtTokenVerifier.verify(accessToken);
         } catch (BusinessException e) {
             if (ResultCode.OAUTH_UNAVAILABLE.getCode().equals(e.getCode())) {
@@ -192,7 +214,7 @@ public class OAuth2TokenAuthenticationFilter extends OncePerRequestFilter {
         if (current != null && !current.getAccessToken().equals(session.getAccessToken())) {
             return jwtTokenVerifier.verify(current.getAccessToken());
         }
-        log.warn("等待并发刷新结果超时，本次请求按未认证处理: sessionId={}", sessionId);
+        log.warn("等待并发刷新结果超时，本次请求按未认证处理: sessionId={}", BffSession.mask(sessionId));
         return null;
     }
 

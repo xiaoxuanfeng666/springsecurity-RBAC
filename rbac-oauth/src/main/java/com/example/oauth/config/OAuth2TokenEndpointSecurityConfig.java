@@ -71,11 +71,12 @@ public class OAuth2TokenEndpointSecurityConfig {
 
         http
                 .requestMatchers()
-                    .antMatchers("/oauth/token", "/oauth/token_key", "/oauth/check_token")
+                    .antMatchers("/oauth/token", "/oauth/token_key", "/oauth/check_token",
+                            "/oauth/verify-password")
                 .and()
                 .authorizeRequests()
-                    // 令牌端点必须已通过客户端认证
-                    .antMatchers("/oauth/token").fullyAuthenticated()
+                    // 令牌端点与密码二次验证必须已通过客户端认证
+                    .antMatchers("/oauth/token", "/oauth/verify-password").fullyAuthenticated()
                     // 公钥与令牌校验对第三方开放
                     .antMatchers("/oauth/token_key", "/oauth/check_token").permitAll()
                 .and()

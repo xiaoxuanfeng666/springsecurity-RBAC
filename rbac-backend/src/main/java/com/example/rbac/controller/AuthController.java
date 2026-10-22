@@ -3,6 +3,7 @@ package com.example.rbac.controller;
 import com.example.rbac.common.Result;
 import com.example.rbac.dto.ChangePasswordRequest;
 import com.example.rbac.dto.CodeLoginRequest;
+import com.example.rbac.dto.ElevateRequest;
 import com.example.rbac.dto.LoginInfoResponse;
 import com.example.rbac.security.SecurityUtils;
 import com.example.rbac.service.AuthService;
@@ -56,6 +57,16 @@ public class AuthController {
     public Result<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
         return Result.success();
+    }
+
+    /**
+     * 敏感操作二次验证：重新输入登录密码
+     */
+    @PostMapping("/elevate")
+    public Result<Void> elevate(@Valid @RequestBody ElevateRequest request,
+                                HttpServletRequest httpRequest) {
+        authService.elevate(request.getPassword(), httpRequest);
+        return Result.success("验证通过", null);
     }
 
     /**

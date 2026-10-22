@@ -3,6 +3,7 @@ package com.example.marketing.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.marketing.common.OperLog;
 import com.example.marketing.common.Result;
+import com.example.marketing.security.SensitiveOperation;
 import com.example.marketing.entity.PointsTask;
 import com.example.marketing.dto.PointsTaskForm;
 import com.example.marketing.service.PointsTaskService;
@@ -61,6 +62,7 @@ public class PointsTaskController {
         return Result.success("修改成功", null);
     }
 
+    @SensitiveOperation
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('marketing:task:remove')")
     @OperLog(module = "积分任务", action = "DELETE", description = "删除积分任务")

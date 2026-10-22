@@ -7,7 +7,7 @@ import request from './request'
  * 浏览器只拿到一个 HttpOnly 会话 Cookie。
  */
 export function loginByCode(code, state) {
-  return request.post('/auth/code', { code, state })
+  return request.post('/auth/code', { code, state }, { silent: true })
 }
 
 /** 登出：销毁授权服务的 SSO 会话与本系统的 BFF 会话，并记一条操作日志 */

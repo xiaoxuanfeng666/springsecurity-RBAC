@@ -8,6 +8,7 @@ D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\exampl
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\common\Result.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\PermissionService.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\service\AuditLogService.java
+D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\OriginValidationFilter.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\mq\SubsystemSyncConsumer.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\util\TreeNode.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\mq\AuditLogConsumer.java
@@ -37,9 +38,12 @@ D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\exampl
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\util\TreeUtils.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\entity\AuditLogRecord.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\TokenRevocationStore.java
+D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\config\WebMvcConfig.java
+D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\SensitiveOperation.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\AuditApplication.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\common\GlobalExceptionHandler.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\entity\AuditRoleMenu.java
+D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\BffClientFingerprint.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\config\MybatisPlusConfig.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\mq\SubsystemSyncMessage.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\config\SecurityConfig.java
@@ -48,6 +52,8 @@ D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\exampl
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\mapper\AuditMenuMapper.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\config\MyMetaObjectHandler.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\BffSessionStore.java
+D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\dto\ElevateRequest.java
+D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\SensitiveOperationInterceptor.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\JwtTokenVerifier.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\SuperAdmin.java
 D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\RestAuthenticationEntryPoint.java

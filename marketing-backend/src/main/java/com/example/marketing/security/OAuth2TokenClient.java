@@ -95,6 +95,35 @@ public class OAuth2TokenClient {
         }
     }
 
+
+    /**
+     * 校验用户密码（敏感操作二次验证）
+     * <p>
+     * 授权服务只回答密码是否正确，不签发令牌、不影响现有 SSO 会话。
+     */
+    public boolean verifyPassword(String username, String password) {
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        form.add("username", username);
+        form.add("password", password);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        headers.set(HttpHeaders.AUTHORIZATION,
+                basicAuth(properties.getClientId(), properties.getClientSecret()));
+
+        try {
+            ResponseEntity<Map> response = restTemplate.postForEntity(
+                    properties.getServerUrl() + "/oauth/verify-password",
+                    new HttpEntity<>(form, headers), Map.class);
+            Map body = response.getBody();
+            return body != null && Integer.valueOf(200).equals(body.get("code"));
+        } catch (RestClientException e) {
+            log.warn("调用授权服务验证密码失败: {}", e.getMessage());
+            return false;
+        }
+    }
+
     /**
      * 统一的令牌端点调用
      *

@@ -27,7 +27,7 @@ public class BffSessionCookie {
     @Value("${rbac.bff.cookie-secure:false}")
     private boolean secure;
 
-    @Value("${rbac.bff.session-idle-ttl-seconds:604800}")
+    @Value("${rbac.bff.session-max-ttl-seconds:43200}")
     private int maxAgeSeconds;
 
     public void write(HttpServletResponse response, String sessionId) {

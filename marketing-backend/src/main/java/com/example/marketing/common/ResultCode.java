@@ -30,7 +30,9 @@ public enum ResultCode {
     PRIZE_NOT_EXIST(2011, "奖品不存在"),
     PRIZE_IN_USE(2012, "奖品已被活动使用，无法删除"),
     ACTIVITY_PRIZE_INVALID(2013, "奖品概率之和不合法（需大于 0 且不超过 100%）"),
-    STATE_INVALID(2020, "登录状态已失效或已被使用，请重新发起登录");
+    STATE_INVALID(2020, "登录状态已失效或已被使用，请重新发起登录"),
+    REAUTH_REQUIRED(2030, "该操作需要重新验证密码"),
+    REAUTH_PASSWORD_ERROR(2031, "密码不正确，二次验证未通过");
 
     private final Integer code;
     private final String message;

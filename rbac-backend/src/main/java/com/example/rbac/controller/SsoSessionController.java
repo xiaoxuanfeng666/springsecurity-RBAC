@@ -2,6 +2,7 @@ package com.example.rbac.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.rbac.common.Result;
+import com.example.rbac.security.SensitiveOperation;
 import com.example.rbac.entity.SsoSessionRecord;
 import com.example.rbac.service.SsoSessionService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class SsoSessionController {
     /**
      * 强制下线某条 SSO 会话
      */
+    @SensitiveOperation
     @PostMapping("/kick/{sessionId}")
     @PreAuthorize("@ss.hasPerm('system:sso:kick')")
     public Result<Void> kick(@PathVariable Long sessionId) {

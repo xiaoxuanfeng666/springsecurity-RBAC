@@ -1,7 +1,11 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
+import { requestElevation } from '@/utils/elevate'
 
 const baseURL = import.meta.env.VITE_API_BASE_URL || '/api'
+
+/** 后端返回该码时表示敏感操作需要重新验证密码 */
+const REAUTH_REQUIRED = 1033
 
 const service = axios.create({
   baseURL,
@@ -36,12 +40,39 @@ function redirectToLogin(message) {
   }
 }
 
+/**
+ * 敏感操作需要二次验证：先弹窗验证密码，再把原请求重放一次。
+ * 每个请求只重放一次，避免密码错误时反复弹窗。
+ */
+function handleReauth(config) {
+  if (config && config._reauthenticated) {
+    ElMessage.error('密码验证未通过')
+    return Promise.reject(new Error('密码验证未通过'))
+  }
+  return requestElevation()
+    .then(() => service({ ...config, _reauthenticated: true }))
+    .catch((e) => {
+      if (e !== 'cancel' && e !== 'close') {
+        ElMessage.error(e.message || '密码验证未通过')
+      }
+      return Promise.reject(e)
+    })
+}
+
 service.interceptors.response.use(
   (response) => {
     const res = response.data
+    if (res.code === REAUTH_REQUIRED) {
+      return handleReauth(response.config)
+    }
     if (res.code !== 200) {
-      ElMessage.error(res.message || '请求失败')
-      return Promise.reject(new Error(res.message || '请求失败'))
+      const err = new Error(res.message || '请求失败')
+      err.code = res.code
+      // 登录回调会按错误码决定是否自动重试，错误由回调页自己展示
+      if (!(response.config && response.config.silent)) {
+        ElMessage.error(err.message)
+      }
+      return Promise.reject(err)
     }
     hasAuthenticated = true
     return res

@@ -31,6 +31,10 @@ import { useUserStore } from '@/store/user'
 const router = useRouter()
 const userStore = useUserStore()
 
+/** 子系统 state 过期/已使用：子系统返回 2020，管理后台返回 1032 */
+const STATE_INVALID = 2020
+const RETRY_KEY = 'oauth_callback_retry'
+
 const status = ref('loading')
 const title = ref('正在登录')
 const message = ref('正在用授权码换取令牌，请稍候…')
@@ -60,6 +64,7 @@ onMounted(async () => {
 
   try {
     await userStore.loginByCode(code, state)
+    sessionStorage.removeItem(RETRY_KEY)
     status.value = 'success'
     title.value = '登录成功'
     message.value = '正在进入订单中心…'
@@ -67,6 +72,14 @@ onMounted(async () => {
     window.history.replaceState({}, '', '/oauth/callback')
     router.replace('/')
   } catch (e) {
+    // state 过期（在登录页停留过久、扫码完成得太晚）：自动重新发起一次授权。
+    // 此时浏览器通常已有授权服务登录态，第二遍是静默发码，用户无感。
+    if (e.code === STATE_INVALID && !sessionStorage.getItem(RETRY_KEY)) {
+      sessionStorage.setItem(RETRY_KEY, '1')
+      window.location.replace('/login')
+      return
+    }
+    sessionStorage.removeItem(RETRY_KEY)
     status.value = 'error'
     title.value = '登录失败'
     message.value = e.message || '授权码无效或已过期，请重新发起授权'

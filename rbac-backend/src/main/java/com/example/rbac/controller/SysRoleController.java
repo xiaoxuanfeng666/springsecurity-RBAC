@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.rbac.common.AuditAction;
 import com.example.rbac.common.OperLog;
 import com.example.rbac.common.Result;
+import com.example.rbac.security.SensitiveOperation;
 import com.example.rbac.dto.RoleForm;
 import com.example.rbac.dto.RoleSubsystemMenusForm;
 import com.example.rbac.entity.SysRole;
@@ -53,6 +54,7 @@ public class SysRoleController {
         return Result.success(roleService.getMenuIds(id));
     }
 
+    @SensitiveOperation
     @PostMapping
     @PreAuthorize("@ss.hasPerm('system:role:add')")
     @OperLog(module = "角色管理", action = AuditAction.CREATE, description = "新增角色")
@@ -61,6 +63,7 @@ public class SysRoleController {
         return Result.success("新增成功", null);
     }
 
+    @SensitiveOperation
     @PutMapping
     @PreAuthorize("@ss.hasPerm('system:role:edit')")
     @OperLog(module = "角色管理", action = AuditAction.UPDATE, description = "修改角色")
@@ -73,6 +76,7 @@ public class SysRoleController {
      * 动态修改角色权限（核心接口）
      * 保存后该角色的用户下一次请求即生效，无需重新登录。
      */
+    @SensitiveOperation
     @PutMapping("/{id}/menus")
     @PreAuthorize("@ss.hasPerm('system:role:menu')")
     @OperLog(module = "角色管理", action = AuditAction.GRANT, description = "分配角色权限")
@@ -81,6 +85,7 @@ public class SysRoleController {
         return Result.success("权限已更新，对该角色用户立即生效", null);
     }
 
+    @SensitiveOperation
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('system:role:remove')")
     @OperLog(module = "角色管理", action = AuditAction.DELETE, description = "删除角色")
@@ -104,6 +109,7 @@ public class SysRoleController {
      * 与 {@code PUT /role/{id}/menus} 的区别：那是本系统后台的菜单权限（影响 @PreAuthorize 判定），
      * 这里是下发给子系统的导航菜单，不参与本系统鉴权。
      */
+    @SensitiveOperation
     @PutMapping("/{id}/subsystem-menus")
     @PreAuthorize("@ss.hasPerm('system:role:menu')")
     @OperLog(module = "角色管理", action = AuditAction.GRANT, description = "分配子系统菜单")

@@ -46,7 +46,9 @@ public enum ResultCode {
     SSO_SESSION_NOT_EXIST(1029, "SSO 会话记录不存在"),
     OAUTH_UNAVAILABLE(1030, "授权服务暂时不可用，请稍后重试"),
     CODE_INVALID(1031, "授权码无效或已过期，请重新授权"),
-    STATE_INVALID(1032, "登录状态已失效或已被使用，请重新发起登录");
+    STATE_INVALID(1032, "登录状态已失效或已被使用，请重新发起登录"),
+    REAUTH_REQUIRED(1033, "该操作需要重新验证密码"),
+    REAUTH_PASSWORD_ERROR(1034, "密码不正确，二次验证未通过");
 
     private final Integer code;
     private final String message;

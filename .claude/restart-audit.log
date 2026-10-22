@@ -15,7 +15,7 @@
 [INFO] 
 [INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ audit-backend ---
 [INFO] Changes detected - recompiling the module!
-[INFO] Compiling 53 source files to D:\programs\ai\coding\springsecurity-RBAC\audit-backend\target\classes
+[INFO] Compiling 59 source files to D:\programs\ai\coding\springsecurity-RBAC\audit-backend\target\classes
 [INFO] /D:/programs/ai/coding/springsecurity-RBAC/audit-backend/src/main/java/com/example/audit/security/OAuth2TokenClient.java: D:\programs\ai\coding\springsecurity-RBAC\audit-backend\src\main\java\com\example\audit\security\OAuth2TokenClient.java使用了未经检查或不安全的操作。
 [INFO] /D:/programs/ai/coding/springsecurity-RBAC/audit-backend/src/main/java/com/example/audit/security/OAuth2TokenClient.java: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
 [INFO] 
@@ -41,116 +41,129 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::               (v2.7.18)
 
-2026-10-21 14:38:07.901  INFO 77600 --- [           main] com.example.audit.AuditApplication       : Starting AuditApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 77600 (D:\programs\ai\coding\springsecurity-RBAC\audit-backend\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\audit-backend)
-2026-10-21 14:38:07.905  INFO 77600 --- [           main] com.example.audit.AuditApplication       : No active profile set, falling back to 1 default profile: "default"
-2026-10-21 14:38:09.081  INFO 77600 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
-2026-10-21 14:38:09.085  INFO 77600 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-10-21 14:38:09.130  INFO 77600 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 23 ms. Found 0 Redis repository interfaces.
-2026-10-21 14:38:09.802  INFO 77600 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$a6a18e3e] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2026-10-21 14:38:09.908  INFO 77600 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2026-10-21 14:38:09.948  INFO 77600 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2026-10-21 14:38:09.951  INFO 77600 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$fddb84da] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2026-10-21 14:38:10.661  INFO 77600 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7074 (http)
-2026-10-21 14:38:10.670  INFO 77600 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-10-21 14:38:10.670  INFO 77600 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
-2026-10-21 14:38:10.813  INFO 77600 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-10-21 14:38:10.813  INFO 77600 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2860 ms
-2026-10-21 14:38:11.536  INFO 77600 --- [           main] c.e.audit.security.JwtTokenVerifier      : 已加载授权服务令牌公钥: http://localhost:7071/oauth/token_key
+2026-10-21 17:19:06.024  INFO 69048 --- [           main] com.example.audit.AuditApplication       : Starting AuditApplication using Java 1.8.0_371 on xiaoxuanfeng with PID 69048 (D:\programs\ai\coding\springsecurity-RBAC\audit-backend\target\classes started by 16175 in D:\programs\ai\coding\springsecurity-RBAC\audit-backend)
+2026-10-21 17:19:06.031  INFO 69048 --- [           main] com.example.audit.AuditApplication       : No active profile set, falling back to 1 default profile: "default"
+2026-10-21 17:19:07.413  INFO 69048 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-10-21 17:19:07.417  INFO 69048 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-10-21 17:19:07.462  INFO 69048 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 21 ms. Found 0 Redis repository interfaces.
+2026-10-21 17:19:08.122  INFO 69048 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.MessageConverterConfiguration$$EnhancerBySpringCGLIB$$7fa85bf7] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 17:19:08.201  INFO 69048 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'createRocketMQMessageConverter' of type [org.apache.rocketmq.spring.support.RocketMQMessageConverter] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 17:19:08.230  INFO 69048 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'rocketmq-org.apache.rocketmq.spring.autoconfigure.RocketMQProperties' of type [org.apache.rocketmq.spring.autoconfigure.RocketMQProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 17:19:08.231  INFO 69048 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration' of type [org.apache.rocketmq.spring.autoconfigure.ListenerContainerConfiguration$$EnhancerBySpringCGLIB$$d6e25293] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-10-21 17:19:08.922  INFO 69048 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 7074 (http)
+2026-10-21 17:19:08.936  INFO 69048 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-21 17:19:08.937  INFO 69048 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2026-10-21 17:19:09.183  INFO 69048 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-10-21 17:19:09.183  INFO 69048 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3059 ms
+2026-10-21 17:19:12.555  WARN 69048 --- [           main] c.e.audit.security.JwtTokenVerifier      : 拉取授权服务公钥失败，继续使用当前公钥: url=http://localhost:7071/oauth/token_key, error=I/O error on GET request for "http://localhost:7071/oauth/token_key": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
 Logging initialized using 'class org.apache.ibatis.logging.stdout.StdOutImpl' adapter.
-Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@3e4e8fdf'
+Registered plugin: 'com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor@2e7157c7'
 Property 'mapperLocations' was not specified.
-Initialization Sequence datacenterId:19 workerId:14
+Initialization Sequence datacenterId:19 workerId:9
  _ _   |_  _ _|_. ___ _ |    _ 
 | | |\/|_)(_| | |_\  |_)||_|_\ 
      /               |         
                         3.5.3.2 
-2026-10-21 14:38:13.540  INFO 77600 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='audit-log-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_AUDIT_LOG', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
-2026-10-21 14:38:13.540  INFO 77600 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:auditLogConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
-2026-10-21 14:38:14.347  INFO 77600 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='audit-session-revoke-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SESSION_REVOKE', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
-2026-10-21 14:38:14.347  INFO 77600 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:sessionRevokeConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_2
-2026-10-21 14:38:15.028  INFO 77600 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='audit-sync-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SUBSYSTEM_SYNC', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='audit', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
-2026-10-21 14:38:15.028  INFO 77600 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:subsystemSyncConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_3
-2026-10-21 14:38:15.139  INFO 77600 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@681c0ae6, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@73ca34e7, org.springframework.security.web.context.SecurityContextPersistenceFilter@3cc053, org.springframework.security.web.header.HeaderWriterFilter@50085d9c, org.springframework.web.filter.CorsFilter@4d98e41b, org.springframework.security.web.authentication.logout.LogoutFilter@7bbcf6f0, com.example.audit.security.OAuth2TokenAuthenticationFilter@27443560, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7fbd3e75, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7fdd43cd, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5ed5b321, org.springframework.security.web.session.SessionManagementFilter@1a1ccaaf, org.springframework.security.web.access.ExceptionTranslationFilter@3e900e1a, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@1d15c0a1]
-2026-10-21 14:38:15.525  INFO 77600 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7074 (http) with context path ''
-2026-10-21 14:38:15.539  INFO 77600 --- [           main] com.example.audit.AuditApplication       : Started AuditApplication in 8.05 seconds (JVM running for 8.591)
-2026-10-21 14:38:18.824  INFO 77600 --- [nio-7074-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-10-21 14:38:18.825  INFO 77600 --- [nio-7074-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-10-21 14:38:18.826  INFO 77600 --- [nio-7074-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2026-10-21 14:38:19.151  INFO 77600 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-10-21 14:38:19.285  INFO 77600 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-21 17:19:15.649  INFO 69048 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='audit-log-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_AUDIT_LOG', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-21 17:19:15.650  INFO 69048 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:auditLogConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_1
+2026-10-21 17:19:16.614  INFO 69048 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='audit-session-revoke-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SESSION_REVOKE', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='*', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-21 17:19:16.614  INFO 69048 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:sessionRevokeConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_2
+2026-10-21 17:19:17.472  INFO 69048 --- [           main] a.r.s.s.DefaultRocketMQListenerContainer : running container: DefaultRocketMQListenerContainer{consumerGroup='audit-sync-consumer', namespace='', nameServer='localhost:9876', topic='RBAC_SUBSYSTEM_SYNC', consumeMode=CONCURRENTLY, selectorType=TAG, selectorExpression='audit', messageModel=CLUSTERING', tlsEnable=false, instanceName=DEFAULT}
+2026-10-21 17:19:17.472  INFO 69048 --- [           main] o.a.r.s.a.ListenerContainerConfiguration : Register the listener to container, listenerBeanName:subsystemSyncConsumer, containerBeanName:org.apache.rocketmq.spring.support.DefaultRocketMQListenerContainer_3
+2026-10-21 17:19:17.631  INFO 69048 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@2443abd6, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@674da77b, org.springframework.security.web.context.SecurityContextPersistenceFilter@1b57c345, org.springframework.security.web.header.HeaderWriterFilter@d325518, org.springframework.web.filter.CorsFilter@bd3eff4, org.springframework.security.web.authentication.logout.LogoutFilter@39b626e5, com.example.audit.security.OAuth2TokenAuthenticationFilter@550e9be6, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@902fdbe, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5c059a68, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6010d0d1, org.springframework.security.web.session.SessionManagementFilter@1d4f5506, org.springframework.security.web.access.ExceptionTranslationFilter@12417468, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@4e375bba]
+2026-10-21 17:19:18.186  INFO 69048 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 7074 (http) with context path ''
+2026-10-21 17:19:18.209  INFO 69048 --- [           main] com.example.audit.AuditApplication       : Started AuditApplication in 12.931 seconds (JVM running for 13.636)
+2026-10-21 17:19:18.256  INFO 69048 --- [   scheduling-1] c.e.audit.security.JwtTokenVerifier      : 已加载授权服务令牌公钥: http://localhost:7071/oauth/token_key
+2026-10-21 17:19:19.259  INFO 69048 --- [nio-7074-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-21 17:19:19.259  INFO 69048 --- [nio-7074-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-21 17:19:19.261  INFO 69048 --- [nio-7074-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-10-21 17:19:21.208  INFO 69048 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-21 17:19:21.352  INFO 69048 --- [sync-consumer_1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
 Creating a new SqlSession
-Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-JDBC Connection [HikariProxyConnection@1087392215 wrapping com.mysql.cj.jdbc.ConnectionImpl@170d84d7] will be managed by Spring
+Registering transaction synchronization for SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+JDBC Connection [HikariProxyConnection@1140295944 wrapping com.mysql.cj.jdbc.ConnectionImpl@699e31d] will be managed by Spring
 ==>  Preparing: DELETE FROM audit_user_role
 ==> Parameters: 
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: DELETE FROM audit_role_menu
 ==> Parameters: 
 <==    Updates: 3
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: DELETE FROM audit_menu
 ==> Parameters: 
 <==    Updates: 3
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: DELETE FROM audit_user
 ==> Parameters: 
 <==    Updates: 3
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: INSERT INTO audit_menu ( id, parent_id, menu_name, type, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
-==> Parameters: 300(Long), 0(Long), 审计日志(String), 1(Integer), /audit(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-21T14:38:19.295(LocalDateTime)
+==> Parameters: 300(Long), 0(Long), 审计日志(String), 1(Integer), /audit(String), Layout(String), Document(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-21T17:19:21.362(LocalDateTime)
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: INSERT INTO audit_menu ( id, parent_id, menu_name, type, perms, path, component, icon, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )
-==> Parameters: 301(Long), 300(Long), 操作日志(String), 2(Integer), audit:log:list(String), log(String), audit/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-21T14:38:19.295(LocalDateTime)
+==> Parameters: 301(Long), 300(Long), 操作日志(String), 2(Integer), audit:log:list(String), log(String), audit/index(String), List(String), 1(Integer), 1(Integer), 1(Integer), 2026-10-21T17:19:21.362(LocalDateTime)
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: INSERT INTO audit_menu ( id, parent_id, menu_name, type, perms, sort, visible, status, sync_time ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )
-==> Parameters: 302(Long), 301(Long), 日志查询(String), 3(Integer), audit:log:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-21T14:38:19.295(LocalDateTime)
+==> Parameters: 302(Long), 301(Long), 日志查询(String), 3(Integer), audit:log:query(String), 1(Integer), 0(Integer), 1(Integer), 2026-10-21T17:19:21.362(LocalDateTime)
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: INSERT INTO audit_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
-==> Parameters: 2(Long), 300(Long), 2026-10-21T14:38:19.295(LocalDateTime)
+==> Parameters: 2(Long), 300(Long), 2026-10-21T17:19:21.362(LocalDateTime)
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: INSERT INTO audit_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
-==> Parameters: 2(Long), 301(Long), 2026-10-21T14:38:19.295(LocalDateTime)
+==> Parameters: 2(Long), 301(Long), 2026-10-21T17:19:21.362(LocalDateTime)
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: INSERT INTO audit_role_menu ( role_id, menu_id, sync_time ) VALUES ( ?, ?, ? )
-==> Parameters: 2(Long), 302(Long), 2026-10-21T14:38:19.295(LocalDateTime)
+==> Parameters: 2(Long), 302(Long), 2026-10-21T17:19:21.362(LocalDateTime)
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: INSERT INTO audit_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
-==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-21T14:38:19.295(LocalDateTime)
+==> Parameters: 1(Long), admin(String), Mock User(String), 1(Integer), admin(String), 2026-10-21T17:19:21.362(LocalDateTime)
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: INSERT INTO audit_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
-==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-21T14:38:19.295(LocalDateTime)
+==> Parameters: 2(Long), zhangsan(String), 张一(String), 1(Integer), common(String), 2026-10-21T17:19:21.362(LocalDateTime)
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: INSERT INTO audit_user ( id, username, nickname, status, role_keys, sync_time ) VALUES ( ?, ?, ?, ?, ?, ? )
-==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-21T14:38:19.295(LocalDateTime)
+==> Parameters: 3(Long), 李四(String), lishi(String), 1(Integer), admin(String), 2026-10-21T17:19:21.362(LocalDateTime)
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b] from current transaction
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Fetched SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145] from current transaction
 ==>  Preparing: INSERT INTO audit_user_role ( user_id, role_id, sync_time ) VALUES ( ?, ?, ? )
-==> Parameters: 2(Long), 2(Long), 2026-10-21T14:38:19.295(LocalDateTime)
+==> Parameters: 2(Long), 2(Long), 2026-10-21T17:19:21.362(LocalDateTime)
 <==    Updates: 1
-Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-2026-10-21 14:38:19.570  INFO 77600 --- [sync-consumer_1] c.e.audit.service.AuditSyncService       : 已重建子系统同步数据: subsystemCode=audit, menus=3, roleMenus=3, users=3, userRoles=1
-Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
-Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@303b409b]
+Releasing transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+2026-10-21 17:19:21.639  INFO 69048 --- [sync-consumer_1] c.e.audit.service.AuditSyncService       : 已重建子系统同步数据: subsystemCode=audit, menus=3, roleMenus=3, users=3, userRoles=1
+Transaction synchronization committing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Transaction synchronization deregistering SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+Transaction synchronization closing SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@b4d0145]
+2026-10-21 17:19:28.483  INFO 69048 --- [voke-consumer_1] c.e.audit.security.TokenRevocationStore  : 已记录会话撤销: sid=d96bb740af6b406cb6dcf41f3f264aa5, ttl=1800s
+2026-10-21 17:19:28.484  INFO 69048 --- [voke-consumer_1] c.e.audit.mq.SessionRevokeConsumer       : 已消费会话撤销: sid=d96bb740af6b406cb6dcf41f3f264aa5, username=admin
+2026-10-21 18:37:14.171  WARN 69048 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h4m22s332ms888?s800ns).
+2026-10-21 19:14:18.393  WARN 69048 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m3s679ms186?s300ns).
+2026-10-21 19:47:16.080  WARN 69048 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=15m57s412ms88?s700ns).
+2026-10-21 19:56:47.113  WARN 69048 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=4m30s922ms168?s100ns).
+2026-10-21 21:02:37.658  WARN 69048 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=13m19s634ms387?s700ns).
+2026-10-21 21:19:19.674  WARN 69048 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=11m41s921ms26?s600ns).
+2026-10-21 21:26:38.796  WARN 69048 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2m19s33ms777?s600ns).
+2026-10-21 22:27:35.430  WARN 69048 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=8m25s852ms177?s800ns).
+2026-10-21 22:53:19.328  WARN 69048 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=20m13s797ms643?s300ns).
+2026-10-22 09:33:02.594  WARN 69048 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=10h39m49s495ms493?s).

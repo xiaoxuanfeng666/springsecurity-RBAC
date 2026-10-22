@@ -2,6 +2,7 @@ package com.example.audit.controller;
 
 import com.example.audit.common.Result;
 import com.example.audit.dto.CodeLoginRequest;
+import com.example.audit.dto.ElevateRequest;
 import com.example.audit.dto.LoginInfoResponse;
 import com.example.audit.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,17 @@ public class AuthController {
     public Result<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
         return Result.success("已登出", null);
+    }
+
+
+    /**
+     * 敏感操作二次验证：重新输入登录密码
+     */
+    @PostMapping("/elevate")
+    public Result<Void> elevate(@Valid @RequestBody ElevateRequest request,
+                                HttpServletRequest httpRequest) {
+        authService.elevate(request.getPassword(), httpRequest);
+        return Result.success("验证通过", null);
     }
 
     /**

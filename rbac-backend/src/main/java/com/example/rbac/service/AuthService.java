@@ -65,8 +65,12 @@ public class AuthService {
     private final BffSessionCookie sessionCookie;
 
     /** 会话绝对有效期（秒）：从登录时刻算起，到点必须重新授权 */
-    @Value("${rbac.bff.session-max-ttl-seconds:604800}")
+    @Value("${rbac.bff.session-max-ttl-seconds:43200}")
     private long sessionMaxTtlSeconds;
+
+    /** 二次验证有效期（秒）：验证通过后这段时间内可执行敏感操作 */
+    @Value("${rbac.bff.elevate-ttl-seconds:300}")
+    private long elevateTtlSeconds;
 
     /**
      * 授权码模式登录：用回调地址上的 code 换取令牌并建立服务端会话
@@ -80,11 +84,38 @@ public class AuthService {
             throw new BusinessException(ResultCode.STATE_INVALID);
         }
         Map<String, Object> token = tokenClient.authorizationCodeGrant(code);
-        LoginInfoResponse info = establishSession(token, response);
+        LoginInfoResponse info = establishSession(token, request, response);
         log.info("用户通过统一 SSO 登录成功: {} (userId={})", info.getUser().getUsername(), info.getUser().getId());
         logService.record(MODULE_AUTH, AuditAction.LOGIN,
                 info.getUser().getId(), info.getUser().getUsername(), "登录成功");
         return info;
+    }
+
+    /**
+     * 敏感操作二次验证：校验当前用户密码后给会话打上有效期标记
+     * <p>
+     * 密码错误只拒绝本次操作，不影响登录态。
+     */
+    public void elevate(String password, HttpServletRequest request) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        if (loginUser == null) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED);
+        }
+        SysUser current = userMapper.selectById(loginUser.getUser().getId());
+        if (current == null) {
+            throw new BusinessException(ResultCode.USER_NOT_EXIST);
+        }
+        if (!passwordEncoder.matches(password, current.getPassword())) {
+            throw new BusinessException(ResultCode.REAUTH_PASSWORD_ERROR);
+        }
+        BffSessionStore.ResolvedSession resolved = sessionStore.resolve(sessionCookie.read(request));
+        if (resolved == null) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED);
+        }
+        BffSession session = resolved.getSession();
+        session.setElevatedUntil(System.currentTimeMillis() + elevateTtlSeconds * 1000L);
+        sessionStore.save(session);
+        log.info("敏感操作二次验证通过: username={}", loginUser.getUsername());
     }
 
     /**
@@ -209,7 +240,8 @@ public class AuthService {
      * 令牌有效只说明「他是 RBAC 的合法用户」；还要确认账号仍在本系统且在岗。
      * 同时保证权限快照存在，避免第一个请求还在查库。
      */
-    private LoginInfoResponse establishSession(Map<String, Object> token, HttpServletResponse response) {
+    private LoginInfoResponse establishSession(Map<String, Object> token,
+                                               HttpServletRequest request, HttpServletResponse response) {
         String accessToken = asString(token.get("access_token"));
         String refreshToken = asString(token.get("refresh_token"));
         if (!StringUtils.hasText(accessToken)) {
@@ -243,6 +275,7 @@ public class AuthService {
         session.setRefreshToken(refreshToken);
         session.setLoginTime(now);
         session.setExpireAt(now + sessionMaxTtlSeconds * 1000L);
+        session.setClientFingerprint(BffClientFingerprint.of(request));
         sessionStore.save(session);
         sessionCookie.write(response, session.getSessionId());
 

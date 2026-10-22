@@ -8,6 +8,7 @@ import com.example.audit.entity.AuditMenu;
 import com.example.audit.entity.AuditUser;
 import com.example.audit.mapper.AuditMenuMapper;
 import com.example.audit.mapper.AuditUserMapper;
+import com.example.audit.security.BffClientFingerprint;
 import com.example.audit.security.BffSession;
 import com.example.audit.security.BffSessionCookie;
 import com.example.audit.security.BffSessionStore;
@@ -61,8 +62,12 @@ public class AuthService {
     private final BffSessionCookie sessionCookie;
 
     /** 会话绝对有效期（秒）：从登录时刻算起，到点必须重新授权 */
-    @Value("${rbac.bff.session-max-ttl-seconds:604800}")
+    @Value("${rbac.bff.session-max-ttl-seconds:43200}")
     private long sessionMaxTtlSeconds;
+
+    /** 二次验证有效期（秒）：验证通过后这段时间内可执行敏感操作 */
+    @Value("${rbac.bff.elevate-ttl-seconds:300}")
+    private long elevateTtlSeconds;
 
     /**
      * 授权码模式登录：用回调地址上的 code 换取令牌
@@ -75,7 +80,7 @@ public class AuthService {
         if (!stateStore.consume(state, request, response)) {
             throw new BusinessException(ResultCode.STATE_INVALID);
         }
-        return establishSession(tokenClient.authorizationCodeGrant(code), response);
+        return establishSession(tokenClient.authorizationCodeGrant(code), request, response);
     }
 
     /**
@@ -91,7 +96,7 @@ public class AuthService {
                 tokenClient.ssoLogout(session.getAccessToken());
             }
             log.info("已退出 BFF 会话: username={}, sessionId={}",
-                    session == null ? null : session.getUsername(), sessionId);
+                    session == null ? null : session.getUsername(), BffSession.mask(sessionId));
         }
         sessionCookie.clear(response);
     }
@@ -122,6 +127,30 @@ public class AuthService {
                 .toUriString();
     }
 
+
+    /**
+     * 敏感操作二次验证：校验密码后给当前会话打上有效期标记
+     * <p>
+     * 密码错误只拒绝本次操作，不影响登录态；连续失败次数由网关/后续限流控制。
+     */
+    public void elevate(String password, HttpServletRequest request) {
+        LoginUser loginUser = SecurityUtils.getLoginUser();
+        if (loginUser == null) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED);
+        }
+        if (!tokenClient.verifyPassword(loginUser.getUsername(), password)) {
+            throw new BusinessException(ResultCode.REAUTH_PASSWORD_ERROR);
+        }
+        BffSessionStore.ResolvedSession resolved = sessionStore.resolve(sessionCookie.read(request));
+        if (resolved == null) {
+            throw new BusinessException(ResultCode.UNAUTHORIZED);
+        }
+        BffSession session = resolved.getSession();
+        session.setElevatedUntil(System.currentTimeMillis() + elevateTtlSeconds * 1000L);
+        sessionStore.save(session);
+        log.info("敏感操作二次验证通过: username={}", loginUser.getUsername());
+    }
+
     /**
      * 当前登录用户的信息：身份 + 角色 + 权限点 + 菜单树
      */
@@ -140,7 +169,7 @@ public class AuthService {
      * 后者取决于 RBAC 是否给他配了本子系统的菜单/权限（经 MQ 下发）。
      * 同步表里没有他就直接拒掉，不建立一个用不了的会话。
      */
-    private LoginInfoResponse establishSession(Map<String, Object> token, HttpServletResponse response) {
+    private LoginInfoResponse establishSession(Map<String, Object> token, HttpServletRequest request, HttpServletResponse response) {
         String accessToken = asString(token.get("access_token"));
         String refreshToken = asString(token.get("refresh_token"));
         if (!StringUtils.hasText(accessToken)) {
@@ -167,9 +196,10 @@ public class AuthService {
         session.setRefreshToken(refreshToken);
         session.setLoginTime(now);
         session.setExpireAt(now + sessionMaxTtlSeconds * 1000L);
+        session.setClientFingerprint(BffClientFingerprint.of(request));
         sessionStore.save(session);
         sessionCookie.write(response, session.getSessionId());
-        log.info("已建立 BFF 会话: username={}, sessionId={}", username, session.getSessionId());
+        log.info("已建立 BFF 会话: username={}, sessionId={}", username, BffSession.mask(session.getSessionId()));
 
         return buildInfo(user);
     }

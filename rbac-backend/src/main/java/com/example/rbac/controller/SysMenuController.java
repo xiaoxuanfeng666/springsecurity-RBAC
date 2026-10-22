@@ -3,6 +3,7 @@ package com.example.rbac.controller;
 import com.example.rbac.common.AuditAction;
 import com.example.rbac.common.OperLog;
 import com.example.rbac.common.Result;
+import com.example.rbac.security.SensitiveOperation;
 import com.example.rbac.dto.MenuForm;
 import com.example.rbac.entity.SysMenu;
 import com.example.rbac.service.SysMenuService;
@@ -35,6 +36,7 @@ public class SysMenuController {
         return Result.success(menuService.getById(id));
     }
 
+    @SensitiveOperation
     @PostMapping
     @PreAuthorize("@ss.hasPerm('system:menu:add')")
     @OperLog(module = "菜单管理", action = AuditAction.CREATE, description = "新增菜单")
@@ -43,6 +45,7 @@ public class SysMenuController {
         return Result.success("新增成功", null);
     }
 
+    @SensitiveOperation
     @PutMapping
     @PreAuthorize("@ss.hasPerm('system:menu:edit')")
     @OperLog(module = "菜单管理", action = AuditAction.UPDATE, description = "修改菜单")
@@ -51,6 +54,7 @@ public class SysMenuController {
         return Result.success("修改成功", null);
     }
 
+    @SensitiveOperation
     @DeleteMapping("/{id}")
     @PreAuthorize("@ss.hasPerm('system:menu:remove')")
     @OperLog(module = "菜单管理", action = AuditAction.DELETE, description = "删除菜单")

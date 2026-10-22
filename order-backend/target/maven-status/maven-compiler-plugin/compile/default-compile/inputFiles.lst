@@ -2,6 +2,7 @@ D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\exampl
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\mq\SessionRevokeConsumer.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\dto\CodeLoginRequest.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\entity\OrderUserRole.java
+D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\config\WebMvcConfig.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\mapper\OrderMenuMapper.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\mapper\OrderUserRoleMapper.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\common\BusinessException.java
@@ -9,6 +10,7 @@ D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\exampl
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\SecurityUtils.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\config\OAuth2ClientProperties.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\dto\OrderForm.java
+D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\SensitiveOperationInterceptor.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\util\UniqueKeyUtils.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\mq\SubsystemSyncConsumer.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\OAuth2TokenAuthenticationFilter.java
@@ -17,16 +19,20 @@ D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\exampl
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\entity\OrderUser.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\OAuth2StateStore.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\controller\OrderController.java
+D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\OriginValidationFilter.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\task\TokenKeyRefreshTask.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\util\TreeNode.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\CachedLoginUser.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\mq\AuditLogPublisher.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\common\GlobalExceptionHandler.java
+D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\SensitiveOperation.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\OAuth2TokenClient.java
+D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\BffClientFingerprint.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\dto\PasswordLoginRequest.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\LoginUserCacheStore.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\config\MybatisPlusConfig.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\RestAuthenticationEntryPoint.java
+D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\dto\ElevateRequest.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\BffSession.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\security\LoginUser.java
 D:\programs\ai\coding\springsecurity-RBAC\order-backend\src\main\java\com\example\order\service\OrderService.java
